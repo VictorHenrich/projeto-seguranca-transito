@@ -3,7 +3,7 @@ from sqlalchemy.engine import create_engine, Engine
 from sqlalchemy.orm.session import Session, sessionmaker
 from sqlalchemy.orm.decl_api import declarative_base
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
-from .exceptions import ExceptionInstanceEngine
+from .exceptions import InstanceEngineError
 
 
 class DatabaseParameters(Protocol):
@@ -54,7 +54,7 @@ class Database:
 
     def __migrate_default(self, drop_tables: bool) -> None:
         if self.__engine is not Engine:
-            raise ExceptionInstanceEngine()
+            raise InstanceEngineError()
 
         if drop_tables:
             self.__Model.metadata.drop_all(self.__engine)
@@ -63,7 +63,7 @@ class Database:
 
     async def __migrate_async(self, drop_tables: bool) -> None:
         if self.__engine is not AsyncEngine:
-            raise ExceptionInstanceEngine()
+            raise InstanceEngineError()
             
         async with self.__engine.begin() as transaction:
             if drop_tables:

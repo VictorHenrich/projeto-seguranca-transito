@@ -17,15 +17,14 @@ class ConfigServer(Protocol):
 class ServerHttp(Api):
     def __init__(
         self,
-        host: str,
-        port: Union[int, str],
-        debug: bool = True
+        config: ConfigServer,
+        **options: Mapping[str, Any]
     ):
-        self.__configs: ConfigServer = ConfigServer(host, port, debug)
+        self.__configs: ConfigServer = config
 
         self.__application: Flask = Flask(__name__)
 
-        super().__init__(self.__application)
+        super().__init__(self.__application, **options)
 
     @property
     def configs(self) -> ConfigServer:
@@ -38,5 +37,5 @@ class ServerHttp(Api):
     def start_app(self) -> None:
         self.__application.run(**self.__configs.__dict__)
 
-    def add_resource(self, controller: Controller, *urls: str, **kwargs: Mapping[str, Any]):
-        return super().add_resource(controller, *urls, **kwargs)
+    def add_route(self, controller: Controller, *urls: str, **kwargs: Mapping[str, Any]):
+        return self.add_resource(controller, *urls, **kwargs)

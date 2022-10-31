@@ -14,17 +14,17 @@ class Parameters:
 
 @dataclass
 class DialectDefaultBuilder(ABC):
-    name: str
-    host: str
-    port: Union[str, int]
-    dbname: str
-    username: str
-    password: str
-    driver_default: str
-    driver_async: str
+    name: Optional[str] = None
+    host: Optional[str] = None
+    port: Optional[Union[str, int]] = None
+    dbname: Optional[str] = None
+    username: Optional[str] = None
+    password: Optional[str] = None
+    driver_default: Optional[str] = None
+    driver_async: Optional[str] = None
     async_: bool = False
     debug: bool = False
-    name_base: str = None
+    name_base: Optional[str] = None
 
     def set_name(self, name: str) -> DialectDefaultBuilder:
         self.name = name

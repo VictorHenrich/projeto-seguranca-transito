@@ -1,2 +1,2 @@
-from .database_not_found import DatabaseNotFound
-from .instance_engine import ExceptionInstanceEngine
+from .database_not_found import DatabaseNotFoundError
+from .instance_engine import InstanceEngineError

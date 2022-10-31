@@ -5,7 +5,7 @@ from flask import Response
 from .responses_default import ResponseNotFound
 
 
-class Controller(ABC, Resource):
+class Controller(Resource, ABC):
     def get(self) -> Response:
         return ResponseNotFound()
 
