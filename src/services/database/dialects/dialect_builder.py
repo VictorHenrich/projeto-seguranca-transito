@@ -1,6 +1,6 @@
+from __future__ import annotations
 from abc import ABC
 from dataclasses import dataclass
-from __future__ import annotations
 from typing import Optional, Union
 from ..database import Database
 
@@ -75,7 +75,7 @@ class DialectDefaultBuilder(ABC):
     def set_debug(self, debug: bool) -> DialectDefaultBuilder:
         self.debug = debug
 
-        return
+        return self
 
     def build(self) -> Database:
         driver: str = self.driver_default if not self.async_ else self.driver_async

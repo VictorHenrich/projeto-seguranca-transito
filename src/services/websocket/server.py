@@ -1,6 +1,5 @@
-from ctypes import Union
 from flask_socketio import SocketIO
-from typing import Optional, Protocol, Mapping, Any, Type
+from typing import Optional, Protocol, Mapping, Any, Type, Union
 from ..http.server import ServerHttp
 from .controller import Controller
 

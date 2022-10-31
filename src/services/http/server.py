@@ -1,5 +1,4 @@
-from ctypes import Union
-from typing import Any, Mapping, Protocol
+from typing import Any, Mapping, Protocol, Union
 from flask import Flask
 from flask_restful import Api
 

@@ -48,7 +48,7 @@ class Server:
 
 
 class ServerFectory:
-    __dialects: list[DialectDefaultBuilder] = [MySQL, Postgres]
+    __dialects: list[DialectDefaultBuilder] = [MySQL(), Postgres()]
 
     @classmethod
     def create(
