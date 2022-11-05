@@ -1,6 +1,6 @@
+from __future__ import annotations
 from abc import ABC
 from dataclasses import dataclass
-from __future__ import annotations
 from typing import Optional, Union
 from ..database import Database
 
@@ -14,25 +14,21 @@ class Parameters:
 
 @dataclass
 class DialectDefaultBuilder(ABC):
-    name: str
-    host: str
-    port: Union[str, int]
-    dbname: str
-    username: str
-    password: str
-    driver_default: str
-    driver_async: str
+    dialect: str = ""
+    name: str = None
+    host: Optional[str] = None
+    port: Optional[Union[str, int]] = None
+    dbname: Optional[str] = None
+    username: Optional[str] = None
+    password: Optional[str] = None
+    driver_default: Optional[str] = None
+    driver_async: Optional[str] = None
     async_: bool = False
     debug: bool = False
-    name_base: str = None
+    
 
     def set_name(self, name: str) -> DialectDefaultBuilder:
         self.name = name
-
-        return self
-
-    def set_name_base(self, name_base: str) -> DialectDefaultBuilder:
-        self.name_base = name_base
 
         return self
 
@@ -80,7 +76,7 @@ class DialectDefaultBuilder(ABC):
     def build(self) -> Database:
         driver: str = self.driver_default if not self.async_ else self.driver_async
 
-        url: str = f"{self.name_base}+{driver}://{self.username}:{self.password}@{self.host}:{self.port}/{self.dbname}"
+        url: str = f"{self.dialect}+{driver}://{self.username}:{self.password}@{self.host}:{self.port}/{self.dbname}"
 
         parameters: Parameters = Parameters(self.name, url, self.async_, self.debug)
 

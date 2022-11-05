@@ -1,5 +1,5 @@
-from ctypes import Union
-from typing import Any, Mapping, Protocol
+from typing import Any, Mapping, Union
+from dataclasses import dataclass
 from flask import Flask
 from flask_restful import Api
 
@@ -7,28 +7,24 @@ from .controller import Controller
 
 
 
-
-class ConfigServer(Protocol):
+@dataclass
+class HttpServerConfig:
     host: str
     port: Union[str, int]
     debug: bool = True
 
 
-class ServerHttp(Api):
-    def __init__(
-        self,
-        host: str,
-        port: Union[int, str],
-        debug: bool = True
-    ):
-        self.__configs: ConfigServer = ConfigServer(host, port, debug)
+
+class HttpServer(Api):
+    def __init__(self, config: HttpServerConfig):
+        self.__configs: HttpServerConfig = config
 
         self.__application: Flask = Flask(__name__)
 
         super().__init__(self.__application)
 
     @property
-    def configs(self) -> ConfigServer:
+    def configs(self) -> HttpServerConfig:
         return self.__configs
 
     @property
