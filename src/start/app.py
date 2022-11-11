@@ -10,13 +10,3 @@ from .configs import (
 
 server: Server = ServerFectory.create(HTTP, DATABASES, WEBSOCKET)
 
-
-@server.start
-def run_app():
-    from . import routes
-
-    server.http.start_app()
-
-
-server.start_server()
-

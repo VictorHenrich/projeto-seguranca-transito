@@ -10,6 +10,7 @@ from .controller import Controller
 class ConfigServer(Protocol):
     host: str
     port: Union[str, int]
+    secret_key: str
     debug: bool = True
 
 
@@ -22,6 +23,8 @@ class ServerHttp(Api):
         self.__configs: ConfigServer = config
 
         self.__application: Flask = Flask(__name__)
+
+        self.__application.secret_key = self.__configs.secret_key
 
         super().__init__(self.__application, **options)
 
