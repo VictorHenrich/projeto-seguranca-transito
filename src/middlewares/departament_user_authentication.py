@@ -5,12 +5,13 @@ from datetime import datetime
 from services.http import Middleware
 from services.database import Database
 from services.utils import UtilsJWT
-from models import Usuario
+from models import UsuarioDepartamento, Departamento
 from exceptions import (
     AuthorizationNotFoundHeader, 
     TokenTypeNotBearerError,
     ExpiredTokenError,
-    UserNotFoundError
+    UserNotFoundError,
+    DepartamentNotFoundError
 )
 from patterns.autenticacao import PayloadJWT
 from start import server
@@ -23,7 +24,7 @@ db: Database = server.databases.get_database()
 
 
 
-class UserAuthenticationMiddleware(Middleware):
+class DepartamentUserAuthenticationMiddleware(Middleware):
     @classmethod
     def handle(cls):
         token: Optional[str] = request.headers.get('Authorization')
@@ -41,15 +42,26 @@ class UserAuthenticationMiddleware(Middleware):
             raise ExpiredTokenError()
 
         with db.create_session() as session:
-            usuario: Optional[Usuario] = \
+            usuario: Optional[UsuarioDepartamento] = \
                 session\
-                    .query(Usuario)\
-                    .filter(Usuario.id_uuid == payload.uuid_user)\
+                    .query(UsuarioDepartamento)\
+                    .filter(UsuarioDepartamento.id_uuid == payload.uuid_user)\
                     .first()
 
             if not usuario:
                 raise UserNotFoundError()
 
-            return {"auth": usuario}
+            departamento: Optional[Departamento] = \
+                session\
+                    .query()\
+                    .filter(
+                        Departamento.id == usuario.id_departamento
+                    )\
+                    .first()
+
+            if not departamento:
+                raise DepartamentNotFoundError()
+
+            return {"auth_user": usuario, "auth_departament": departamento}
 
         

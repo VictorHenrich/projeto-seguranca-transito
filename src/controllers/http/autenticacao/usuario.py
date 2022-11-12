@@ -5,7 +5,7 @@ from start import server
 from services.utils import UtilsJWT, Constants
 from services.database import Database
 from models import Usuario
-from middlewares import UserBodyAuthentication
+from middlewares import BodyRequestValidationMiddleware
 from patterns.autenticacao import PayloadJWT,  UserAuthentication
 from exceptions import UserNotFoundError
 from services.http import (
@@ -19,8 +19,8 @@ from services.http import (
 db: Database = server.databases.get_database()
 
 
-class AutenticacaoUsuario(Controller):
-    @UserBodyAuthentication.apply()
+class AutenticacaoUsuarioController(Controller):
+    @BodyRequestValidationMiddleware.apply()
     def post(
         self,
         body_request: UserAuthentication
@@ -50,7 +50,7 @@ class AutenticacaoUsuario(Controller):
 
             token: str = UtilsJWT.encode(dados_autenticacao.__dict__, server.http.configs.secret_key)
 
-            return ResponseSuccess(data=token)
+            return ResponseSuccess(data=f"Bearer {token}")
 
             
 

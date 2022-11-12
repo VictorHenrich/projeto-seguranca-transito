@@ -6,7 +6,7 @@ from services.http import (
     ResponseFailure
 )
 from services.database import Database
-from middlewares import UserBodyAuthentication, UserAuthentication
+from middlewares import BodyRequestValidationMiddleware, UserAuthenticationMiddleware
 from models import Usuario
 from exceptions import UserNotFoundError
 from patterns.usuario.crud import UserRegistration
@@ -16,9 +16,9 @@ from patterns.usuario.crud import UserRegistration
 db: Database = server.databases.get_database()
 
 
-class CrudUsusarios(Controller):
+class CrudUsuariosController(Controller):
 
-    @UserBodyAuthentication.apply(UserRegistration)
+    @BodyRequestValidationMiddleware.apply(UserRegistration)
     def post(self, body_request: UserRegistration) -> ResponseDefaultJSON:
         with db.create_session() as session:
             usuario: Usuario = Usuario()
@@ -30,11 +30,12 @@ class CrudUsusarios(Controller):
             usuario.data_nascimento = body_request.data_nascimento
 
             session.add(usuario)
+            session.commit()
 
         return ResponseSuccess()
 
-    @UserAuthentication.apply()
-    @UserBodyAuthentication.apply(UserRegistration)
+    @UserAuthenticationMiddleware.apply()
+    @BodyRequestValidationMiddleware.apply(UserRegistration)
     def put(self, auth: Usuario, body_request: UserRegistration) -> ResponseDefaultJSON:
 
         with db.create_session() as session:
@@ -57,10 +58,11 @@ class CrudUsusarios(Controller):
             usuario.senha = body_request.senha
 
             session.add(usuario)
+            session.commit()
 
         return ResponseSuccess()
 
-    @UserAuthentication.apply()
+    @UserAuthenticationMiddleware.apply()
     def delete(self, auth: Usuario) -> ResponseDefaultJSON:
         with db.create_session() as session:
             try:
@@ -77,5 +79,6 @@ class CrudUsusarios(Controller):
                 return ResponseFailure(data=str(error))
 
             session.delete(usuario)
+            session.commit()
 
             return ResponseSuccess()

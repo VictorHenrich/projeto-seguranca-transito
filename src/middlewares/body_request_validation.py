@@ -9,7 +9,7 @@ DadosJSON: TypeAlias = Mapping[str, Any]
 
 
 
-class UserBodyAuthentication(Middleware):
+class BodyRequestValidationMiddleware(Middleware):
     @classmethod
     def handle(cls, classe: Type[T]):
         dados_json: DadosJSON = request.get_json()

@@ -1,2 +1,3 @@
-from .user_body_authentication import UserBodyAuthentication
-from .user_authentication import UserAuthentication
+from .body_request_validation import BodyRequestValidationMiddleware
+from .user_authentication import UserAuthenticationMiddleware
+from .departament_user_authentication import DepartamentUserAuthenticationMiddleware
