@@ -18,7 +18,7 @@ class Departamento(db.Model):
     __tablename__: str = "departamentos"
 
     id: int = Column(Integer, primary_key=True, nullable=False, autoincrement=True, unique=True)
-    id_uuid: str = Column(UUID(False), unique=True, nullable=False, default=uuid4)
+    id_uuid: str = Column(UUID(False), unique=True, nullable=False, default=lambda _: str(uuid4()))
     codigo: int = Column(Integer, nullable=False, autoincrement=True, unique=True)
     nome: str = Column(String(250), nullable=False)
     unidade: str = Column(String(200))

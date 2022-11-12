@@ -48,7 +48,7 @@ class Middleware(ABC):
                     return cls.catch(error)
 
                 else:
-                    return target(*args_w, {**kwargs_w, **(handler_return or {})})
+                    return target(*args_w, **{**kwargs_w, **(handler_return or {})})
 
             return w
 

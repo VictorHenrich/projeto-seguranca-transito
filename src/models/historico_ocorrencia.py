@@ -19,7 +19,7 @@ class HistoricoOcorrencia(db.Model):
     __tablename__: str = "historicos_localizacao"
 
     id: int = Column(Integer, primary_key=True, nullable=False, autoincrement=True, unique=True)
-    id_uuid: str = Column(UUID(False), unique=True, nullable=False, default=uuid4)
+    id_uuid: str = Column(UUID(False), unique=True, nullable=False, default=lambda _: str(uuid4()))
     id_ocorrencia: int = Column(Integer, ForeignKey(f"{Ocorrencia.__tablename__}.id"), nullable=False)
     latitude: float = Column(Float, nullable=False)
     longitude: float = Column(Float, nullable=False)

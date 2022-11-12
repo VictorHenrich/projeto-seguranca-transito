@@ -2,7 +2,7 @@ from flask import request
 from typing import Optional
 from datetime import datetime
 
-from services.http import Middleware
+from services.http import Middleware, ResponseInauthorized
 from services.database import Database
 from services.utils import UtilsJWT
 from models import UsuarioDepartamento, Departamento
@@ -32,8 +32,10 @@ class DepartamentUserAuthenticationMiddleware(Middleware):
         if not token:
             raise AuthorizationNotFoundHeader()
 
-        if 'BEARER' not in token.upper():
+        if 'Bearer' not in token:
             raise TokenTypeNotBearerError()
+
+        token = token.replace('Bearer ', '')
 
         payload: PayloadJWT = \
             UtilsJWT.decode(token, server.http.configs.secret_key, PayloadJWT)
@@ -53,7 +55,7 @@ class DepartamentUserAuthenticationMiddleware(Middleware):
 
             departamento: Optional[Departamento] = \
                 session\
-                    .query()\
+                    .query(Departamento)\
                     .filter(
                         Departamento.id == usuario.id_departamento
                     )\
@@ -63,5 +65,14 @@ class DepartamentUserAuthenticationMiddleware(Middleware):
                 raise DepartamentNotFoundError()
 
             return {"auth_user": usuario, "auth_departament": departamento}
+
+
+    @classmethod
+    def catch(cls, exception: Exception):
+        if type(exception) is DepartamentNotFoundError or type(exception) is UserNotFoundError:
+            return ResponseInauthorized(data=str(exception))
+
+        raise exception
+
 
         

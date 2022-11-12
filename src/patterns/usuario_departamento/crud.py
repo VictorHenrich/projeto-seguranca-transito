@@ -12,7 +12,13 @@ class DepartamentUserData(ABC):
 
 
 class DepartamentUserRegistration(DepartamentUserData):
-    def __init__(self, nome: str, usuario: str, senha: str, cargo: str) -> None:
+    def __init__(
+        self, 
+        nome: str, 
+        usuario: str, 
+        senha: str, 
+        cargo: str
+    ) -> None:
         super().__init__(nome)
 
         self.usuario: str = usuario
@@ -23,5 +29,13 @@ class DepartamentUserRegistration(DepartamentUserData):
 
 
 class DepartamentUserView(DepartamentUserData):
-    def __init__(self, nome: str) -> None:
+    def __init__(
+        self, 
+        nome: str,
+        cargo: str,
+        id_uuid: str
+    ) -> None:
         super().__init__(nome)
+
+        self.cargo: str = cargo
+        self.uuid: str = id_uuid

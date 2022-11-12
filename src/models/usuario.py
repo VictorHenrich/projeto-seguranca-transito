@@ -23,7 +23,7 @@ class Usuario(db.Model):
     __tablename__: str = "usuarios"
 
     id: int = Column(Integer, primary_key=True, nullable=False, unique=True, autoincrement=True)
-    id_uuid: str = Column(UUID(False), unique=True, nullable=False, default=uuid4)
+    id_uuid: str = Column(UUID(False), unique=True, nullable=False, default=lambda _: str(uuid4()))
     nome: str = Column(String(150), nullable=False)
     email: str = Column(String(250), nullable=False, unique=True)
     senha: str = Column(String(50), nullable=False)

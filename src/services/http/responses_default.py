@@ -23,9 +23,9 @@ class ResponseDefaultJSON(ABC, Response):
         }
 
         if data is not None:
-            response_data['data'] = response_data
+            response_data['data'] = data
 
-        header_: Mapping[str, str] = {**ResponseDefaultJSON.__header_default, **{header or {}}}
+        header_: Mapping[str, str] = {**ResponseDefaultJSON.__header_default, **(header or {})}
 
         super().__init__(json.dumps(response_data), status_code, header_)
 

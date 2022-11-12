@@ -33,12 +33,17 @@ class CrudUsuariosDepartamentosController(Controller):
             usuarios: list[UsuarioDepartamento] = \
                 session\
                     .query(UsuarioDepartamento)\
-                    .join(UsuarioDepartamento.id_departamento == Departamento.id)\
+                    .join(Departamento, Departamento.id == UsuarioDepartamento.id_departamento)\
                     .filter(Departamento.id == auth_departament.id)\
                     .all()
 
             lista_usuarios_json: list[Mapping[str, Any]] = [
-                DepartamentUserView(usuario.nome).__dict__
+                DepartamentUserView(
+                    usuario.nome, 
+                    usuario.cargo,
+                    usuario.id_uuid,
+                ).__dict__
+                
                 for usuario in usuarios
             ]
 
@@ -55,6 +60,7 @@ class CrudUsuariosDepartamentosController(Controller):
         with db.create_session() as session:
             usuario: UsuarioDepartamento = UsuarioDepartamento()
 
+            usuario.nome = body_request.nome
             usuario.acesso = body_request.usuario
             usuario.cargo = body_request.cargo
             usuario.senha = body_request.senha
@@ -69,10 +75,10 @@ class CrudUsuariosDepartamentosController(Controller):
     @BodyRequestValidationMiddleware.apply(DepartamentUserRegistration)
     def put(
         self,
+        user_hash: UUID,
         auth_user: UsuarioDepartamento,
         auth_departament: Departamento,
         body_request: DepartamentUserRegistration,
-        user_hash: UUID 
     ) -> ResponseDefaultJSON:
         with db.create_session() as session:
             try:
@@ -99,12 +105,11 @@ class CrudUsuariosDepartamentosController(Controller):
             return ResponseSuccess()
 
     @DepartamentUserAuthenticationMiddleware.apply()
-    @BodyRequestValidationMiddleware.apply(DepartamentUserRegistration)
     def delete(
+        self,
+        user_hash: UUID,
         auth_user: UsuarioDepartamento,
         auth_departament: Departamento,
-        body_request: DepartamentUserRegistration,
-        user_hash: UUID 
     ) -> ResponseDefaultJSON:
         with db.create_session() as session:
             try:

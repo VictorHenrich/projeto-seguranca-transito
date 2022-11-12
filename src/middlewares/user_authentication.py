@@ -2,7 +2,7 @@ from flask import request
 from typing import Optional
 from datetime import datetime
 
-from services.http import Middleware
+from services.http import Middleware, ResponseInauthorized
 from services.database import Database
 from services.utils import UtilsJWT
 from models import Usuario
@@ -31,8 +31,10 @@ class UserAuthenticationMiddleware(Middleware):
         if not token:
             raise AuthorizationNotFoundHeader()
 
-        if 'BEARER' not in token.upper():
+        if 'Bearer' not in token:
             raise TokenTypeNotBearerError()
+
+        token = token.replace('Bearer ', '')
 
         payload: PayloadJWT = \
             UtilsJWT.decode(token, server.http.configs.secret_key, PayloadJWT)
@@ -52,4 +54,10 @@ class UserAuthenticationMiddleware(Middleware):
 
             return {"auth": usuario}
 
+    @classmethod
+    def catch(cls, exception: Exception):
+        if type(exception) is ExpiredTokenError or type(exception) is UserNotFoundError:
+            return ResponseInauthorized(data=str(exception))
+
+        raise exception
         

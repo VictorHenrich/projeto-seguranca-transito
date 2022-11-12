@@ -20,7 +20,7 @@ db: Database = server.databases.get_database()
 
 
 class AutenticacaoUsuarioController(Controller):
-    @BodyRequestValidationMiddleware.apply()
+    @BodyRequestValidationMiddleware.apply(UserAuthentication)
     def post(
         self,
         body_request: UserAuthentication

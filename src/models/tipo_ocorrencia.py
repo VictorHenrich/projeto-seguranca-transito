@@ -18,7 +18,7 @@ class TipoOcorrencia(db.Model):
     __tablename__: str = "tipos_ocorrencias"
 
     id: int = Column(Integer, primary_key=True, nullable=False, autoincrement=True, unique=True)
-    id_uuid: str = Column(UUID(False), unique=True, nullable=False, default=uuid4)
+    id_uuid: str = Column(UUID(False), unique=True, nullable=False, default=lambda _: str(uuid4()))
     id_nivel: int = Column(Integer, ForeignKey(f"{Nivel.__tablename__}.id"), nullable=False)
     descricao: str = Column(String(200), nullable=False)
     instrucao: str = Column(String(20000))

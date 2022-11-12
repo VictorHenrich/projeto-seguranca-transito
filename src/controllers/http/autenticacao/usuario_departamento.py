@@ -46,7 +46,7 @@ class AutenticaoUsuarioDepartamentoController(Controller):
                     session\
                         .query(UsuarioDepartamento)\
                         .filter(
-                            UsuarioDepartamento.nome == body_request.usuario,
+                            UsuarioDepartamento.acesso == body_request.usuario,
                             UsuarioDepartamento.senha == body_request.senha,
                             UsuarioDepartamento.id_departamento == departamento.id
                         )\
@@ -55,12 +55,12 @@ class AutenticaoUsuarioDepartamentoController(Controller):
                 if not usuario:
                     raise UserNotFoundError()
 
-            except UserNotFoundError:
+            except UserNotFoundError as error:
                 return ResponseInauthorized(data=str(error))
 
 
             tempo_expiracao: float = \
-                (datetime.now() - timedelta(minutes=Constants.Authentication.max_minute_authenticated))
+                (datetime.now() - timedelta(minutes=Constants.Authentication.max_minute_authenticated)).timestamp()
 
             dados_autenticacao: PayloadJWT = PayloadJWT(usuario.id_uuid, tempo_expiracao)
 

@@ -3,6 +3,7 @@ from sqlalchemy.engine import create_engine, Engine
 from sqlalchemy.orm.session import Session, sessionmaker
 from sqlalchemy.orm.decl_api import declarative_base
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
+import asyncio
 from .exceptions import InstanceEngineError
 
 
@@ -34,7 +35,7 @@ class Database:
     def create_session(self, **options: Mapping[str, Any]) -> Union[Session, AsyncSession]:
         return sessionmaker(
             self.__engine,
-            Session if self.__engine is Engine else AsyncSession,
+            Session if type(self.__engine) is Engine else AsyncSession,
             **options
         )()
 
@@ -46,14 +47,14 @@ class Database:
             return create_async_engine(params.connection_url, echo=params.debug)
 
     def migrate(self, drop_tables: bool = False) -> None:
-        if self.__engine is Engine:
+        if type(self.__engine) is Engine:
             self.__migrate_default(drop_tables)
 
         else:
-            self.__migrate_async(drop_tables)
+           asyncio.run(self.__migrate_async(drop_tables))
 
     def __migrate_default(self, drop_tables: bool) -> None:
-        if self.__engine is not Engine:
+        if type(self.__engine) is not Engine:
             raise InstanceEngineError()
 
         if drop_tables:

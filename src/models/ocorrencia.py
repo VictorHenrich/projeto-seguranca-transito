@@ -24,7 +24,7 @@ class Ocorrencia(db.Model):
     id: int = Column(Integer, primary_key=True, nullable=False, autoincrement=True, unique=True)
     id_usuario: int = Column(Integer, ForeignKey(f"{Usuario.__tablename__}.id"), nullable=False)
     id_tipo: int = Column(Integer, ForeignKey(f"{TipoOcorrencia.__tablename__}.id"))
-    id_uuid: str = Column(UUID(False), unique=True, nullable=False, default=uuid4)
+    id_uuid: str = Column(UUID(False), unique=True, nullable=False, default=lambda _: str(uuid4()))
     descricao: str = Column(String(200), nullable=False)
     obs: str = Column(String(5000))
     data_cadastro: datetime = Column(DateTime, nullable=False, default=datetime.now)
