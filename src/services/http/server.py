@@ -11,8 +11,8 @@ from .controller import Controller
 class HttpServerConfig:
     host: str
     port: Union[str, int]
+    secret_key: str
     debug: bool = True
-
 
 
 class HttpServer(Api):
@@ -21,7 +21,9 @@ class HttpServer(Api):
 
         self.__application: Flask = Flask(__name__)
 
-        super().__init__(self.__application)
+        self.__application.secret_key = self.__configs.secret_key
+
+        super().__init__(self.__application, **options)
 
     @property
     def configs(self) -> HttpServerConfig:
@@ -34,5 +36,5 @@ class HttpServer(Api):
     def start_app(self) -> None:
         self.__application.run(**self.__configs.__dict__)
 
-    def add_resource(self, controller: Controller, *urls: str, **kwargs: Mapping[str, Any]):
-        return super().add_resource(controller, *urls, **kwargs)
+    def add_route(self, controller: Controller, *urls: str, **kwargs: Mapping[str, Any]):
+        return self.add_resource(controller, *urls, **kwargs)

@@ -25,7 +25,6 @@ class DialectDefaultBuilder(ABC):
     driver_async: Optional[str] = None
     async_: bool = False
     debug: bool = False
-    
 
     def set_name(self, name: str) -> DialectDefaultBuilder:
         self.name = name
@@ -71,7 +70,7 @@ class DialectDefaultBuilder(ABC):
     def set_debug(self, debug: bool) -> DialectDefaultBuilder:
         self.debug = debug
 
-        return
+        return self
 
     def build(self) -> Database:
         driver: str = self.driver_default if not self.async_ else self.driver_async

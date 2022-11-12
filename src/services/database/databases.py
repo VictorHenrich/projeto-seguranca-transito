@@ -1,6 +1,6 @@
 from typing import Mapping, Sequence
 from .database import Database
-from .exceptions import DatabaseNotFound
+from .exceptions import DatabaseNotFoundError
 
 
 class Databases:
@@ -20,4 +20,4 @@ class Databases:
             return self.__bases[name]
 
         except KeyError:
-            raise DatabaseNotFound()
+            raise DatabaseNotFoundError()
