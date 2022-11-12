@@ -72,7 +72,8 @@ class AppFactory:
         config: HttpServerConfig = HttpServerConfig(
             host=data['host'],
             port=data['port'],
-            debug=data['debug']
+            debug=data['debug'],
+            secret_key=data['secret_key']
         )
 
         return HttpServer(config)

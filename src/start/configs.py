@@ -18,7 +18,8 @@ DATABASE = {
 HTTP = {
     "host": "localhost",
     "port": 3333,
-    "debug": True
+    "debug": True,
+    "secret_key": "MINHA_CHAVE_SECRETA"
 }
 
 
