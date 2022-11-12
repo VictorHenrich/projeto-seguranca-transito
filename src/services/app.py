@@ -83,11 +83,16 @@ class AppFactory:
         databases: Databases = Databases()
 
         for base_name, base_props in data.items():
-            base, = [
+            base: DialectDefaultBuilder = DialectDefaultBuilder()
+
+            localized_base: list[DialectDefaultBuilder] = [
                 b
                 for b in cls.__bases
                 if b.dialect.upper() == base_props['dialect'].upper()
             ]
+
+            if localized_base:
+                base = localized_base[0]
 
             base\
                 .set_name(base_name)\
