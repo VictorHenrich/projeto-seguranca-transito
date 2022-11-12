@@ -12,7 +12,7 @@ from exceptions import (
     ExpiredTokenError,
     UserNotFoundError
 )
-from patterns import PayloadJWT
+from patterns.autenticacao import PayloadJWT
 from start import server
 
 
@@ -23,7 +23,7 @@ db: Database = server.databases.get_database()
 
 
 
-class AutenticacaoUsuario(Middleware):
+class UserAuthentication(Middleware):
     @classmethod
     def handle(cls):
         token: Optional[str] = request.headers.get('Authorization')

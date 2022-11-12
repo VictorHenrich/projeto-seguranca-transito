@@ -1,8 +1,9 @@
 from typing import Optional
+from abc import ABC
 
 
 
-class DadosUsuario:
+class UserData(ABC):
     def __init__(
         self,
         nome: str,
@@ -17,7 +18,7 @@ class DadosUsuario:
 
 
 
-class CadastroUsuario(DadosUsuario):
+class UserRegistration(UserData):
     def __init__(
         self, 
         nome: str, 
@@ -32,7 +33,7 @@ class CadastroUsuario(DadosUsuario):
 
 
 
-class VisualizacaoUsuario(DadosUsuario):
+class UserView(UserData):
     def __init__(
         self, 
         nome: str, 
