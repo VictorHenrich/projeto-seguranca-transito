@@ -1,30 +1,34 @@
+from services.utils import UtilsEnv
 
+
+
+env_value = UtilsEnv.get_values()
 
 
 DATABASE = {
-    "banco_principal":{
-        "dialect": "postgresql",
-        "host": "localhost",
-        "port": "5432",
-        "dbname": "banco_teste",
-        "username": "postgres",
-        "password": "1234",
-        "debug": True,
+    "main":{
+        "dialect": env_value['DB_DIALECT'],
+        "host": env_value['DB_HOST'],
+        "port": env_value['DB_PORT'],
+        "dbname": env_value['DB_NAME'],
+        "username": env_value['DB_USERNAME'],
+        "password": env_value['DB_PASSWORD'],
+        "debug": False,
         "async": False
     }
 }
 
 
 HTTP = {
-    "host": "localhost",
-    "port": 3333,
+    "host": env_value['HTTP_HOST'],
+    "port": env_value['HTTP_PORT'],
+    "secret_key": env_value['APP_KEY'],
     "debug": True,
-    "secret_key": "MINHA_CHAVE_SECRETA"
 }
 
 
 SOCKET = {
-    "host": "localhost",
-    "port": 5000,
+    "host": env_value['SOCKET_HOST'],
+    "port": env_value['SOCKET_PORT'],
     "debug": True
 }

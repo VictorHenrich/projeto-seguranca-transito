@@ -23,7 +23,7 @@ class HttpServer(Api):
 
         self.__application.secret_key = self.__configs.secret_key
 
-        super().__init__(self.__application, **options)
+        super().__init__(self.__application)
 
     @property
     def configs(self) -> HttpServerConfig:
@@ -34,7 +34,11 @@ class HttpServer(Api):
         return self.__application
 
     def start_app(self) -> None:
-        self.__application.run(**self.__configs.__dict__)
+        self.__application.run(
+            host=self.__configs.host,
+            port=self.__configs.port,
+            debug=self.__configs.debug
+        )
 
     def add_route(self, controller: Controller, *urls: str, **kwargs: Mapping[str, Any]):
         return self.add_resource(controller, *urls, **kwargs)

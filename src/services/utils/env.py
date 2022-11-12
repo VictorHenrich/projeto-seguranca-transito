@@ -26,13 +26,13 @@ class UtilsEnv:
         return Path(path_)
 
     @classmethod
-    def get_values(cls, path: EnvPathParameter, **options: EnvOptions) -> EnvReturn:
+    def get_values(cls, path: EnvPathParameter = False, **options: EnvOptions) -> EnvReturn:
         path_: Path = cls.__handle_path(path)
 
         return dotenv_values(path_, **options)
 
     @classmethod
-    def get_value(cls, path: EnvPathParameter, key: str, **options: EnvOptions) -> EnvReturn:
+    def get_value(cls,key: str, path: EnvPathParameter = False, **options: EnvOptions) -> EnvReturn:
         path_: Path = cls.__default_path(path)
 
         return get_key(path_, key, **options)

@@ -3,7 +3,7 @@ from abc import ABC
 from dataclasses import dataclass
 from typing import Optional, Union
 
-from .server import ServerHttp
+from .server import HttpServer
 
 
 @dataclass
@@ -28,5 +28,5 @@ class ServerHttpBuilder(ABC):
 
         return self
 
-    def build(self) -> ServerHttp:
-        return ServerHttp(self)
+    def build(self) -> HttpServer:
+        return HttpServer(self)

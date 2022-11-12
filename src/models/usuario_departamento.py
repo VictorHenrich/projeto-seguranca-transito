@@ -10,7 +10,7 @@ from uuid import uuid4
 from sqlalchemy.dialects.postgresql import UUID
 from start import server
 from services.database import Database
-from models import Departamento
+from .departamento import Departamento
 
 
 db: Database = server.databases.get_database()

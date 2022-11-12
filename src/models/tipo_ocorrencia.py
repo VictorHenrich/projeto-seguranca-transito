@@ -8,7 +8,7 @@ from uuid import uuid4
 from sqlalchemy.dialects.postgresql import UUID
 from start import server
 from services.database import Database
-from models import Nivel
+from .nivel import Nivel
 
 
 db: Database = server.databases.get_database()
