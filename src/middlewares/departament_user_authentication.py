@@ -40,7 +40,7 @@ class DepartamentUserAuthenticationMiddleware(Middleware):
         payload: PayloadJWT = \
             UtilsJWT.decode(token, server.http.configs.secret_key, PayloadJWT)
 
-        if payload.expired >= datetime.now().timestamp():
+        if payload.expired <= datetime.now().timestamp():
             raise ExpiredTokenError()
 
         with db.create_session() as session:
@@ -69,7 +69,14 @@ class DepartamentUserAuthenticationMiddleware(Middleware):
 
     @classmethod
     def catch(cls, exception: Exception):
-        if type(exception) is DepartamentNotFoundError or type(exception) is UserNotFoundError:
+        exceptions: list[Exception] = [
+            DepartamentNotFoundError,
+            DepartamentNotFoundError,
+            UserNotFoundError,
+            ExpiredTokenError
+        ]
+
+        if type(exception) in exceptions:
             return ResponseInauthorized(data=str(exception))
 
         raise exception

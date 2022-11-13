@@ -5,14 +5,15 @@ from services.http import Middleware, ResponseDefaultJSON, ResponseFailure
 
 T = TypeVar('T')
 
-DadosJSON: TypeAlias = Mapping[str, Any]
+JsonData: TypeAlias = Mapping[str, Any]
+ParamsData: TypeAlias = Mapping[str, T]
 
 
 
 class BodyRequestValidationMiddleware(Middleware):
     @classmethod
-    def handle(cls, classe: Type[T]):
-        dados_json: DadosJSON = request.get_json()
+    def handle(cls, classe: Type[T]) -> ParamsData:
+        dados_json: JsonData = request.get_json()
 
         dados_corpo: T = classe(**dados_json)
 
@@ -21,4 +22,7 @@ class BodyRequestValidationMiddleware(Middleware):
 
     @classmethod
     def catch(cls, exception: Exception) -> ResponseDefaultJSON:
-        return ResponseFailure(data="Corpo da requisição é inválido!")
+        if TypeError:
+            return ResponseFailure(data="Corpo da requisição é inválido!")
+
+        raise exception

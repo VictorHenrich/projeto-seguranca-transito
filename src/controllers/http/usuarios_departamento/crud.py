@@ -1,4 +1,4 @@
-from typing import Optional, Mapping, Any
+from typing import Mapping, Any
 from uuid import UUID
 
 from start import server
@@ -6,6 +6,7 @@ from services.database import Database
 from models import UsuarioDepartamento, Departamento
 from patterns.usuario_departamento import DepartamentUserRegistration, DepartamentUserView
 from exceptions import UserNotFoundError
+from repositories import DepartamentUserRepository
 from services.http import (
     Controller, 
     ResponseDefaultJSON,
@@ -29,25 +30,20 @@ class CrudUsuariosDepartamentosController(Controller):
         auth_user: UsuarioDepartamento,
         auth_departament: Departamento,
     ) -> ResponseDefaultJSON:
-        with db.create_session() as session:
-            usuarios: list[UsuarioDepartamento] = \
-                session\
-                    .query(UsuarioDepartamento)\
-                    .join(Departamento, Departamento.id == UsuarioDepartamento.id_departamento)\
-                    .filter(Departamento.id == auth_departament.id)\
-                    .all()
+        usuarios: list[UsuarioDepartamento] = \
+            DepartamentUserRepository.list(id_departamento=auth_departament.id)
 
-            lista_usuarios_json: list[Mapping[str, Any]] = [
-                DepartamentUserView(
-                    usuario.nome, 
-                    usuario.cargo,
-                    usuario.id_uuid,
-                ).__dict__
-                
-                for usuario in usuarios
-            ]
+        lista_usuarios_json: list[Mapping[str, Any]] = [
+            DepartamentUserView(
+                usuario.nome, 
+                usuario.cargo,
+                usuario.id_uuid,
+            ).__dict__
+            
+            for usuario in usuarios
+        ]
 
-            return ResponseSuccess(data=lista_usuarios_json)
+        return ResponseSuccess(data=lista_usuarios_json)
 
     @DepartamentUserAuthenticationMiddleware.apply()
     @BodyRequestValidationMiddleware.apply(DepartamentUserRegistration)
@@ -57,19 +53,16 @@ class CrudUsuariosDepartamentosController(Controller):
         auth_departament: Departamento,
         body_request: DepartamentUserRegistration
     ) -> ResponseDefaultJSON:
-        with db.create_session() as session:
-            usuario: UsuarioDepartamento = UsuarioDepartamento()
 
-            usuario.nome = body_request.nome
-            usuario.acesso = body_request.usuario
-            usuario.cargo = body_request.cargo
-            usuario.senha = body_request.senha
-            usuario.id_departamento = auth_departament.id
-            
-            session.add(usuario)
-            session.commit()
+        DepartamentUserRepository.create(
+            body_request.nome,
+            body_request.usuario,
+            body_request.cargo,
+            body_request.senha,
+            auth_departament.id
+        )
 
-            return ResponseSuccess()
+        return ResponseSuccess()
 
     @DepartamentUserAuthenticationMiddleware.apply()
     @BodyRequestValidationMiddleware.apply(DepartamentUserRegistration)
@@ -80,29 +73,19 @@ class CrudUsuariosDepartamentosController(Controller):
         auth_departament: Departamento,
         body_request: DepartamentUserRegistration,
     ) -> ResponseDefaultJSON:
-        with db.create_session() as session:
-            try:
-                usuario: Optional[UsuarioDepartamento] = \
-                    session\
-                        .query(UsuarioDepartamento)\
-                        .filter(UsuarioDepartamento.id_uuid == str(user_hash))\
-                        .first()
+        try:
+            DepartamentUserRepository.update(
+                uuid=str(user_hash),
+                nome=body_request.nome,
+                usuario=body_request.usuario,
+                cargo=body_request.cargo,
+                senha=body_request.senha
+            )
 
-                if not usuario:
-                    raise UserNotFoundError()
+        except UserNotFoundError as error:
+            return ResponseFailure(data=str(error))
 
-            except UserNotFoundError as error:
-                return ResponseFailure(data=str(error))
-
-            usuario.acesso = body_request.usuario
-            usuario.nome = body_request.nome
-            usuario.cargo = body_request.cargo
-            usuario.senha = body_request.senha
-            
-            session.add(usuario)
-            session.commit()
-
-            return ResponseSuccess()
+        return ResponseSuccess()
 
     @DepartamentUserAuthenticationMiddleware.apply()
     def delete(
@@ -111,21 +94,10 @@ class CrudUsuariosDepartamentosController(Controller):
         auth_user: UsuarioDepartamento,
         auth_departament: Departamento,
     ) -> ResponseDefaultJSON:
-        with db.create_session() as session:
-            try:
-                usuario: Optional[UsuarioDepartamento] = \
-                    session\
-                        .query(UsuarioDepartamento)\
-                        .filter(UsuarioDepartamento.id_uuid == str(user_hash))\
-                        .first()
+        try:
+            DepartamentUserRepository.delete(uuid=str(user_hash))
 
-                if not usuario:
-                    raise UserNotFoundError()
+        except UserNotFoundError as error:
+            return ResponseSuccess(data=str(error))
 
-            except UserNotFoundError as error:
-                return ResponseFailure(data=str(error))
-
-            session.delete(usuario)
-            session.commit()
-
-            return ResponseSuccess()
+        return ResponseSuccess()

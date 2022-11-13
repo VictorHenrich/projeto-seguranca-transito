@@ -8,6 +8,7 @@ from models import UsuarioDepartamento, Departamento
 from middlewares import BodyRequestValidationMiddleware
 from patterns.autenticacao import PayloadJWT,  DepartamentUserAuthentication
 from exceptions import DepartamentNotFoundError, UserNotFoundError
+from repositories import DepartamentRepository, DepartamentUserRepository
 from services.http import (
     Controller, 
     ResponseDefaultJSON,
@@ -27,43 +28,30 @@ class AutenticaoUsuarioDepartamentoController(Controller):
         body_request: DepartamentUserAuthentication
     ) -> ResponseDefaultJSON:
 
-        with db.create_session() as session:
-            try:
-                departamento: Optional[Departamento] = \
-                    session\
-                        .query(Departamento)\
-                        .filter(Departamento.acesso == body_request.departamento)\
-                        .first()
+        try:
+            departamento: Departamento = DepartamentRepository.get(
+                acesso=body_request.departamento
+            )
 
-                if not departamento:
-                    raise DepartamentNotFoundError()
+        except DepartamentNotFoundError as error:
+            return ResponseInauthorized(data=str(error))
 
-            except DepartamentNotFoundError as error:
-                return ResponseInauthorized(data=str(error))
+        try:
+            usuario: UsuarioDepartamento = DepartamentUserRepository.get(
+                usuario=body_request.usuario,
+                senha=body_request.senha,
+                id_departamento=departamento.id
+            )
 
-            try:
-                usuario: Optional[UsuarioDepartamento] = \
-                    session\
-                        .query(UsuarioDepartamento)\
-                        .filter(
-                            UsuarioDepartamento.acesso == body_request.usuario,
-                            UsuarioDepartamento.senha == body_request.senha,
-                            UsuarioDepartamento.id_departamento == departamento.id
-                        )\
-                        .first()
-
-                if not usuario:
-                    raise UserNotFoundError()
-
-            except UserNotFoundError as error:
-                return ResponseInauthorized(data=str(error))
+        except UserNotFoundError:
+            return ResponseInauthorized(data=str(error))
 
 
-            tempo_expiracao: float = \
-                (datetime.now() - timedelta(minutes=Constants.Authentication.max_minute_authenticated)).timestamp()
+        tempo_expiracao: float = \
+            (datetime.now() + timedelta(minutes=Constants.Authentication.max_minute_authenticated)).timestamp()
 
-            dados_autenticacao: PayloadJWT = PayloadJWT(usuario.id_uuid, tempo_expiracao)
+        dados_autenticacao: PayloadJWT = PayloadJWT(usuario.id_uuid, tempo_expiracao)
 
-            token: str = UtilsJWT.encode(dados_autenticacao.__dict__, server.http.application.secret_key)
+        token: str = UtilsJWT.encode(dados_autenticacao.__dict__, server.http.application.secret_key)
 
-            return ResponseSuccess(data=f"Bearer {token}")
+        return ResponseSuccess(data=f"Bearer {token}")

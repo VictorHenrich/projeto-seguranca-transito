@@ -10,6 +10,7 @@ from middlewares import BodyRequestValidationMiddleware, UserAuthenticationMiddl
 from models import Usuario
 from exceptions import UserNotFoundError
 from patterns.usuario.crud import UserRegistration
+from repositories import UserRepository
 
 
 
@@ -20,65 +21,40 @@ class CrudUsuariosController(Controller):
 
     @BodyRequestValidationMiddleware.apply(UserRegistration)
     def post(self, body_request: UserRegistration) -> ResponseDefaultJSON:
-        with db.create_session() as session:
-            usuario: Usuario = Usuario()
-
-            usuario.nome = body_request.nome
-            usuario.email = body_request.email
-            usuario.cpf = body_request.cpf
-            usuario.senha = body_request.senha
-            usuario.data_nascimento = body_request.data_nascimento
-
-            session.add(usuario)
-            session.commit()
+        UserRepository.create(
+            nome=body_request.nome,
+            email=body_request.email,
+            cpf=body_request.cpf,
+            senha=body_request.senha,
+            data_nascimento=body_request.data_nascimento
+        )
 
         return ResponseSuccess()
 
     @UserAuthenticationMiddleware.apply()
     @BodyRequestValidationMiddleware.apply(UserRegistration)
     def put(self, auth: Usuario, body_request: UserRegistration) -> ResponseDefaultJSON:
+        try:
+            UserRepository.update(
+                id=auth.id,
+                nome=body_request.nome,
+                email=body_request.email,
+                cpf=body_request.cpf,
+                senha=body_request.senha,
+                data_nascimento=body_request.data_nascimento
+            )
 
-        with db.create_session() as session:
-            try:
-                usuario: Usuario = \
-                    session\
-                        .query(Usuario)\
-                        .filter(Usuario.id_uuid == auth.id_uuid)\
-                        .first()
-
-                if not usuario:
-                    raise UserNotFoundError()
-
-            except UserNotFoundError as error:
-                return ResponseFailure(data=str(error))
-
-            usuario.email = body_request.email
-            usuario.cpf = body_request.cpf
-            usuario.data_nascimento = body_request.data_nascimento
-            usuario.senha = body_request.senha
-
-            session.add(usuario)
-            session.commit()
+        except UserNotFoundError as error:
+            return ResponseFailure(data=str(error))
 
         return ResponseSuccess()
 
     @UserAuthenticationMiddleware.apply()
     def delete(self, auth: Usuario) -> ResponseDefaultJSON:
-        with db.create_session() as session:
-            try:
-                usuario: Usuario = \
-                    session\
-                        .query(Usuario)\
-                        .filter(Usuario.id_uuid == str(auth.id_uuid))\
-                        .first()
+        try:
+            UserRepository.delete(auth.id)
 
-                if not usuario:
-                    raise UserNotFoundError()
+        except UserNotFoundError as error:
+            return ResponseFailure(data=str(error))
 
-            except UserNotFoundError as error:
-                return ResponseFailure(data=str(error))
-
-            session.delete(usuario)
-            session.commit()
-
-            return ResponseSuccess()
+        return ResponseSuccess()

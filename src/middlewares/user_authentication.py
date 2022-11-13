@@ -39,7 +39,7 @@ class UserAuthenticationMiddleware(Middleware):
         payload: PayloadJWT = \
             UtilsJWT.decode(token, server.http.configs.secret_key, PayloadJWT)
 
-        if payload.expired >= datetime.now().timestamp():
+        if payload.expired <= datetime.now().timestamp():
             raise ExpiredTokenError()
 
         with db.create_session() as session:
@@ -56,7 +56,13 @@ class UserAuthenticationMiddleware(Middleware):
 
     @classmethod
     def catch(cls, exception: Exception):
-        if type(exception) is ExpiredTokenError or type(exception) is UserNotFoundError:
+        exceptions: list[Exception] = [
+            ExpiredTokenError,
+            UserNotFoundError,
+            TokenTypeNotBearerError
+        ]
+
+        if type(exception) in exceptions:
             return ResponseInauthorized(data=str(exception))
 
         raise exception
