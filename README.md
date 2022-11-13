@@ -183,8 +183,76 @@ Rota *CRUD* resposável por cadastrar os novos usuários comuns. Algumas rotas n
 
 <br>
 <br>
+<br>
+<br>
 
-> #### (POST) Cadastrar novo usuário comum
+> ### (POST) Cadastrar novo usuário comum
+<br>
+
+#### HEADER
+
+* **Content-Type: application/json**
+
+<br>
+<br>
+
+#### BODY
+
+| Campo | Tipo | Requisito |
+| :----- | :----: | :----: |
+| nome | **String** | True |
+| email | **String** | True |
+| cpf | **String** | True |
+| senha | **String** | True |
+| data_nascimento | **String** | False |
+
+<br>
+
+> ### Exemplo de corpo da requisição
+
+```
+{
+	"nome": "Fulano",
+	"email": "fulano@email.com",
+	"cpf": "1111111111111",
+	"senha": "1234",
+	"data_nascimento": null
+}
+```
+
+<br>
+
+> ### (200) Exemplo retorno de sucesso
+
+```
+{
+	"status": 200,
+	"message": "OK"
+}
+
+```
+
+<br>
+
+
+> ### (401) Exemplo retorno de erro / falha
+
+```
+{
+	"status": 401,
+	"message": "INAUTHORIZED",
+	"data": "Token expirado!"
+}
+```
+
+
+<br>
+<br>
+<br>
+<br>
+
+
+> ### (PUT) Alterar um usuário comum
 <br>
 
 #### HEADER
@@ -219,6 +287,45 @@ Rota *CRUD* resposável por cadastrar os novos usuários comuns. Algumas rotas n
 }
 ```
 
+<br>
+
+> ### (200) Exemplo retorno de sucesso
+
+```
+{
+	"status": 200,
+	"message": "OK"
+}
+
+```
+
+<br>
+
+
+> ### (401) Exemplo retorno de erro / falha
+
+```
+{
+	"status": 401,
+	"message": "INAUTHORIZED",
+	"data": "Usuário não localizado!"
+}
+```
+
+<br>
+<br>
+<br>
+<br>
+
+
+> ### (DELETE) Excluir um usuário comum
+<br>
+
+#### HEADER
+
+* **Authorization: Bearer <token>**
+
+<br>
 <br>
 
 > ### (200) Exemplo retorno de sucesso
