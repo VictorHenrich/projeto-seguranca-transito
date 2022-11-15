@@ -35,5 +35,5 @@ class Repository(Protocol, Generic[T]):
         pass
 
     @staticmethod
-    def list(*args: Args, **kwargs: Kwargs) -> list[T]:
+    def fetch(*args: Args, **kwargs: Kwargs) -> list[T]:
         pass

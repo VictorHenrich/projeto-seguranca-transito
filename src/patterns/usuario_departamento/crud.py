@@ -1,41 +1,20 @@
 from abc import ABC
+from dataclasses import dataclass
 
 
-
+@dataclass
 class DepartamentUserData(ABC):
-    def __init__(
-        self,
-        nome: str
-    ) -> None:
-        self.nome: str = nome
+    nome: str
 
 
-
+@dataclass
 class DepartamentUserRegistration(DepartamentUserData):
-    def __init__(
-        self, 
-        nome: str, 
-        usuario: str, 
-        senha: str, 
-        cargo: str
-    ) -> None:
-        super().__init__(nome)
-
-        self.usuario: str = usuario
-
-        self.senha: str = senha
-
-        self.cargo: str = cargo
+    usuario: str
+    senha: str
+    cargo: str
 
 
+@dataclass
 class DepartamentUserView(DepartamentUserData):
-    def __init__(
-        self, 
-        nome: str,
-        cargo: str,
-        id_uuid: str
-    ) -> None:
-        super().__init__(nome)
-
-        self.cargo: str = cargo
-        self.uuid: str = id_uuid
+    cargo: str
+    uuid: str

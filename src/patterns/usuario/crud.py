@@ -1,52 +1,27 @@
 from typing import Optional
+from dataclasses import dataclass
 from abc import ABC
 
 
-
+@dataclass
 class UserData(ABC):
-    def __init__(
-        self,
-        nome: str,
-        email: str,
-        cpf: str,
-        data_nascimento: Optional[str] = None
-    ) -> None:
-        self.nome: str = nome
-        self.email: str = email
-        self.cpf: str = cpf
-        self.data_nascimento: Optional[str] = data_nascimento
+    nome: str
+    email: str
+    cpf: str
+    data_nascimento: Optional[str]
 
 
-
+@dataclass
 class UserRegistration(UserData):
-    def __init__(
-        self, 
-        nome: str, 
-        email: str, 
-        cpf: str,
-        senha: str,
-        data_nascimento: Optional[str] = None
-    ) -> None:
-        super().__init__(nome, email, cpf, data_nascimento)
-
-        self.senha: str = senha
+    senha: str
+    data_nascimento: Optional[str] = None
 
 
-
+@dataclass
 class UserView(UserData):
-    def __init__(
-        self, 
-        nome: str, 
-        email: str, 
-        cpf: str,
-        data_cadastro: str,
-        uuid: str,
-        data_nascimento: Optional[str] = None
-    ) -> None:
-        super().__init__(nome, email, cpf, data_nascimento)
-
-        self.data_cadastro: str = data_cadastro
-        self.uuid: str = uuid
+    data_cadastro: str
+    uuid: str
+    data_nascimento: Optional[str] = None
 
 
 
