@@ -1,6 +1,6 @@
 from typing import Type, TypeAlias, TypeVar, Mapping, Any
 from flask import request
-from services.http import Middleware, ResponseDefaultJSON, ResponseFailure
+from server.http import Middleware, ResponseDefaultJSON, ResponseFailure
 
 
 T = TypeVar('T')

@@ -1,4 +1,4 @@
-from start import server
+from start import app
 
 from controllers.http.autenticacao import (
     AutenticacaoUsuarioController, 
@@ -14,10 +14,10 @@ from controllers.http.usuarios_departamento import (
 
 
 
-server.http.add_route(AutenticacaoUsuarioController, "/autenticacao/usuario")
-server.http.add_route(AutenticaoUsuarioDepartamentoController, "/autenticacao/departamento")
-server.http.add_route(CrudUsuariosController, "/usuario/crud", "/usuario/crud/<uuid:user_hash>")
-server.http.add_route(CrudUsuariosDepartamentosController, "/departamento/usuario/crud", "/departamento/usuario/crud/<uuid:user_hash>")
+app.http.add_route(AutenticacaoUsuarioController, "/autenticacao/usuario")
+app.http.add_route(AutenticaoUsuarioDepartamentoController, "/autenticacao/departamento")
+app.http.add_route(CrudUsuariosController, "/usuario/crud", "/usuario/crud/<uuid:user_hash>")
+app.http.add_route(CrudUsuariosDepartamentosController, "/departamento/usuario/crud", "/departamento/usuario/crud/<uuid:user_hash>")
 
 
 

@@ -6,12 +6,12 @@ from sqlalchemy import (
 )
 from uuid import uuid4
 from sqlalchemy.dialects.postgresql import UUID
-from start import server
-from services.database import Database
+from start import app
+from server.database import Database
 from .departamento import Departamento
 
 
-db: Database = server.databases.get_database()
+db: Database = app.databases.get_database()
 
 
 class Nivel(db.Model):

@@ -2,9 +2,9 @@ from flask import request
 from typing import Optional
 from datetime import datetime
 
-from services.http import Middleware, ResponseInauthorized
-from services.database import Database
-from services.utils import UtilsJWT
+from server.http import Middleware, ResponseInauthorized
+from server.database import Database
+from server.utils import UtilsJWT
 from models import Usuario
 from exceptions import (
     AuthorizationNotFoundHeader, 
@@ -13,11 +13,11 @@ from exceptions import (
     UserNotFoundError
 )
 from patterns.autenticacao import PayloadJWT
-from start import server
+from start import app
 
 
 
-db: Database = server.databases.get_database()
+db: Database = app.databases.get_database()
 
 
 
@@ -37,7 +37,7 @@ class UserAuthenticationMiddleware(Middleware):
         token = token.replace('Bearer ', '')
 
         payload: PayloadJWT = \
-            UtilsJWT.decode(token, server.http.configs.secret_key, PayloadJWT)
+            UtilsJWT.decode(token, app.http.configs.secret_key, PayloadJWT)
 
         if payload.expired <= datetime.now().timestamp():
             raise ExpiredTokenError()

@@ -8,15 +8,15 @@ from sqlalchemy import (
 from datetime import datetime
 from uuid import uuid4
 from sqlalchemy.dialects.postgresql import UUID
-from start import server
-from services.database import Database
+from start import app
+from server.database import Database
 from .usuario import Usuario
 from .departamento import Departamento
 from .tipo_ocorrencia import TipoOcorrencia
 
 
 
-db: Database = server.databases.get_database()
+db: Database = app.databases.get_database()
 
 
 class Ocorrencia(db.Model):

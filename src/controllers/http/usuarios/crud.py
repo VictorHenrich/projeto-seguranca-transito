@@ -1,11 +1,11 @@
-from start import server
-from services.http import (
+from start import app
+from server.http import (
     Controller,
     ResponseDefaultJSON,
     ResponseSuccess,
     ResponseFailure
 )
-from services.database import Database
+from server.database import Database
 from middlewares import BodyRequestValidationMiddleware, UserAuthenticationMiddleware
 from models import Usuario
 from exceptions import UserNotFoundError
@@ -14,7 +14,7 @@ from repositories import UserRepository
 
 
 
-db: Database = server.databases.get_database()
+db: Database = app.databases.get_database()
 
 
 class CrudUsuariosController(Controller):

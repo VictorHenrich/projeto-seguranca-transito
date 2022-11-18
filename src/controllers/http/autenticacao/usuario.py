@@ -1,15 +1,15 @@
 from typing import Optional
 from datetime import datetime, timedelta
 
-from start import server
-from services.utils import UtilsJWT, Constants
-from services.database import Database
+from start import app
+from server.utils import UtilsJWT, Constants
+from server.database import Database
 from models import Usuario
 from middlewares import BodyRequestValidationMiddleware
 from patterns.autenticacao import PayloadJWT,  UserAuthentication
 from exceptions import UserNotFoundError
 from repositories import UserRepository
-from services.http import (
+from server.http import (
     Controller, 
     ResponseDefaultJSON,
     ResponseSuccess,
@@ -18,7 +18,7 @@ from services.http import (
 
 
 
-db: Database = server.databases.get_database()
+db: Database = app.databases.get_database()
 
 
 class AutenticacaoUsuarioController(Controller):
@@ -42,7 +42,7 @@ class AutenticacaoUsuarioController(Controller):
 
         dados_autenticacao: PayloadJWT = PayloadJWT(usuario.id_uuid, tempo_expiracao)
 
-        token: str = UtilsJWT.encode(dados_autenticacao.__dict__, server.http.configs.secret_key)
+        token: str = UtilsJWT.encode(dados_autenticacao.__dict__, app.http.configs.secret_key)
 
         return ResponseSuccess(data=f"Bearer {token}")
 

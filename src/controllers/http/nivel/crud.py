@@ -1,11 +1,32 @@
-from typing import Mapping, Any
-from services.http import Controller, ResponseSuccess, ResponseDefaultJSON, ResponseFailure
+from typing import Mapping, Any, Optional
+from dataclasses import dataclass
+from abc import ABC
+from server.http import Controller, ResponseSuccess, ResponseDefaultJSON, ResponseFailure
 from middlewares import DepartamentUserAuthenticationMiddleware, BodyRequestValidationMiddleware
 from models import UsuarioDepartamento, Departamento, Nivel
-from patterns.nivel.crud import LevelRegistration, LevelView
-from repositories import LevelRepository
+from services.level import LevelRegistrationService
+from services.level.entities import LevelRegistration
 from exceptions import LevelNotFoundError
 
+
+
+@dataclass
+class CRUDLevelData(ABC):
+    description: str
+    level: int
+    obs: Optional[str]
+
+
+
+@dataclass
+class CRUDLevelRegistration(CRUDLevelData):
+    pass
+
+
+
+@dataclass
+class CRUDLevelView(CRUDLevelData):
+    uuid: str
 
 
 
@@ -20,7 +41,7 @@ class CrudNivelController(Controller):
         niveis: list[Nivel] = LevelRepository.fetch(auth_departament)
 
         resposta_json: Mapping[str, Any] = [
-            LevelView(
+            CRUDLevelView(
                 descricao=n.descricao,
                 nivel=n.nivel,
                 uuid=n.id_uuid,
@@ -33,28 +54,33 @@ class CrudNivelController(Controller):
         return ResponseSuccess(data=resposta_json)
 
     @DepartamentUserAuthenticationMiddleware.apply()
-    @BodyRequestValidationMiddleware.apply(LevelRegistration)
+    @BodyRequestValidationMiddleware.apply(CRUDLevelRegistration)
     def post(
         self,
         auth_user: UsuarioDepartamento,
         auth_departament: Departamento,
-        body_request: LevelRegistration
+        body_request: CRUDLevelRegistration
     ) -> ResponseDefaultJSON:
-        LevelRepository.create(
-            auth_departament,
-            body_request
+        
+        param: LevelRegistration = LevelRegistration(
+            body_request.description,
+            body_request.level,
+            body_request.obs,
+            auth_departament
         )
+
+        LevelRegistrationService.execute(param)
 
         return ResponseSuccess()
 
     @DepartamentUserAuthenticationMiddleware.apply()
-    @BodyRequestValidationMiddleware.apply(LevelRegistration)
+    @BodyRequestValidationMiddleware.apply(CRUDLevelRegistration)
     def put(
         self,
         hash_level: str,
         auth_user: UsuarioDepartamento,
         auth_departament: Departamento,
-        body_request: LevelRegistration
+        body_request: CRUDLevelRegistration
     ) -> ResponseDefaultJSON:
         try:
             LevelRepository.update(

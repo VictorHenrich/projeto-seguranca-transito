@@ -10,12 +10,12 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import UUID
 from uuid import uuid4
 from datetime import date, datetime
-from services.database import Database
-from start import server
+from server.database import Database
+from start import app
 
 
 
-db: Database = server.databases.get_database()
+db: Database = app.databases.get_database()
 
 
 

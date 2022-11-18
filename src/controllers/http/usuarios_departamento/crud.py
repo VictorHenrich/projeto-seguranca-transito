@@ -1,13 +1,13 @@
 from typing import Mapping, Any
 from uuid import UUID
 
-from start import server
-from services.database import Database
+from start import app
+from server.database import Database
 from models import UsuarioDepartamento, Departamento
 from patterns.usuario_departamento import DepartamentUserRegistration, DepartamentUserView
 from exceptions import UserNotFoundError
 from repositories import DepartamentUserRepository
-from services.http import (
+from server.http import (
     Controller, 
     ResponseDefaultJSON,
     ResponseFailure,
@@ -20,7 +20,7 @@ from middlewares import (
 
 
 
-db: Database = server.databases.get_database()
+db: Database = app.databases.get_database()
 
 
 class CrudUsuariosDepartamentosController(Controller):

@@ -1,8 +1,8 @@
 from typing import Mapping, Any
-from services.http import Controller, ResponseSuccess, ResponseDefaultJSON, ResponseFailure
+from server.http import Controller, ResponseSuccess, ResponseDefaultJSON, ResponseFailure
 from middlewares import DepartamentUserAuthenticationMiddleware, BodyRequestValidationMiddleware
 from repositories import OccurrenceRepository, UserRepository
-from patterns.ocorrencia import OccurrenceView, OccurrenceRegistration
+from .models.crud import CRUDOccurrenceView, CRUDOccurrenceRegistration
 from models import (
     Ocorrencia,
     UsuarioDepartamento,
@@ -27,7 +27,7 @@ class CrudOcorrenciaController(Controller):
         )
 
         resposta_json: list[Mapping[str, Any]] = [
-            OccurrenceView(
+            CRUDOccurrenceView(
                 ocorrencia.descricao,
                 ocorrencia.obs,
                 ocorrencia.status,
@@ -40,12 +40,12 @@ class CrudOcorrenciaController(Controller):
         return ResponseSuccess(data=resposta_json)
 
     @DepartamentUserAuthenticationMiddleware.apply()
-    @BodyRequestValidationMiddleware.apply(OccurrenceRegistration)
+    @BodyRequestValidationMiddleware.apply(CRUDOccurrenceRegistration)
     def post(
         self,
         auth_user: UsuarioDepartamento,
         auth_departament: Departamento,
-        body_request: OccurrenceRegistration
+        body_request: CRUDOccurrenceRegistration
     ) -> ResponseDefaultJSON:
         try:
             OccurrenceRepository.create(
@@ -63,13 +63,13 @@ class CrudOcorrenciaController(Controller):
             return ResponseSuccess()
 
     @DepartamentUserAuthenticationMiddleware.apply()
-    @BodyRequestValidationMiddleware.apply(OccurrenceRegistration)
+    @BodyRequestValidationMiddleware.apply(CRUDOccurrenceRegistration)
     def put(
         self,
         hash_occurrence: str,
         auth_user: UsuarioDepartamento,
         auth_departament: Departamento,
-        body_request: OccurrenceRegistration
+        body_request: CRUDOccurrenceRegistration
     ) -> ResponseDefaultJSON:
         try:
             OccurrenceRepository.update(

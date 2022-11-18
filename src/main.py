@@ -1,21 +1,21 @@
-from start import server
+from start import app
 
 
-@server.initialize
+@app.initialize
 def start_http():
     import controllers
     import start.routes
 
-    server\
+    app\
         .http\
         .start_app()
 
 
-#@server.initialize
+#@app.initialize
 def migrate():
     import models
 
-    server\
+    app\
         .databases\
         .get_database()\
         .migrate()
@@ -23,4 +23,4 @@ def migrate():
 
 
 
-server.start()
+app.start()
