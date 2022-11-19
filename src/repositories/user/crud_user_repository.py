@@ -4,12 +4,12 @@ from start import app
 from patterns import CrudRepository
 from exceptions import UserNotFoundError
 from models import Usuario
-from .interfaces import UserWriteData, UserLocationData
+from .interfaces import IUserRegistration, IUserLocation
 
 
 
 class CrudUserRepository(CrudRepository[Usuario]):
-    def __get_user(self, session: Session, location: UserLocationData) -> Usuario:
+    def __get_user(self, session: Session, location: IUserLocation) -> Usuario:
         user: Usuario = \
             session\
                 .query(Usuario)\
@@ -19,7 +19,7 @@ class CrudUserRepository(CrudRepository[Usuario]):
         if not user:
             raise UserNotFoundError()
 
-    def create(self, data: UserWriteData) -> None:
+    def create(self, data: IUserRegistration) -> None:
         with app.databases.create_session() as session:
             user: Usuario = Usuario()
 
@@ -32,7 +32,7 @@ class CrudUserRepository(CrudRepository[Usuario]):
             session.add(user)
             session.commit()
 
-    def update(self, location: UserLocationData, data: UserWriteData) -> None:
+    def update(self, location: IUserLocation, data: IUserRegistration) -> None:
         with app.databases.create_session() as session:
             user: Usuario = self.__get_user(session, location)
 
@@ -45,14 +45,14 @@ class CrudUserRepository(CrudRepository[Usuario]):
             session.add(user)
             session.commit()
 
-    def delete(self, location: UserLocationData) -> None:
+    def delete(self, location: IUserLocation) -> None:
         with app.databases.create_session() as session:
             user: Usuario = self.__get_user(session, location)
 
             session.delete(user)
             session.commit()
 
-    def load(self, location: UserLocationData) -> Usuario:
+    def load(self, location: IUserLocation) -> Usuario:
         with app.databases.create_session() as session:
             user: Usuario = self.__get_user(session, location)
 

@@ -1,2 +1,2 @@
-from .crud_user import UserLocationData, UserWriteData
-from .auth_user import UserAuth
+from .crud_user import IUserLocation, IUserRegistration
+from .auth_user import IUserAuthorization

@@ -1,1 +1,1 @@
-from .crud_occurrence import OccurrenceLocationData, OccurrenceWriteData
+from .crud_occurrence import IOccurrenceRegistration, IOccurrenceLocation

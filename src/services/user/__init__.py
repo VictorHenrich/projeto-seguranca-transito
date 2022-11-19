@@ -1,5 +1,5 @@
 from .user_authentication_service import UserAuthenticationService
 from .user_exclusion_service import UserExclusionService
-from .user_registration_service import UserRegistrationService
+from .user_criation_service import UserCriationService
 from .user_upgrade_service import UserUpgradeService
 from .user_loading_service import UserLoadingService

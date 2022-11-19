@@ -4,7 +4,7 @@ from start import app
 from patterns import CrudRepository
 from models import Ocorrencia, Departamento
 from exceptions import OccurrenceNotFoundError
-from .interfaces import OccurrenceWriteData, OccurrenceLocationData
+from .interfaces import IOccurrenceRegistration, IOccurrenceLocation
 
 
 
@@ -12,7 +12,7 @@ class CrudOccurrenceRepository(CrudRepository[Ocorrencia]):
     def __get_occurrence(
         self, 
         session: Session, 
-        location: OccurrenceLocationData
+        location: IOccurrenceLocation
     ) -> Ocorrencia:
         occurrence: Ocorrencia = \
             session\
@@ -28,21 +28,21 @@ class CrudOccurrenceRepository(CrudRepository[Ocorrencia]):
 
         return occurrence
 
-    def create(self, departament: Departamento, data: OccurrenceWriteData) -> None:
+    def create(self, data: IOccurrenceRegistration) -> None:
         with app.databases.create_session() as session:
             occurrence: Ocorrencia = Ocorrencia()
 
             occurrence: Ocorrencia = Ocorrencia()
 
-            occurrence.id_departamento = departament.id
+            occurrence.id_departamento = data.departament.id
             occurrence.id_usuario = data.user.id
-            occurrence.descricao = data.descricao
+            occurrence.descricao = data.description
             occurrence.obs = data.obs
             
             session.add(occurrence)
             session.commit()
 
-    def update(self, location: OccurrenceLocationData, data: OccurrenceWriteData) -> None:
+    def update(self, location: IOccurrenceLocation, data: IOccurrenceRegistration) -> None:
         with app.databases.create_session() as session:
             occurrence: Ocorrencia = self.__get_occurrence(session, location)
 
@@ -52,20 +52,20 @@ class CrudOccurrenceRepository(CrudRepository[Ocorrencia]):
             session.add(occurrence)
             session.commit()
 
-    def delete(self, location: OccurrenceLocationData) -> None:
+    def delete(self, location: IOccurrenceLocation) -> None:
         with app.databases.create_session() as session:
             occurrence: Ocorrencia = self.__get_occurrence(session, location)
 
             session.delete(occurrence)
             session.commit()
 
-    def load(self, location: OccurrenceLocationData) -> Ocorrencia:
+    def load(self, location: IOccurrenceLocation) -> Ocorrencia:
         with app.databases.create_session() as session:
             occurrence: Ocorrencia =  self.__get_occurrence(session, location)
 
             return occurrence
 
-    def fetch(self, location: OccurrenceLocationData) -> list[Ocorrencia]:
+    def fetch(self, location: IOccurrenceLocation) -> list[Ocorrencia]:
         with app.databases.create_session() as session:
             occurrences_list: list[Ocorrencia] = \
                 session\

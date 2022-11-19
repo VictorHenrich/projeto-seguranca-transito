@@ -1,13 +1,14 @@
-from typing import Protocol
+from typing import Protocol, Optional
 from models import Departamento
 
 
-class LevelWriteData(Protocol):
+class ILevelRegistration(Protocol):
     description: str
     level: int
     obs: str
+    departament: Optional[Departamento]
 
 
-class LevelLocationData(Protocol):
+class ILevelLocation(Protocol):
     uuid: str
     departament: Departamento

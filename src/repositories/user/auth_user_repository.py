@@ -2,12 +2,12 @@ from start import app
 from patterns import AuthRepository
 from exceptions import UserNotFoundError
 from models import Usuario
-from .interfaces import UserAuth
+from .interfaces import IUserAuthorization
 
 
 
 class AuthUserRepository(AuthRepository[Usuario]):
-    def auth(self, login: UserAuth) -> Usuario:
+    def auth(self, login: IUserAuthorization) -> Usuario:
         with app.databases.create_session() as session:
             user: Usuario = \
                 session\

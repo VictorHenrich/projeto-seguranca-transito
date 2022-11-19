@@ -7,8 +7,8 @@ from models import Nivel
 
 
 
-class LevelRegistrationService(InterfaceService[LevelRegistration]):
+class LevelCriationService(InterfaceService[LevelRegistration]):
     def execute(self, param: LevelRegistration):
         repository: CrudRepository[Nivel] = CrudLevelRepository()
 
-        repository.create(param.departament, param)
+        repository.create(param)

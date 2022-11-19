@@ -6,7 +6,7 @@ from models import Usuario
 
 
 
-class UserRegistrationService(InterfaceService[UserRegistration]):
+class UserCriationService(InterfaceService[UserRegistration]):
     def execute(self, param: UserRegistration) -> None:
         repository: CrudRepository[Usuario] = CrudUserRepository()
 

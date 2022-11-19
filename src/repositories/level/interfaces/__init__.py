@@ -1,1 +1,1 @@
-from .crud_level import LevelWriteData, LevelLocationData
+from .crud_level import ILevelLocation, ILevelRegistration

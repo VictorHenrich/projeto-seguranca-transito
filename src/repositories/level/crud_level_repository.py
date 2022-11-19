@@ -2,13 +2,13 @@ from start import app
 from sqlalchemy.orm import Session
 from patterns import CrudRepository
 from exceptions import LevelNotFoundError
-from .interfaces import LevelWriteData, LevelLocationData
-from models import Nivel, Departamento
+from .interfaces import ILevelRegistration, ILevelLocation
+from models import Nivel
 
 
 
 class CrudLevelRepository(CrudRepository[Nivel]):
-    def __get_level(self, session: Session, location: LevelLocationData) -> Nivel:
+    def __get_level(self, session: Session, location: ILevelLocation) -> Nivel:
         with app.databases.create_session() as session:
             level: Nivel = \
                 session\
@@ -22,11 +22,11 @@ class CrudLevelRepository(CrudRepository[Nivel]):
             if not level:
                 raise LevelNotFoundError()
 
-    def create(self, departament: Departamento, data: LevelWriteData) -> None:
+    def create(self, data: ILevelRegistration) -> None:
         with app.databases.create_session() as session:
             level: Nivel = Nivel()
 
-            level.id_departamento = departament.id
+            level.id_departamento = data.departament.id
             level.descricao = data.description
             level.nivel = data.level
             level.obs = data.obs
@@ -34,7 +34,7 @@ class CrudLevelRepository(CrudRepository[Nivel]):
             session.add(level)
             session.commit()
 
-    def update(self, location: LevelLocationData, data: LevelWriteData) -> None:
+    def update(self, location: ILevelLocation, data: ILevelRegistration) -> None:
         with app.databases.create_session() as session:
             level: Nivel = self.__get_level(session, location)
 
@@ -45,20 +45,20 @@ class CrudLevelRepository(CrudRepository[Nivel]):
             session.add(level)
             session.commit()
 
-    def delete(self, location: LevelLocationData) -> None:
+    def delete(self, location: ILevelLocation) -> None:
         with app.databases.create_session() as session:
             level: Nivel = self.__get_level(session, location)
 
             session.delete(level)
             session.commit()
 
-    def load(self, location: LevelLocationData) -> Nivel:
+    def load(self, location: ILevelLocation) -> Nivel:
         with app.databases.create_session() as session:
             level: Nivel = self.__get_level(session, location)
 
             return level
 
-    def fetch(self, location: LevelLocationData) -> list[Nivel]:
+    def fetch(self, location: ILevelLocation) -> list[Nivel]:
         with app.databases.create_session() as session:
             levels_list: list[Nivel] = \
                 session\

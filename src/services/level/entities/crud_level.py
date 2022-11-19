@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 from models import Departamento
 
 
@@ -7,6 +8,7 @@ class LevelRegistration:
     description: str
     level: int
     obs: str
+    departament: Optional[Departamento] = None
 
 
 @dataclass

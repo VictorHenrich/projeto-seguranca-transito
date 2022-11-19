@@ -1,14 +1,15 @@
-from typing import Protocol
+from typing import Protocol, Optional
 from models import Departamento, Usuario
 
 
 
-class OccurrenceWriteData(Protocol):
+class IOccurrenceRegistration(Protocol):
     description: str
     obs: str
-    user: Usuario
+    user: Optional[Usuario]
+    departament: Optional[Departamento]
 
 
-class OccurrenceLocationData(Protocol):
+class IOccurrenceLocation(Protocol):
     departament: Departamento
-    uuid: str
+    uuid: Optional[str]

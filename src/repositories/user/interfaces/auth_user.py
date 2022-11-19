@@ -2,6 +2,6 @@ from typing import Protocol
 
 
 
-class UserAuth(Protocol):
+class IUserAuthorization(Protocol):
     email: str
     password: str

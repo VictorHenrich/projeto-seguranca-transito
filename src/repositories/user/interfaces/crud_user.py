@@ -3,7 +3,7 @@ from datetime import date
 
 
 
-class UserWriteData(Protocol):
+class IUserRegistration(Protocol):
     name: str
     email: str
     document: str
@@ -11,5 +11,5 @@ class UserWriteData(Protocol):
     date_birth: Union[date, str]
 
 
-class UserLocationData(Protocol):
+class IUserLocation(Protocol):
     uuid: str
