@@ -1,60 +1,73 @@
+from typing import Mapping, Any
+
 from start import app
 from server.http import (
     Controller,
     ResponseDefaultJSON,
     ResponseSuccess,
-    ResponseFailure
 )
-from server.database import Database
 from middlewares import BodyRequestValidationMiddleware, UserAuthenticationMiddleware
 from models import Usuario
-from exceptions import UserNotFoundError
-from patterns.usuario.crud import UserRegistration
-from repositories import UserRepository
+from patterns import InterfaceService
+from services.user import (
+    UserLoadingService,
+    UserExclusionService,
+    UserRegistrationService,
+    UserUpgradeService
+)
+from services.user.entities import (
+    UserLocation,
+    UserRegistration,
+    UserUpgrade
+)
 
-
-
-db: Database = app.databases.get_database()
 
 
 class CrudUsuariosController(Controller):
 
     @BodyRequestValidationMiddleware.apply(UserRegistration)
     def post(self, body_request: UserRegistration) -> ResponseDefaultJSON:
-        UserRepository.create(
-            nome=body_request.nome,
-            email=body_request.email,
-            cpf=body_request.cpf,
-            senha=body_request.senha,
-            data_nascimento=body_request.data_nascimento
-        )
+        service: InterfaceService[UserRegistration] = UserRegistrationService()
 
-        return ResponseSuccess()
+        service.execute(body_request)
 
     @UserAuthenticationMiddleware.apply()
     @BodyRequestValidationMiddleware.apply(UserRegistration)
     def put(self, auth: Usuario, body_request: UserRegistration) -> ResponseDefaultJSON:
-        try:
-            UserRepository.update(
-                id=auth.id,
-                nome=body_request.nome,
-                email=body_request.email,
-                cpf=body_request.cpf,
-                senha=body_request.senha,
-                data_nascimento=body_request.data_nascimento
-            )
+        location_data: UserLocation = UserLocation(auth.id_uuid)
 
-        except UserNotFoundError as error:
-            return ResponseFailure(data=str(error))
+        data: UserUpgrade = UserUpgrade(body_request, location_data)
+
+        service: InterfaceService[UserUpgrade] = UserUpgradeService()
+
+        service.execute(data)
 
         return ResponseSuccess()
 
     @UserAuthenticationMiddleware.apply()
     def delete(self, auth: Usuario) -> ResponseDefaultJSON:
-        try:
-            UserRepository.delete(auth.id)
+        location_data: UserLocation = UserLocation(auth.id_uuid)
 
-        except UserNotFoundError as error:
-            return ResponseFailure(data=str(error))
+        service: InterfaceService[UserLocation] = UserExclusionService()
+
+        service.execute(location_data)
 
         return ResponseSuccess()
+
+    @UserAuthenticationMiddleware.apply()
+    def get(self,  auth: Usuario) -> ResponseDefaultJSON:
+        location_data: UserLocation = UserLocation(auth.id_uuid)
+
+        service: InterfaceService[UserLocation] = UserLoadingService()
+        
+        user: Usuario = service.execute(location_data)
+
+        response: Mapping[str, Any] = {
+            "nome": user.nome,
+            "email": user.email,
+            "cpf": user.cpf,
+            "uuid": user.id_uuid,
+            "data_nascimento": user.data_nascimento
+        }
+
+        return ResponseSuccess(data=response)

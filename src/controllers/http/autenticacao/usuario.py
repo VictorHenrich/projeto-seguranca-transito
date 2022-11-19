@@ -1,24 +1,20 @@
-from typing import Optional
 from datetime import datetime, timedelta
 
 from start import app
 from server.utils import UtilsJWT, Constants
-from server.database import Database
 from models import Usuario
 from middlewares import BodyRequestValidationMiddleware
-from patterns.autenticacao import PayloadJWT,  UserAuthentication
+from patterns import InterfaceService
 from exceptions import UserNotFoundError
-from repositories import UserRepository
+from utils.entities import PayloadUserJWT
+from services.user import UserAuthenticationService
+from services.user.entities import UserAuthentication
 from server.http import (
     Controller, 
     ResponseDefaultJSON,
     ResponseSuccess,
     ResponseInauthorized
 )
-
-
-
-db: Database = app.databases.get_database()
 
 
 class AutenticacaoUsuarioController(Controller):
@@ -28,21 +24,20 @@ class AutenticacaoUsuarioController(Controller):
         body_request: UserAuthentication
     ) -> ResponseDefaultJSON:
         try:
-            usuario: Usuario = UserRepository.get(
-                email=body_request.email,
-                senha=body_request.senha
-            )
+            service: InterfaceService[UserAuthentication] = UserAuthenticationService()
+
+            user: Usuario = service.execute(body_request)
 
         except UserNotFoundError as error:
             return ResponseInauthorized(data=str(error))
             
-        tempo_maximo: float = Constants.Authentication.max_minute_authenticated
+        max_time: float = Constants.Authentication.max_minute_authenticated
         
-        tempo_expiracao: float = (datetime.now() + timedelta(minutes=tempo_maximo)).timestamp()
+        expired: float = (datetime.now() + timedelta(minutes=max_time)).timestamp()
 
-        dados_autenticacao: PayloadJWT = PayloadJWT(usuario.id_uuid, tempo_expiracao)
+        payload: PayloadUserJWT = PayloadUserJWT(user.id_uuid, expired)
 
-        token: str = UtilsJWT.encode(dados_autenticacao.__dict__, app.http.configs.secret_key)
+        token: str = UtilsJWT.encode(payload.__dict__, app.http.configs.secret_key)
 
         return ResponseSuccess(data=f"Bearer {token}")
 

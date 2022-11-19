@@ -6,20 +6,17 @@ from server.http import Middleware, ResponseInauthorized
 from server.database import Database
 from server.utils import UtilsJWT
 from models import Usuario
+from patterns import InterfaceService
+from services.user import UserLoadingService
+from services.user.entities import UserLocation
 from exceptions import (
     AuthorizationNotFoundHeader, 
     TokenTypeNotBearerError,
     ExpiredTokenError,
     UserNotFoundError
 )
-from patterns.autenticacao import PayloadJWT
+from utils.entities import PayloadUserJWT
 from start import app
-
-
-
-db: Database = app.databases.get_database()
-
-
 
 
 
@@ -36,23 +33,19 @@ class UserAuthenticationMiddleware(Middleware):
 
         token = token.replace('Bearer ', '')
 
-        payload: PayloadJWT = \
-            UtilsJWT.decode(token, app.http.configs.secret_key, PayloadJWT)
+        payload: PayloadUserJWT = \
+            UtilsJWT.decode(token, app.http.configs.secret_key, PayloadUserJWT)
 
         if payload.expired <= datetime.now().timestamp():
             raise ExpiredTokenError()
 
-        with db.create_session() as session:
-            usuario: Optional[Usuario] = \
-                session\
-                    .query(Usuario)\
-                    .filter(Usuario.id_uuid == payload.uuid_user)\
-                    .first()
+        location_data: UserLocation = UserLocation(payload.expired)
 
-            if not usuario:
-                raise UserNotFoundError()
+        service: InterfaceService[UserLocation] = UserLoadingService()
 
-            return {"auth": usuario}
+        user: service.execute(location_data)
+
+        return {"auth": user}
 
     @classmethod
     def catch(cls, exception: Exception):
