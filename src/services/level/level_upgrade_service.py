@@ -1,10 +1,16 @@
+from dataclasses import dataclass
+
 from patterns import InterfaceService
 from repositories.level import CrudLevelRepository
-from .entities import LevelRegistration
+from .entities import LevelUpdate
 
 
-class LevelUpgradeService(InterfaceService[LevelRegistration]):
-    def execute(self, param: LevelRegistration):
+
+
+
+
+class LevelUpgradeService(InterfaceService[LevelUpdate]):
+    def execute(self, param: LevelUpdate):
         repository: CrudLevelRepository = CrudLevelRepository()
 
-        repository.update()
+        repository.update(param.location_data, param.data)

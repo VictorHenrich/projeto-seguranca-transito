@@ -5,9 +5,9 @@ from typing import (
     Sequence,
     Mapping,
     Any,
-    TypeAlias
+    TypeAlias,
+    Protocol
 )
-from abc import ABC, abstractmethod
 
 
 Args: TypeAlias = Sequence[Any]
@@ -18,23 +18,18 @@ T = TypeVar('T')
 
 
 
-class CrudRepository(ABC, Generic[T]):
-    @abstractmethod
+class CrudRepository(Protocol, Generic[T]):
     def create(self, *args: Sequence[Any], **kwargs: Kwargs) -> Optional[T]:
         pass
     
-    @abstractmethod
     def update(self, *args: Sequence[Any], **kwargs: Kwargs) -> Optional[T]:
         pass
 
-    @abstractmethod
     def delete(self, *args: Sequence[Any], **kwargs: Kwargs) -> Optional[T]:
         pass
 
-    @abstractmethod
     def load(self, *args: Sequence[Any], **kwargs: Kwargs) -> T:
         pass
 
-    @abstractmethod
     def fetch(self, *args: Sequence[Any], **kwargs: Kwargs) -> list[T]:
         pass

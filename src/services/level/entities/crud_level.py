@@ -13,3 +13,12 @@ class LevelRegistration:
 class LevelLocation:
     uuid: str
     departament: Departamento
+
+
+@dataclass
+class LevelUpdate:
+    data: LevelRegistration
+    location_data: LevelLocation
+
+
+

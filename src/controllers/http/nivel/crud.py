@@ -4,9 +4,20 @@ from abc import ABC
 from server.http import Controller, ResponseSuccess, ResponseDefaultJSON, ResponseFailure
 from middlewares import DepartamentUserAuthenticationMiddleware, BodyRequestValidationMiddleware
 from models import UsuarioDepartamento, Departamento, Nivel
-from services.level import LevelRegistrationService
-from services.level.entities import LevelRegistration
-from exceptions import LevelNotFoundError
+from patterns import InterfaceService
+from services.level import (
+    LevelRegistrationService, 
+    LevelUpgradeService,
+    LevelExclusionService,
+    LevelListingService
+)
+from services.level.entities import (
+    LevelRegistration, 
+    LevelLocation, 
+    LevelUpdate
+)
+
+
 
 
 
@@ -38,9 +49,13 @@ class CrudNivelController(Controller):
         auth_departament: Departamento,
     ) -> ResponseDefaultJSON:
 
-        niveis: list[Nivel] = LevelRepository.fetch(auth_departament)
+        param: LevelLocation = LevelLocation('', auth_departament)
 
-        resposta_json: Mapping[str, Any] = [
+        service: LevelListingService = LevelListingService()
+
+        levels: list[Nivel] = service.execute(param)
+
+        response: Mapping[str, Any] = [
             CRUDLevelView(
                 descricao=n.descricao,
                 nivel=n.nivel,
@@ -48,10 +63,10 @@ class CrudNivelController(Controller):
                 obs=n.obs
             ).__dict__
 
-            for n in niveis
+            for n in levels
         ]
 
-        return ResponseSuccess(data=resposta_json)
+        return ResponseSuccess(data=response)
 
     @DepartamentUserAuthenticationMiddleware.apply()
     @BodyRequestValidationMiddleware.apply(CRUDLevelRegistration)
@@ -69,7 +84,9 @@ class CrudNivelController(Controller):
             auth_departament
         )
 
-        LevelRegistrationService.execute(param)
+        service: InterfaceService[LevelRegistration] = LevelRegistrationService()
+
+        service.execute(param)
 
         return ResponseSuccess()
 
@@ -82,18 +99,22 @@ class CrudNivelController(Controller):
         auth_departament: Departamento,
         body_request: CRUDLevelRegistration
     ) -> ResponseDefaultJSON:
-        try:
-            LevelRepository.update(
-                hash_level,
-                auth_departament,
-                body_request
-            )
 
-        except LevelNotFoundError as error:
-            return ResponseFailure(data=str(error))
+        data: LevelRegistration = LevelRegistration(
+            body_request.description,
+            body_request.level,
+            body_request.obs
+        )
 
-        else:
-            return ResponseSuccess()
+        location_data: LevelLocation = LevelLocation(hash_level, auth_departament)
+
+        param: LevelUpdate = LevelUpdate(data, location_data)
+
+        service: InterfaceService[LevelUpdate] = LevelUpgradeService()
+
+        service.execute(param)
+
+        return ResponseSuccess()
 
     @DepartamentUserAuthenticationMiddleware.apply()
     def delete(
@@ -102,14 +123,13 @@ class CrudNivelController(Controller):
         auth_user: UsuarioDepartamento,
         auth_departament: Departamento,
     ) -> ResponseDefaultJSON:
-        try:
-            LevelRepository.delete(hash_level, auth_departament)
+        param: LevelLocation = LevelLocation(hash_level, auth_departament)
 
-        except LevelNotFoundError as error:
-            return ResponseFailure(data=str(error))
+        service: LevelExclusionService = LevelExclusionService()
 
-        else:
-            return ResponseSuccess()
+        service.execute(param)
+
+        return ResponseSuccess()
 
             
 
