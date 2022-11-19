@@ -6,6 +6,10 @@ from server.http import Middleware, ResponseInauthorized
 from server.database import Database
 from server.utils import UtilsJWT
 from models import UsuarioDepartamento, Departamento
+from services.departament_user import DepartamentUserLoadingService
+from services.departament import DepartamentLoadingService
+from services.departament_user.entities import DepartamentUserLocation
+from services.departament.entities import DepartamentLocation
 from exceptions import (
     AuthorizationNotFoundHeader, 
     TokenTypeNotBearerError,
@@ -13,7 +17,8 @@ from exceptions import (
     UserNotFoundError,
     DepartamentNotFoundError
 )
-from patterns.autenticacao import PayloadJWT
+from patterns import InterfaceService
+from utils.entities import PayloadDepartamentUserJWT
 from start import app
 
 
@@ -37,34 +42,23 @@ class DepartamentUserAuthenticationMiddleware(Middleware):
 
         token = token.replace('Bearer ', '')
 
-        payload: PayloadJWT = \
-            UtilsJWT.decode(token, app.http.configs.secret_key, PayloadJWT)
+        payload: PayloadDepartamentUserJWT = \
+            UtilsJWT.decode(token, app.http.configs.secret_key, PayloadDepartamentUserJWT)
 
         if payload.expired <= datetime.now().timestamp():
             raise ExpiredTokenError()
 
-        with db.create_session() as session:
-            usuario: Optional[UsuarioDepartamento] = \
-                session\
-                    .query(UsuarioDepartamento)\
-                    .filter(UsuarioDepartamento.id_uuid == payload.uuid_user)\
-                    .first()
+        param_departament: DepartamentLocation = DepartamentLocation(payload.uuid_departament)
+        service_departament: InterfaceService[DepartamentLocation] = DepartamentLoadingService()
 
-            if not usuario:
-                raise UserNotFoundError()
+        departament: Departamento = service_departament.execute(param_departament)
 
-            departamento: Optional[Departamento] = \
-                session\
-                    .query(Departamento)\
-                    .filter(
-                        Departamento.id == usuario.id_departamento
-                    )\
-                    .first()
+        param_departament_user: DepartamentUserLocation = DepartamentUserLocation(payload.uuid_user, departament)
+        service_departament_user: InterfaceService[DepartamentUserLocation] = DepartamentUserLoadingService()
 
-            if not departamento:
-                raise DepartamentNotFoundError()
+        user: UsuarioDepartamento = service_departament_user.execute(param_departament_user)
 
-            return {"auth_user": usuario, "auth_departament": departamento}
+        return {"auth_user": user, "auth_departament": departament}
 
 
     @classmethod

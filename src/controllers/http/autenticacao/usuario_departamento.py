@@ -1,4 +1,3 @@
-from typing import Optional
 from datetime import datetime, timedelta
 
 from start import app
@@ -6,9 +5,11 @@ from server.utils import UtilsJWT, Constants
 from server.database import Database
 from models import UsuarioDepartamento, Departamento
 from middlewares import BodyRequestValidationMiddleware
-from patterns.autenticacao import PayloadJWT,  DepartamentUserAuthentication
 from exceptions import DepartamentNotFoundError, UserNotFoundError
-from repositories import DepartamentRepository, DepartamentUserRepository
+from services.departament_user import DepartamentUserAuthorizationService
+from services.departament_user.entities import DepartamentUserAuthorization
+from patterns import InterfaceService
+from utils.entities import PayloadDepartamentUserJWT
 from server.http import (
     Controller, 
     ResponseDefaultJSON,
@@ -22,36 +23,36 @@ db: Database = app.databases.get_database()
 
 class AutenticaoUsuarioDepartamentoController(Controller):
 
-    @BodyRequestValidationMiddleware.apply(DepartamentUserAuthentication)
+    @BodyRequestValidationMiddleware.apply(DepartamentUserAuthorization)
     def post(
         self,
-        body_request: DepartamentUserAuthentication
+        body_request: DepartamentUserAuthorization
     ) -> ResponseDefaultJSON:
 
         try:
-            departamento: Departamento = DepartamentRepository.get(
-                acesso=body_request.departamento
-            )
+            service: InterfaceService[DepartamentUserAuthorization] = DepartamentUserAuthorizationService()
+
+            departament, user = service.execute(body_request)
+
+        except UserNotFoundError as error:
+            return ResponseInauthorized(data=str(error))
 
         except DepartamentNotFoundError as error:
             return ResponseInauthorized(data=str(error))
 
-        try:
-            usuario: UsuarioDepartamento = DepartamentUserRepository.get(
-                usuario=body_request.usuario,
-                senha=body_request.senha,
-                id_departamento=departamento.id
-            )
 
-        except UserNotFoundError:
-            return ResponseInauthorized(data=str(error))
-
-
-        tempo_expiracao: float = \
+        expired: float = \
             (datetime.now() + timedelta(minutes=Constants.Authentication.max_minute_authenticated)).timestamp()
 
-        dados_autenticacao: PayloadJWT = PayloadJWT(usuario.id_uuid, tempo_expiracao)
+        payload: PayloadDepartamentUserJWT = PayloadDepartamentUserJWT(
+            user.id_uuid,
+            departament.id_uuid,
+            expired
+        )
 
-        token: str = UtilsJWT.encode(dados_autenticacao.__dict__, app.http.application.secret_key)
+        token: str = UtilsJWT.encode(
+            payload.__dict__, 
+            app.http.application.secret_key
+        )
 
         return ResponseSuccess(data=f"Bearer {token}")

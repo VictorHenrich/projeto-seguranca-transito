@@ -1,17 +1,18 @@
-from typing import Protocol
+from typing import Protocol, Optional
 from models import Departamento
 
 
 
-class UserDepartamentLocationData(Protocol):
+class IUserDepartamentLocation(Protocol):
     uuid: str
     departament: Departamento
 
 
 
-class UserDepartamentWriteData(Protocol):
+class IUserDepartamentRegistration(Protocol):
     name: str
     user: str
     password: str
     office: str
+    departament: Optional[Departamento]
     

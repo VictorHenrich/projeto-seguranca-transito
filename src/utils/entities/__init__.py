@@ -1,1 +1,2 @@
 from .payload_user_jwt import PayloadUserJWT
+from .payload_departament_user_jwt import PayloadDepartamentUserJWT

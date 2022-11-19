@@ -1,0 +1,1 @@
+from .crud_departament_repository import CrudDepartamentRepository

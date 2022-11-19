@@ -1,1 +1,2 @@
 from .crud_departament_user_repository import CrudDepartamentUserRepository
+from .auth_departament_user_repository import AuthDepartamentUserRepository

@@ -1,26 +1,30 @@
 from typing import Mapping, Any
 from uuid import UUID
 
-from start import app
-from server.database import Database
 from models import UsuarioDepartamento, Departamento
-from patterns.usuario_departamento import DepartamentUserRegistration, DepartamentUserView
-from exceptions import UserNotFoundError
 from repositories import DepartamentUserRepository
 from server.http import (
     Controller, 
     ResponseDefaultJSON,
-    ResponseFailure,
     ResponseSuccess
 )
 from middlewares import (
     BodyRequestValidationMiddleware, 
     DepartamentUserAuthenticationMiddleware
 )
+from patterns import InterfaceService
+from services.departament_user import (
+    DepartamentUserCriationService,
+    DepartamentUserExclusionService,
+    DepartamentUserListingService,
+    DepartamentUserUpgradeService
+)
+from services.departament_user.entities import (
+    DepartamentUserLocation,
+    DepartamentUserRegistration,
+    DepartamentUserUpgrade
+)
 
-
-
-db: Database = app.databases.get_database()
 
 
 class CrudUsuariosDepartamentosController(Controller):
@@ -30,20 +34,27 @@ class CrudUsuariosDepartamentosController(Controller):
         auth_user: UsuarioDepartamento,
         auth_departament: Departamento,
     ) -> ResponseDefaultJSON:
-        usuarios: list[UsuarioDepartamento] = \
-            DepartamentUserRepository.list(id_departamento=auth_departament.id)
+        location: DepartamentUserLocation = DepartamentUserLocation(
+            auth_user.id_uuid,
+            auth_departament
+        )
 
-        lista_usuarios_json: list[Mapping[str, Any]] = [
-            DepartamentUserView(
-                usuario.nome, 
-                usuario.cargo,
-                usuario.id_uuid,
-            ).__dict__
-            
-            for usuario in usuarios
+        service: InterfaceService[DepartamentUserLocation] = DepartamentUserListingService()
+
+        users: list[UsuarioDepartamento] = service.execute(location)
+
+        response: list[Mapping[str, Any]] = [
+            {
+                "uuid": user.id_uuid,
+                "nome": user.nome,
+                "cargo": user.cargo,
+                "data_cadastro": user.data_cadastro,
+            }
+
+            for user in users
         ]
 
-        return ResponseSuccess(data=lista_usuarios_json)
+        return ResponseSuccess(data=response)
 
     @DepartamentUserAuthenticationMiddleware.apply()
     @BodyRequestValidationMiddleware.apply(DepartamentUserRegistration)
@@ -53,14 +64,11 @@ class CrudUsuariosDepartamentosController(Controller):
         auth_departament: Departamento,
         body_request: DepartamentUserRegistration
     ) -> ResponseDefaultJSON:
+        service: InterfaceService[DepartamentUserRegistration] = DepartamentUserCriationService()
 
-        DepartamentUserRepository.create(
-            body_request.nome,
-            body_request.usuario,
-            body_request.cargo,
-            body_request.senha,
-            auth_departament.id
-        )
+        body_request.departament = auth_departament
+
+        service.execute(body_request)
 
         return ResponseSuccess()
 
@@ -73,17 +81,19 @@ class CrudUsuariosDepartamentosController(Controller):
         auth_departament: Departamento,
         body_request: DepartamentUserRegistration,
     ) -> ResponseDefaultJSON:
-        try:
-            DepartamentUserRepository.update(
-                uuid=str(user_hash),
-                nome=body_request.nome,
-                usuario=body_request.usuario,
-                cargo=body_request.cargo,
-                senha=body_request.senha
-            )
+        location: DepartamentUserLocation = DepartamentUserLocation(
+            user_hash,
+            auth_departament
+        )
 
-        except UserNotFoundError as error:
-            return ResponseFailure(data=str(error))
+        param: DepartamentUserUpgrade = DepartamentUserUpgrade(
+            body_request,
+            location
+        )
+
+        service: InterfaceService[DepartamentUserUpgrade] = DepartamentUserUpgradeService()
+
+        service.execute(param)
 
         return ResponseSuccess()
 
@@ -94,10 +104,14 @@ class CrudUsuariosDepartamentosController(Controller):
         auth_user: UsuarioDepartamento,
         auth_departament: Departamento,
     ) -> ResponseDefaultJSON:
-        try:
-            DepartamentUserRepository.delete(uuid=str(user_hash))
+        location: DepartamentUserLocation = DepartamentUserLocation(
+            user_hash,
+            auth_departament
+        )
 
-        except UserNotFoundError as error:
-            return ResponseSuccess(data=str(error))
+        service: InterfaceService[DepartamentUserLocation] = DepartamentUserExclusionService()
+
+        service.execute(location)
 
         return ResponseSuccess()
+

@@ -5,7 +5,7 @@ from start import app
 from patterns import CrudRepository
 from models import UsuarioDepartamento, Departamento
 from exceptions import UserNotFoundError
-from .interfaces import UserDepartamentWriteData, UserDepartamentLocationData
+from .interfaces import IUserDepartamentRegistration, IUserDepartamentLocation
 
 
 
@@ -15,14 +15,14 @@ class CrudDepartamentUserRepository(CrudRepository[UsuarioDepartamento]):
     def __get_user(
         self,
         session: Session,
-        location: UserDepartamentLocationData
+        location: IUserDepartamentLocation
     ) -> UsuarioDepartamento:
         user: Optional[UsuarioDepartamento] = \
             session\
                 .query(UsuarioDepartamento)\
                 .filter(
                     UsuarioDepartamento.id_uuid == location.uuid,
-                    UsuarioDepartamento.id_departamento == location.departament_id
+                    UsuarioDepartamento.id_departamento == location.departament.id
                 )\
                 .first()
 
@@ -31,13 +31,13 @@ class CrudDepartamentUserRepository(CrudRepository[UsuarioDepartamento]):
 
         return user
             
-    def load(self, location: UserDepartamentLocationData) -> UsuarioDepartamento:
+    def load(self, location: IUserDepartamentLocation) -> UsuarioDepartamento:
         with app.databases.create_session() as session:
             user: UsuarioDepartamento = self.__get_user(session, location)
 
             return user
 
-    def fetch(self, location: UserDepartamentLocationData) -> list[UsuarioDepartamento]:
+    def fetch(self, location: IUserDepartamentLocation) -> list[UsuarioDepartamento]:
         with app.databases.create_session() as session:
             users_list: list[UsuarioDepartamento] = \
                 session\
@@ -47,7 +47,7 @@ class CrudDepartamentUserRepository(CrudRepository[UsuarioDepartamento]):
 
             return users_list
 
-    def create(self, departament: Departamento, data: UserDepartamentWriteData) -> None:
+    def create(self, data: IUserDepartamentRegistration) -> None:
         with app.databases.create_session() as session:
             user: UsuarioDepartamento = UsuarioDepartamento()
 
@@ -55,12 +55,12 @@ class CrudDepartamentUserRepository(CrudRepository[UsuarioDepartamento]):
             user.acesso = data.user
             user.cargo = data.office
             user.senha = data.password
-            user.id_departamento = departament.id
+            user.id_departamento = data.departament.id
             
             session.add(user)
             session.commit()
 
-    def update(self, location: UserDepartamentLocationData, data: UserDepartamentWriteData) -> None:
+    def update(self, location: IUserDepartamentLocation, data: IUserDepartamentRegistration) -> None:
         with app.databases.create_session() as session:
             user: UsuarioDepartamento = self.__get_user(session, location)
 
@@ -69,10 +69,13 @@ class CrudDepartamentUserRepository(CrudRepository[UsuarioDepartamento]):
             user.cargo = data.office
             user.senha = data.password
 
+            if type(data.departament) is Departamento:
+                user.id_departamento = data.departament.id
+
             session.add(user)
             session.commit()
 
-    def delete(self, location: UserDepartamentLocationData) -> None:
+    def delete(self, location: IUserDepartamentLocation) -> None:
         with app.databases.create_session() as session:
             user: UsuarioDepartamento = self.__get_user(session, location)
 

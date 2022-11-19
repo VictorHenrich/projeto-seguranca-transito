@@ -3,7 +3,7 @@ from models import Departamento
 
 
 
-class AuthUserDepartament(Protocol):
+class IUserDepartamentAuthorization(Protocol):
     username: str
     password: str
-    departament: Departamento
+    uuid_departament: str
