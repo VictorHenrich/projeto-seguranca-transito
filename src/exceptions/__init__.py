@@ -5,4 +5,5 @@ from .user_not_found import UserNotFoundError
 from .departament_not_found import DepartamentNotFoundError
 from .level_not_found import LevelNotFoundError
 from .occurrence_not_found import OccurrenceNotFoundError
+from .occurrence_type_not_found import OccurrenceTypeNotFoundError
 

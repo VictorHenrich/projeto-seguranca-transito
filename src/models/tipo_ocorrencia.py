@@ -9,6 +9,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from start import app
 from server.database import Database
 from .nivel import Nivel
+from .departamento import Departamento
 
 
 db: Database = app.databases.get_database()
@@ -20,5 +21,6 @@ class TipoOcorrencia(db.Model):
     id: int = Column(Integer, primary_key=True, nullable=False, autoincrement=True, unique=True)
     id_uuid: str = Column(UUID(False), unique=True, nullable=False, default=lambda _: str(uuid4()))
     id_nivel: int = Column(Integer, ForeignKey(f"{Nivel.__tablename__}.id"), nullable=False)
+    id_departamento: int = Column(Integer, ForeignKey(f"{Departamento.__tablename__}.id"))
     descricao: str = Column(String(200), nullable=False)
     instrucao: str = Column(String(20000))
