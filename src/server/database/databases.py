@@ -7,19 +7,19 @@ from typing import (
 )
 from sqlalchemy.orm.session import Session
 from sqlalchemy.ext.asyncio import AsyncSession
-from .database_contract import DatabaseContract
+from .idatabase import IDatabase
 from .exceptions import DatabaseNotFoundError
 
 
 class Databases:
     def __init__(self) -> None:
-        self.__bases: Mapping[str, DatabaseContract] = {}
+        self.__bases: Mapping[str, IDatabase] = {}
 
     @property
-    def bases(self) -> Mapping[str, DatabaseContract]:
+    def bases(self) -> Mapping[str, IDatabase]:
         return self.__bases
 
-    def get_database(self, database_name: Optional[str] = None) -> DatabaseContract:
+    def get_database(self, database_name: Optional[str] = None) -> IDatabase:
         try:
             if not database_name:
                 return list(self.__bases[0])
@@ -47,6 +47,6 @@ class Databases:
         for base_name in self.__bases.keys():
             self.migrate(drop_tables, base_name)
 
-    def append_databases(self, *databases: Sequence[DatabaseContract]) -> None:
+    def append_databases(self, *databases: Sequence[IDatabase]) -> None:
         for database in databases:
             self.__bases[database.name] = database

@@ -1,14 +1,14 @@
 from datetime import datetime, timedelta
+from dataclasses import dataclass
 
 from start import app
 from server.utils import UtilsJWT, Constants
 from models import Usuario
 from middlewares import BodyRequestValidationMiddleware
-from patterns import InterfaceService
+from patterns.service import IService
 from exceptions import UserNotFoundError
 from utils.entities import PayloadUserJWT
 from services.user import UserAuthenticationService
-from services.user.entities import UserAuthentication
 from server.http import (
     Controller, 
     ResponseDefaultJSON,
@@ -17,16 +17,27 @@ from server.http import (
 )
 
 
+
+
+@dataclass
+class AuthUserRequestBody:
+    email: str
+    senha: str
+
+
 class AutenticacaoUsuarioController(Controller):
-    @BodyRequestValidationMiddleware.apply(UserAuthentication)
+    @BodyRequestValidationMiddleware.apply(AuthUserRequestBody)
     def post(
         self,
-        body_request: UserAuthentication
+        body_request: AuthUserRequestBody
     ) -> ResponseDefaultJSON:
         try:
-            service: InterfaceService[UserAuthentication] = UserAuthenticationService()
+            service: IService[Usuario] = UserAuthenticationService()
 
-            user: Usuario = service.execute(body_request)
+            user: Usuario = service.execute(
+                email=body_request.email,
+                password=body_request.senha
+            )
 
         except UserNotFoundError as error:
             return ResponseInauthorized(data=str(error))

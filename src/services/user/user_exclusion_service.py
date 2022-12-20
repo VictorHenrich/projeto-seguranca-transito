@@ -1,13 +1,26 @@
-from patterns import InterfaceService, CrudRepository
-from repositories.user import CrudUserRepository
-from .entities import UserLocation
-from models import Usuario
+from start import app
+from server.database import Database
+from patterns.service import IService
+from patterns.repository import IExclusionRepository
+from repositories.user import (
+    UserExclusionRepositoryParam,
+    UserExclusionRepository
+)
 
 
 
 
-class UserExclusionService(InterfaceService[UserLocation]):
-    def execute(self, param: UserLocation) -> None:
-        repository: CrudRepository[Usuario] = CrudUserRepository()
+class UserExclusionService(IService[None]):
+    def __handle_repository_param(self, uuid_user: str) -> UserExclusionRepositoryParam:
+        return UserExclusionRepositoryParam(
+            uuid_ser=uuid_user
+        )
 
-        repository.delete(param)
+    def execute(self, uuid_user: str) -> None:
+        database: Database = app.databases.get_database()
+
+        repository: IExclusionRepository[UserExclusionRepositoryParam] = UserExclusionRepository(database)
+
+        repository_param: UserExclusionRepositoryParam = self.__handle_repository_param(uuid_user)
+
+        repository.delete(repository_param)

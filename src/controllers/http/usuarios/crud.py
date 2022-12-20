@@ -1,6 +1,5 @@
 from typing import Mapping, Any
-
-from start import app
+from dataclasses import dataclass
 from server.http import (
     Controller,
     ResponseDefaultJSON,
@@ -8,59 +7,69 @@ from server.http import (
 )
 from middlewares import BodyRequestValidationMiddleware, UserAuthenticationMiddleware
 from models import Usuario
-from patterns import InterfaceService
+from patterns.service import IService
 from services.user import (
-    UserLoadingService,
+    UserCreationService,
+    UserGettingService,
     UserExclusionService,
-    UserRegistrationService,
-    UserUpgradeService
+    UserUpdateService
 )
-from services.user.entities import (
-    UserLocation,
-    UserRegistration,
-    UserUpgrade
-)
+
+
+
+@dataclass
+class UserRequestBody:
+    pass
 
 
 
 class CrudUsuariosController(Controller):
+    @BodyRequestValidationMiddleware.apply(UserRequestBody)
+    def post(
+        self, 
+        body_request: UserRequestBody
+    ) -> ResponseDefaultJSON:
+        service: IService[None] = UserCreationService()
 
-    @BodyRequestValidationMiddleware.apply(UserRegistration)
-    def post(self, body_request: UserRegistration) -> ResponseDefaultJSON:
-        service: InterfaceService[UserRegistration] = UserRegistrationService()
-
-        service.execute(body_request)
-
-    @UserAuthenticationMiddleware.apply()
-    @BodyRequestValidationMiddleware.apply(UserRegistration)
-    def put(self, auth: Usuario, body_request: UserRegistration) -> ResponseDefaultJSON:
-        location_data: UserLocation = UserLocation(auth.id_uuid)
-
-        data: UserUpgrade = UserUpgrade(body_request, location_data)
-
-        service: InterfaceService[UserUpgrade] = UserUpgradeService()
-
-        service.execute(data)
+        service.execute(**body_request.__dict__)
 
         return ResponseSuccess()
 
     @UserAuthenticationMiddleware.apply()
-    def delete(self, auth: Usuario) -> ResponseDefaultJSON:
-        location_data: UserLocation = UserLocation(auth.id_uuid)
+    @BodyRequestValidationMiddleware.apply(UserRequestBody)
+    def put(
+        self, 
+        auth: Usuario, 
+        body_request: UserRequestBody
+    ) -> ResponseDefaultJSON:
+        service: IService[None] = UserUpdateService()
 
-        service: InterfaceService[UserLocation] = UserExclusionService()
-
-        service.execute(location_data)
+        service.execute(
+            **body_request.__dict__, 
+            uuid_user=auth.id_uuid
+        )
 
         return ResponseSuccess()
 
     @UserAuthenticationMiddleware.apply()
-    def get(self,  auth: Usuario) -> ResponseDefaultJSON:
-        location_data: UserLocation = UserLocation(auth.id_uuid)
+    def delete(
+        self, 
+        auth: Usuario
+    ) -> ResponseDefaultJSON:
+        service: IService[None] = UserExclusionService()
 
-        service: InterfaceService[UserLocation] = UserLoadingService()
+        service.execute(uuid_user=auth.id_uuid)
+
+        return ResponseSuccess()
+
+    @UserAuthenticationMiddleware.apply()
+    def get(
+        self,  
+        auth: Usuario
+    ) -> ResponseDefaultJSON:
+        service: IService[Usuario] = UserGettingService()
         
-        user: Usuario = service.execute(location_data)
+        user: Usuario = service.execute(uuid_user=auth.id_uuid)
 
         response: Mapping[str, Any] = {
             "nome": user.nome,
