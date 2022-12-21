@@ -1,10 +1,12 @@
-from typing import Optional
 from dataclasses import dataclass
 from datetime import date
 
-from patterns.repository import IUpdateRepository, BaseRepository
+from patterns.repository import IGettingRepository, BaseRepository
 from models import Usuario
-from exceptions import UserNotFoundError
+from repositories.user import (
+    UserGettingRepository,
+    UserGettingRepositoryParam
+)
 
 
 @dataclass
@@ -18,17 +20,18 @@ class UserUpdateRepositoryParam:
     status: bool
 
 
-class UserUpdateRepository(BaseRepository, IUpdateRepository[UserUpdateRepositoryParam]):
+class UserUpdateRepository(BaseRepository):
     def update(self, param: UserUpdateRepositoryParam) -> None:
         with self.database.create_session() as session:
-            user: Optional[Usuario] = \
-                session\
-                    .query(Usuario)\
-                    .filter(Usuario.id_uuid == param.uuid_user)\
-                    .first()
+            getting_repository_param: UserGettingRepositoryParam = \
+                UserGettingRepositoryParam(
+                    uuid_user=param.uuid_user
+                )
 
-            if not user:
-                raise UserNotFoundError()
+            getting_repository: IGettingRepository[UserGettingRepositoryParam, Usuario] = \
+                UserGettingRepository(self.database)
+
+            user: Usuario = getting_repository.get(getting_repository_param)
 
             user.cpf = param.document
             user.data_nascimento = param.birthday

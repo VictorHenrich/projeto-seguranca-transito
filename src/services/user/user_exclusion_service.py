@@ -1,6 +1,5 @@
 from start import app
 from server.database import Database
-from patterns.service import IService
 from patterns.repository import IExclusionRepository
 from repositories.user import (
     UserExclusionRepositoryParam,
@@ -10,7 +9,7 @@ from repositories.user import (
 
 
 
-class UserExclusionService(IService[None]):
+class UserExclusionService:
     def __handle_repository_param(self, uuid_user: str) -> UserExclusionRepositoryParam:
         return UserExclusionRepositoryParam(
             uuid_ser=uuid_user

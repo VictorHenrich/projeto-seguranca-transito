@@ -11,7 +11,7 @@ class UserAuthRepositoryParam:
     password: str
 
 
-class UserAuthRepository(BaseRepository, IAuthRepository[UserAuthRepositoryParam, Usuario]):
+class UserAuthRepository(BaseRepository):
     def auth(self, param: UserAuthRepositoryParam) -> Usuario:
         with self.database.create_session() as session:
             user: Usuario = \

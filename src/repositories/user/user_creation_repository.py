@@ -14,7 +14,7 @@ class UserCreationRepositoryParam:
     birthday: date
 
 
-class UserCreationRepository(BaseRepository, ICreationRepository[UserCreationRepositoryParam]):
+class UserCreationRepository(BaseRepository):
     def create(self, param: UserCreationRepositoryParam) -> None:
         with self.database.create_session() as session:
             user: Usuario = Usuario()

@@ -3,7 +3,6 @@ import re
 
 from start import app
 from server.database import Database
-from patterns.service import IService
 from patterns.repository import ICreationRepository
 from repositories.user import (
     UserCreationRepository,
@@ -11,7 +10,7 @@ from repositories.user import (
 )
 
 
-class UserCreationService(IService[None]):
+class UserCreationService:
     def __handle_params_repository(
         self,
         name: str,
@@ -45,7 +44,7 @@ class UserCreationService(IService[None]):
         email: str,
         document: str,
         password: str,
-        date_birth: str
+        birthday: str
     ) -> None:
         database: Database = app.databases.get_database()
 
@@ -55,7 +54,7 @@ class UserCreationService(IService[None]):
                 email=email,
                 document=document,
                 password=password,
-                date_birth=date_birth
+                date_birth=birthday
             )
 
         repository: ICreationRepository[UserCreationRepositoryParam] = UserCreationRepository(database)

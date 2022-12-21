@@ -1,1 +1,0 @@
-from .crud_occurrence import IOccurrenceRegistration, IOccurrenceLocation

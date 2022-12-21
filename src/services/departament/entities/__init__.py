@@ -1,1 +1,0 @@
-from .crud_departament import DepartamentLocation

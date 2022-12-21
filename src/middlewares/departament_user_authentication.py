@@ -3,13 +3,11 @@ from typing import Optional
 from datetime import datetime
 
 from server.http import Middleware, ResponseInauthorized
-from server.database import Database
 from server.utils import UtilsJWT
 from models import UsuarioDepartamento, Departamento
-from services.departament_user import DepartamentUserLoadingService
-from services.departament import DepartamentLoadingService
-from services.departament_user.entities import DepartamentUserLocation
-from services.departament.entities import DepartamentLocation
+from patterns.service import IService
+from services.departament_user import DepartamentUserGettingService
+from services.departament import DepartamentGettingUUIDService
 from exceptions import (
     AuthorizationNotFoundHeader, 
     TokenTypeNotBearerError,
@@ -17,13 +15,8 @@ from exceptions import (
     UserNotFoundError,
     DepartamentNotFoundError
 )
-from patterns import InterfaceService
 from utils.entities import PayloadDepartamentUserJWT
 from start import app
-
-
-
-db: Database = app.databases.get_database()
 
 
 
@@ -48,17 +41,24 @@ class DepartamentUserAuthenticationMiddleware(Middleware):
         if payload.expired <= datetime.now().timestamp():
             raise ExpiredTokenError()
 
-        param_departament: DepartamentLocation = DepartamentLocation(payload.uuid_departament)
-        service_departament: InterfaceService[DepartamentLocation] = DepartamentLoadingService()
+        departament_service: IService[Departamento] = \
+            DepartamentGettingUUIDService()
 
-        departament: Departamento = service_departament.execute(param_departament)
+        departament_user_service: IService[UsuarioDepartamento] = \
+            DepartamentUserGettingService()
 
-        param_departament_user: DepartamentUserLocation = DepartamentUserLocation(payload.uuid_user, departament)
-        service_departament_user: InterfaceService[DepartamentUserLocation] = DepartamentUserLoadingService()
+        departament: Departamento = \
+            departament_service.execute(
+                uuid_departament=payload.uuid_departament
+            )
 
-        user: UsuarioDepartamento = service_departament_user.execute(param_departament_user)
+        departament_user: UsuarioDepartamento = \
+            departament_user_service.execute(
+                uuid_departament_user=payload.uuid_user,
+                departament=departament
+            )
 
-        return {"auth_user": user, "auth_departament": departament}
+        return {"auth_user": departament_user, "auth_departament": departament}
 
 
     @classmethod

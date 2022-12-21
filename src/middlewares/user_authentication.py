@@ -3,12 +3,10 @@ from typing import Optional
 from datetime import datetime
 
 from server.http import Middleware, ResponseInauthorized
-from server.database import Database
 from server.utils import UtilsJWT
+from patterns.service import IService
 from models import Usuario
-from patterns import InterfaceService
-from services.user import UserLoadingService
-from services.user.entities import UserLocation
+from services.user import UserGettingService
 from exceptions import (
     AuthorizationNotFoundHeader, 
     TokenTypeNotBearerError,
@@ -39,11 +37,9 @@ class UserAuthenticationMiddleware(Middleware):
         if payload.expired <= datetime.now().timestamp():
             raise ExpiredTokenError()
 
-        location_data: UserLocation = UserLocation(payload.expired)
+        service: IService[Usuario] = UserGettingService()
 
-        service: InterfaceService[UserLocation] = UserLoadingService()
-
-        user: service.execute(location_data)
+        user: service.execute(uuid_user=payload.uuid_user)
 
         return {"auth": user}
 

@@ -1,8 +1,9 @@
-from typing import Mapping, Any
+from typing import Mapping, Any, List
 from uuid import UUID
+from dataclasses import dataclass
 
+from patterns.service import IService
 from models import UsuarioDepartamento, Departamento
-from repositories import DepartamentUserRepository
 from server.http import (
     Controller, 
     ResponseDefaultJSON,
@@ -19,12 +20,15 @@ from services.departament_user import (
     DepartamentUserListingService,
     DepartamentUserUpgradeService
 )
-from services.departament_user.entities import (
-    DepartamentUserLocation,
-    DepartamentUserRegistration,
-    DepartamentUserUpgrade
-)
 
+
+
+@dataclass
+class DepartamentUserRegistrationRequestBody:
+    nome: str
+    usuario: str
+    senha: str
+    cargo: str
 
 
 class CrudUsuariosDepartamentosController(Controller):
@@ -34,16 +38,13 @@ class CrudUsuariosDepartamentosController(Controller):
         auth_user: UsuarioDepartamento,
         auth_departament: Departamento,
     ) -> ResponseDefaultJSON:
-        location: DepartamentUserLocation = DepartamentUserLocation(
-            auth_user.id_uuid,
-            auth_departament
+        service: IService[List[UsuarioDepartamento]] = DepartamentUserListingService()
+
+        users: List[UsuarioDepartamento] = service.execute(
+            departament=auth_departament
         )
 
-        service: InterfaceService[DepartamentUserLocation] = DepartamentUserListingService()
-
-        users: list[UsuarioDepartamento] = service.execute(location)
-
-        response: list[Mapping[str, Any]] = [
+        response: List[Mapping[str, Any]] = [
             {
                 "uuid": user.id_uuid,
                 "nome": user.nome,
@@ -57,43 +58,44 @@ class CrudUsuariosDepartamentosController(Controller):
         return ResponseSuccess(data=response)
 
     @DepartamentUserAuthenticationMiddleware.apply()
-    @BodyRequestValidationMiddleware.apply(DepartamentUserRegistration)
+    @BodyRequestValidationMiddleware.apply(DepartamentUserRegistrationRequestBody)
     def post(
         self,
         auth_user: UsuarioDepartamento,
         auth_departament: Departamento,
-        body_request: DepartamentUserRegistration
+        body_request: DepartamentUserRegistrationRequestBody
     ) -> ResponseDefaultJSON:
-        service: InterfaceService[DepartamentUserRegistration] = DepartamentUserCriationService()
+        service: IService[None] = DepartamentUserCriationService()
 
-        body_request.departament = auth_departament
-
-        service.execute(body_request)
+        service.execute(
+            departament=auth_departament,
+            name=body_request.nome,
+            user=body_request.usuario,
+            password=body_request.senha,
+            position=body_request.cargo
+        )
 
         return ResponseSuccess()
 
     @DepartamentUserAuthenticationMiddleware.apply()
-    @BodyRequestValidationMiddleware.apply(DepartamentUserRegistration)
+    @BodyRequestValidationMiddleware.apply(DepartamentUserRegistrationRequestBody)
     def put(
         self,
         user_hash: UUID,
         auth_user: UsuarioDepartamento,
         auth_departament: Departamento,
-        body_request: DepartamentUserRegistration,
+        body_request: DepartamentUserRegistrationRequestBody,
     ) -> ResponseDefaultJSON:
-        location: DepartamentUserLocation = DepartamentUserLocation(
-            user_hash,
-            auth_departament
+        service: IService[None] = DepartamentUserUpgradeService()
+
+        service.execute(
+            departament=auth_departament,
+            name=body_request.nome,
+            user=body_request.usuario,
+            password=body_request.senha,
+            position=body_request.cargo,
+            uuid_departament_user=str(user_hash)
         )
-
-        param: DepartamentUserUpgrade = DepartamentUserUpgrade(
-            body_request,
-            location
-        )
-
-        service: InterfaceService[DepartamentUserUpgrade] = DepartamentUserUpgradeService()
-
-        service.execute(param)
 
         return ResponseSuccess()
 
@@ -104,14 +106,12 @@ class CrudUsuariosDepartamentosController(Controller):
         auth_user: UsuarioDepartamento,
         auth_departament: Departamento,
     ) -> ResponseDefaultJSON:
-        location: DepartamentUserLocation = DepartamentUserLocation(
-            user_hash,
-            auth_departament
+        service: IService[None] = DepartamentUserExclusionService()
+
+        service.execute(
+            departament=auth_departament,
+            uuid_departament_user=user_hash
         )
-
-        service: InterfaceService[DepartamentUserLocation] = DepartamentUserExclusionService()
-
-        service.execute(location)
 
         return ResponseSuccess()
 

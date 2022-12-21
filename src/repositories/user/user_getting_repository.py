@@ -11,7 +11,7 @@ class UserGettingRepositoryParam:
     uuid_user: str
 
 
-class UserGettingRepository(BaseRepository, IGettingRepository[UserGettingRepositoryParam, Usuario]):
+class UserGettingRepository(BaseRepository):
     def get(self, param: UserGettingRepositoryParam) -> Usuario:
         with self.database.create_session() as session:
             user: Optional[Usuario] = \

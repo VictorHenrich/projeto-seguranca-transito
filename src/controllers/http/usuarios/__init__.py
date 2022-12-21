@@ -1,1 +1,1 @@
-from .crud import CrudUsuariosController
+from .crud_usuarios_controller import CrudUsuariosController

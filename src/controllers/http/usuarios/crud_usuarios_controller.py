@@ -18,34 +18,47 @@ from services.user import (
 
 
 @dataclass
-class UserRequestBody:
-    pass
-
+class UserRegistrationRequestBody:
+    nome: str
+    email: str
+    cpf: str
+    senha: str
+    data_aniversario: str
 
 
 class CrudUsuariosController(Controller):
-    @BodyRequestValidationMiddleware.apply(UserRequestBody)
+    @BodyRequestValidationMiddleware.apply(UserRegistrationRequestBody)
     def post(
         self, 
-        body_request: UserRequestBody
+        body_request: UserRegistrationRequestBody
     ) -> ResponseDefaultJSON:
         service: IService[None] = UserCreationService()
 
-        service.execute(**body_request.__dict__)
+        service.execute(
+            name=body_request.nome,
+            document=body_request.cpf,
+            birthday=body_request.data_aniversario,
+            email=body_request.email,
+            password=body_request.senha
+        )
 
         return ResponseSuccess()
 
     @UserAuthenticationMiddleware.apply()
-    @BodyRequestValidationMiddleware.apply(UserRequestBody)
+    @BodyRequestValidationMiddleware.apply(UserRegistrationRequestBody)
     def put(
         self, 
         auth: Usuario, 
-        body_request: UserRequestBody
+        body_request: UserRegistrationRequestBody
     ) -> ResponseDefaultJSON:
         service: IService[None] = UserUpdateService()
 
         service.execute(
-            **body_request.__dict__, 
+            name=body_request.nome,
+            document=body_request.cpf,
+            birthday=body_request.data_aniversario,
+            email=body_request.email,
+            password=body_request.senha,
             uuid_user=auth.id_uuid
         )
 

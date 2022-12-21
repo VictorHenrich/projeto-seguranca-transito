@@ -1,2 +1,0 @@
-from .crud_user_departament import IUserDepartamentLocation, IUserDepartamentRegistration
-from .auth_user_departament import IUserDepartamentAuthorization

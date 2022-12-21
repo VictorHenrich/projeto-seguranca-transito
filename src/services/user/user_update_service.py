@@ -3,7 +3,6 @@ from datetime import date
 
 from start import app
 from server.database import Database
-from patterns.service import IService
 from patterns.repository import IUpdateRepository
 from repositories.user import (
     UserUpdateRepository,
@@ -11,7 +10,7 @@ from repositories.user import (
 )
 
 
-class UserUpdateService(IService[None]):
+class UserUpdateService:
     def __handle_repository_param(
         self,
         uuid_user: str,

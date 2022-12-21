@@ -1,1 +1,2 @@
-from .departament_loading_service import DepartamentLoadingService
+from .departament_getting_service import DepartamentGettingService
+from .departament_getting_uuid_service import DepartamentGettingUUIDService

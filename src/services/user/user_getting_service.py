@@ -1,6 +1,5 @@
 from start import app
 from server.database import Database
-from patterns.service import IService
 from patterns.repository import IGettingRepository
 from repositories.user import (
     UserGettingRepository,
@@ -10,7 +9,7 @@ from models import Usuario
 
 
 
-class UserGettingService(IService[Usuario]):
+class UserGettingService:
     def __handle_repository_param(self, uuid_user: str) -> UserGettingRepositoryParam:
         return UserGettingRepositoryParam(
             uuid_user

@@ -1,9 +1,11 @@
 from dataclasses import dataclass
-from typing import Optional
 
-from patterns.repository import BaseRepository, IExclusionRepository
+from patterns.repository import BaseRepository, IGettingRepository
 from models import Usuario
-from exceptions import UserNotFoundError
+from .user_getting_repository import (
+    UserGettingRepository,
+    UserGettingRepositoryParam
+)
 
 
 
@@ -12,17 +14,18 @@ class UserExclusionRepositoryParam:
     uuid_ser: str
 
 
-class UserExclusionRepository(BaseRepository, IExclusionRepository[UserExclusionRepositoryParam]):
+class UserExclusionRepository(BaseRepository):
     def delete(self, param: UserExclusionRepositoryParam) -> None:
         with self.database.create_session() as session:
-            user: Optional[Usuario] = \
-                session\
-                    .query(Usuario)\
-                    .filter(Usuario.id_uuid == param.uuid_ser)\
-                    .first()
+            getting_repostiory_param: UserGettingRepositoryParam = \
+                UserGettingRepositoryParam(
+                    uuid_user=param.uuid_ser
+                )
 
-            if not user:
-                raise UserNotFoundError()
+            getting_repository: IGettingRepository[UserGettingRepositoryParam, Usuario] = \
+                UserGettingRepository(self.database)
+
+            user: Usuario = getting_repository.get(getting_repostiory_param)
 
             session.delete(user)
             session.commit()
