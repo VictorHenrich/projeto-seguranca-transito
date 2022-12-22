@@ -23,7 +23,7 @@ class DepartamentUserExclusionRepository(BaseRepository):
 
             getting_repository_param: DepartamentUserGettingRepositoryParam = \
                 DepartamentUserGettingRepositoryParam(
-                    uuid_departament_user=param.uuid_departament,
+                    uuid_departament_user=param.uuid_departament_user,
                     departament=param.departament
                 )
 

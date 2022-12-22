@@ -28,7 +28,7 @@ class AutenticaoUsuarioDepartamentoController(Controller):
         try:
             service: IService[str] = DepartamentUserAuthorizationService()
 
-            token = service.execute(
+            token: str = service.execute(
                 departament_access=body_request.departamento,
                 user=body_request.usuario,
                 password=body_request.senha

@@ -48,7 +48,7 @@ class CrudUsuariosDepartamentosController(Controller):
                 "uuid": user.id_uuid,
                 "nome": user.nome,
                 "cargo": user.cargo,
-                "data_cadastro": user.data_cadastro,
+                "data_cadastro": str(user.data_cadastro)
             }
 
             for user in users
@@ -109,7 +109,7 @@ class CrudUsuariosDepartamentosController(Controller):
 
         service.execute(
             departament=auth_departament,
-            uuid_departament_user=user_hash
+            uuid_departament_user=str(user_hash)
         )
 
         return ResponseSuccess()

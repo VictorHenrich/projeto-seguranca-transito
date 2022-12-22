@@ -44,7 +44,7 @@ class DepartamentUserAuthorizationService:
             (datetime.now() + timedelta(minutes=Constants.Authentication.max_minute_authenticated)).timestamp()
 
         payload: PayloadDepartamentUserJWT = PayloadDepartamentUserJWT(
-            user.id_uuid,
+            departament_user.id_uuid,
             departament.id_uuid,
             expired
         )

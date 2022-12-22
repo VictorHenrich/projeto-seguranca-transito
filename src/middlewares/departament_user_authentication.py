@@ -68,7 +68,8 @@ class DepartamentUserAuthenticationMiddleware(Middleware):
             DepartamentNotFoundError,
             DepartamentNotFoundError,
             UserNotFoundError,
-            ExpiredTokenError
+            ExpiredTokenError,
+            AuthorizationNotFoundHeader
         )
 
         if validation:
