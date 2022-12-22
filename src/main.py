@@ -1,6 +1,17 @@
 from start import app
 
 
+#@app.initialize
+def migrate():
+    import models
+
+    app\
+        .databases\
+        .migrate(True)
+
+    print('Migração feita com sucesso!')
+
+
 @app.initialize
 def start_http():
     import controllers
@@ -9,18 +20,6 @@ def start_http():
     app\
         .http\
         .start_app()
-
-
-#@app.initialize
-def migrate():
-    import models
-
-    app\
-        .databases\
-        .get_database()\
-        .migrate()
-
-
 
 
 app.start()
