@@ -3,7 +3,7 @@ from typing import Optional
 from datetime import datetime
 
 from server.http import Middleware, ResponseInauthorized
-from server.utils import UtilsJWT
+from server.utils import UtilsJWT, UtilsExcept
 from patterns.service import IService
 from models import Usuario
 from services.user import UserGettingService
@@ -39,19 +39,21 @@ class UserAuthenticationMiddleware(Middleware):
 
         service: IService[Usuario] = UserGettingService()
 
-        user: service.execute(uuid_user=payload.uuid_user)
+        user: Usuario = service.execute(uuid_user=payload.uuid_user)
 
         return {"auth": user}
 
     @classmethod
     def catch(cls, exception: Exception):
-        exceptions: list[Exception] = [
+        validation: bool = UtilsExcept.fired(
+            exception,
             ExpiredTokenError,
             UserNotFoundError,
-            TokenTypeNotBearerError
-        ]
+            TokenTypeNotBearerError,
+            AuthorizationNotFoundHeader
+        )
 
-        if type(exception) in exceptions:
+        if validation:
             return ResponseInauthorized(data=str(exception))
 
         raise exception

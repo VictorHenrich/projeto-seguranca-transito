@@ -3,7 +3,7 @@ from typing import Optional
 from datetime import datetime
 
 from server.http import Middleware, ResponseInauthorized
-from server.utils import UtilsJWT
+from server.utils import UtilsJWT, UtilsExcept
 from models import UsuarioDepartamento, Departamento
 from patterns.service import IService
 from services.departament_user import DepartamentUserGettingService
@@ -63,14 +63,15 @@ class DepartamentUserAuthenticationMiddleware(Middleware):
 
     @classmethod
     def catch(cls, exception: Exception):
-        exceptions: list[Exception] = [
+        validation: bool = UtilsExcept.fired(
+            exception,
             DepartamentNotFoundError,
             DepartamentNotFoundError,
             UserNotFoundError,
             ExpiredTokenError
-        ]
+        )
 
-        if type(exception) in exceptions:
+        if validation:
             return ResponseInauthorized(data=str(exception))
 
         raise exception

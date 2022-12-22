@@ -1,5 +1,6 @@
-from typing import Mapping, Any
+from typing import Mapping, Any, Optional
 from dataclasses import dataclass
+
 from server.http import (
     Controller,
     ResponseDefaultJSON,
@@ -23,7 +24,7 @@ class UserRegistrationRequestBody:
     email: str
     cpf: str
     senha: str
-    data_aniversario: str
+    data_aniversario: Optional[None] = None
 
 
 class CrudUsuariosController(Controller):

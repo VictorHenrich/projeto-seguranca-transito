@@ -1,3 +1,4 @@
+from typing import Optional
 from dataclasses import dataclass
 from datetime import date
 
@@ -11,7 +12,7 @@ class UserCreationRepositoryParam:
     email: str
     password: str
     document: str
-    birthday: date
+    birthday: Optional[date]
 
 
 class UserCreationRepository(BaseRepository):

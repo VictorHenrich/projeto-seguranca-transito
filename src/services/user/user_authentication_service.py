@@ -22,8 +22,8 @@ class UserAuthenticationService:
         password: str
     ) -> UserAuthRepositoryParam:
         return UserAuthRepositoryParam(
-            email,
-            password
+            email=email.upper(),
+            password=password
         )
 
     def execute(

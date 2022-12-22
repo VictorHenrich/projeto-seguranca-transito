@@ -23,6 +23,6 @@ class UserGettingService:
 
         repository: IGettingRepository[UserGettingRepositoryParam, Usuario] = UserGettingRepository(database)
 
-        user: Usuario = repository.load(repository_param)
+        user: Usuario = repository.get(repository_param)
 
         return user

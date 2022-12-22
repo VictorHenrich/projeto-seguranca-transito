@@ -17,7 +17,7 @@ class UtilsEnv:
 
     @classmethod
     def __handle_path(cls, path: EnvPathParameter) -> Path:
-        path_, = [path] if path else cls.__default_path
+        path_: Union[str, Path] = ([path] if path else cls.__default_path)[0]
 
         if not Path(path_).exists():
             raise FileEnvNotFoundError()

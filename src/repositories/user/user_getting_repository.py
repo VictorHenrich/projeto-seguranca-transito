@@ -18,7 +18,7 @@ class UserGettingRepository(BaseRepository):
                 session\
                     .query(Usuario)\
                     .filter(Usuario.id_uuid == param.uuid_user)\
-                    .filter()
+                    .first()
 
             if not user:
                 raise UserNotFoundError()

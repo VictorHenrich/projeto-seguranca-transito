@@ -1,3 +1,4 @@
+from typing import Optional
 import re
 from datetime import date
 
@@ -18,25 +19,25 @@ class UserUpdateService:
         email: str,
         password: str,
         document: str,
-        birthday: str,
+        birthday: Optional[str],
         status: bool = False
     ) -> UserUpdateRepositoryParam:
-        name: str = name.upper()
+        treaty_name: str = name.upper()
 
-        email: str = email.upper()
+        treaty_email: str = email.upper()
 
-        document: str = re.sub(r"[^0-9]", document)
+        treaty_document: str = re.sub(r"[^0-9]", '', document)
 
-        password: str = password
+        traety_password: str = password.strip()
 
-        birth: date = date(*(birthday.split("-")))
+        treaty_birthday: Optional[date] = date(*(birthday.split("-"))) if birthday and len(birthday) else None
         
         return UserUpdateRepositoryParam(
-            name=name,
-            email=email,
-            document=document,
-            password=password,
-            birthday=birth,
+            name=treaty_name,
+            email=treaty_email,
+            document=treaty_document,
+            password=traety_password,
+            birthday=treaty_birthday,
             uuid_user=uuid_user,
             status=status
         )

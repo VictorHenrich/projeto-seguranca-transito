@@ -18,8 +18,8 @@ class UserAuthRepository(BaseRepository):
                 session\
                     .query(Usuario)\
                     .filter(
-                        Usuario.nome == param.email.upper(),
-                        Usuario.senha == param.password.upper()
+                        Usuario.email == param.email.upper(),
+                        Usuario.senha == param.password
                     )\
                     .first()
 

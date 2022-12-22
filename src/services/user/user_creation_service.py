@@ -1,3 +1,4 @@
+from typing import Optional
 from datetime import date
 import re
 
@@ -17,25 +18,25 @@ class UserCreationService:
         email: str,
         document: str,
         password: str,
-        date_birth: str
+        birthday: Optional[str]
     ) -> UserCreationRepositoryParam:
 
-        name: str = name.upper()
+        treaty_name: str = name.upper()
 
-        email: str = email.upper()
+        treaty_email: str = email.upper()
 
-        document: str = re.sub(r"[^0-9]", document)
+        treaty_document: str = re.sub(r"[^0-9]", '', document)
 
-        password: str = password
+        traety_password: str = password.strip()
 
-        birth: date = date(*(date_birth.split("-")))
+        treaty_birthday: Optional[date] = date(*(birthday.split("-"))) if birthday and len(birthday) else None
         
         return UserCreationRepositoryParam(
-            name=name,
-            email=email,
-            document=document,
-            password=password,
-            birthday=birth
+            name=treaty_name,
+            email=treaty_email,
+            document=treaty_document,
+            password=traety_password,
+            birthday=treaty_birthday
         )
 
     def execute(
@@ -54,7 +55,7 @@ class UserCreationService:
                 email=email,
                 document=document,
                 password=password,
-                date_birth=birthday
+                birthday=birthday
             )
 
         repository: ICreationRepository[UserCreationRepositoryParam] = UserCreationRepository(database)
