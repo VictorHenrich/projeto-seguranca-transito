@@ -22,7 +22,7 @@ class Databases:
     def get_database(self, database_name: Optional[str] = None) -> IDatabase:
         try:
             if not database_name:
-                return list(self.__bases[0])
+                return list(self.__bases.values())[0]
 
             else:
                 return self.__bases[database_name]

@@ -13,7 +13,6 @@ from middlewares import (
     BodyRequestValidationMiddleware, 
     DepartamentUserAuthenticationMiddleware
 )
-from patterns import InterfaceService
 from services.departament_user import (
     DepartamentUserCriationService,
     DepartamentUserExclusionService,

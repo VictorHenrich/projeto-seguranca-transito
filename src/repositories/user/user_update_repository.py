@@ -3,7 +3,7 @@ from datetime import date
 
 from patterns.repository import IGettingRepository, BaseRepository
 from models import Usuario
-from repositories.user import (
+from .user_getting_repository import (
     UserGettingRepository,
     UserGettingRepositoryParam
 )
