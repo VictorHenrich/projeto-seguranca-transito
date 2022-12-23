@@ -3,7 +3,6 @@ from datetime import date
 import re
 
 from start import app
-from server.database import Database
 from patterns.repository import ICreationRepository
 from repositories.user import (
     UserCreationRepository,
@@ -47,17 +46,19 @@ class UserCreationService:
         password: str,
         birthday: str
     ) -> None:
-        database: Database = app.databases.get_database()
+        with app.databases.create_session() as session:
+            repository_param: UserCreationRepositoryParam = \
+                self.__handle_params_repository(
+                    name=name,
+                    email=email,
+                    document=document,
+                    password=password,
+                    birthday=birthday
+                )
 
-        repository_param: UserCreationRepositoryParam = \
-            self.__handle_params_repository(
-                name=name,
-                email=email,
-                document=document,
-                password=password,
-                birthday=birthday
-            )
+            repository: ICreationRepository[UserCreationRepositoryParam] =\
+                 UserCreationRepository(session)
 
-        repository: ICreationRepository[UserCreationRepositoryParam] = UserCreationRepository(database)
+            repository.create(repository_param)
 
-        repository.create(repository_param)
+            session.commit()

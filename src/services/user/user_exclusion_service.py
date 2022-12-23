@@ -1,5 +1,4 @@
 from start import app
-from server.database import Database
 from patterns.repository import IExclusionRepository
 from repositories.user import (
     UserExclusionRepositoryParam,
@@ -16,10 +15,12 @@ class UserExclusionService:
         )
 
     def execute(self, uuid_user: str) -> None:
-        database: Database = app.databases.get_database()
+        with app.databases.create_session() as session:
+            repository: IExclusionRepository[UserExclusionRepositoryParam] = \
+                UserExclusionRepository(session)
 
-        repository: IExclusionRepository[UserExclusionRepositoryParam] = UserExclusionRepository(database)
+            repository_param: UserExclusionRepositoryParam = self.__handle_repository_param(uuid_user)
 
-        repository_param: UserExclusionRepositoryParam = self.__handle_repository_param(uuid_user)
+            repository.delete(repository_param)
 
-        repository.delete(repository_param)
+            session.commit()

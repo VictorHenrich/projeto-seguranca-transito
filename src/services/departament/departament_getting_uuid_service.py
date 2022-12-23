@@ -1,5 +1,4 @@
 from start import app
-from server.database import Database
 from patterns.repository import IGettingRepository
 from models import Departamento
 from repositories.departament import (
@@ -13,16 +12,15 @@ class DepartamentGettingUUIDService:
         self,
         uuid_departament: str
     ) -> Departamento:
-        database: Database = app.databases.get_database()
+        with app.databases.create_session() as session:
+            getting_repository_param: DepartamentGettingUUIDRepositoryParam = \
+                DepartamentGettingUUIDRepositoryParam(
+                    uuid_departament=uuid_departament
+                )
 
-        getting_repository_param: DepartamentGettingUUIDRepositoryParam = \
-            DepartamentGettingUUIDRepositoryParam(
-                uuid_departament=uuid_departament
-            )
+            getting_repository: IGettingRepository[DepartamentGettingUUIDRepositoryParam, Departamento] = \
+                DepartamentGettingUUIDRepository(session)
 
-        getting_repository: IGettingRepository[DepartamentGettingUUIDRepositoryParam, Departamento] = \
-            DepartamentGettingUUIDRepository(database)
+            departament: Departamento = getting_repository.get(getting_repository_param)
 
-        departament: Departamento = getting_repository.get(getting_repository_param)
-
-        return departament
+            return departament

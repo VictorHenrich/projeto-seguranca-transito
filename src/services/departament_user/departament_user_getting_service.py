@@ -1,5 +1,4 @@
 from start import app
-from server.database import Database
 from patterns.repository import IGettingRepository
 from repositories.departament_user import (
     DepartamentUserGettingRepository,
@@ -15,17 +14,16 @@ class DepartamentUserGettingService:
         departament: Departamento,
         uuid_departament_user: UsuarioDepartamento
     ) -> UsuarioDepartamento:
-        database: Database = app.databases.get_database()
+        with app.databases.create_session() as session:
+            getting_repository_param: DepartamentUserGettingRepositoryParam = \
+                DepartamentUserGettingRepositoryParam(
+                    departament=departament,
+                    uuid_departament_user=uuid_departament_user
+                )
 
-        getting_repository_param: DepartamentUserGettingRepositoryParam = \
-            DepartamentUserGettingRepositoryParam(
-                departament=departament,
-                uuid_departament_user=uuid_departament_user
-            )
+            getting_repository: IGettingRepository[DepartamentUserGettingRepositoryParam, UsuarioDepartamento] = \
+                DepartamentUserGettingRepository(session)
 
-        getting_repository: IGettingRepository[DepartamentUserGettingRepositoryParam, UsuarioDepartamento] = \
-            DepartamentUserGettingRepository(database)
+            user: UsuarioDepartamento = getting_repository.get(getting_repository_param)
 
-        user: UsuarioDepartamento = getting_repository.get(getting_repository_param)
-
-        return user
+            return user

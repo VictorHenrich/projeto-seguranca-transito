@@ -22,22 +22,20 @@ class DepartamentUserUpdateRepositoryParam:
 
 class DepartamentUserUpdateRepository(BaseRepository):
     def update(self, param: DepartamentUserUpdateRepositoryParam) -> None:
-        with self.database.create_session() as session:
-            getting_repository: IGettingRepository[DepartamentUserGettingRepositoryParam, UsuarioDepartamento] = \
-                DepartamentUserGettingRepository(self.database)
+        getting_repository: IGettingRepository[DepartamentUserGettingRepositoryParam, UsuarioDepartamento] = \
+            DepartamentUserGettingRepository(self.session)
 
-            getting_repository_param: DepartamentUserGettingRepositoryParam = \
-                DepartamentUserGettingRepositoryParam(
-                    uuid_departament_user=param.uuid_departament_user,
-                    departament=param.departament
-                )
+        getting_repository_param: DepartamentUserGettingRepositoryParam = \
+            DepartamentUserGettingRepositoryParam(
+                uuid_departament_user=param.uuid_departament_user,
+                departament=param.departament
+            )
 
-            user_departament: UsuarioDepartamento = getting_repository.get(getting_repository_param)
+        user_departament: UsuarioDepartamento = getting_repository.get(getting_repository_param)
 
-            user_departament.nome = param.name
-            user_departament.acesso = param.access
-            user_departament.senha = param.password
-            user_departament.cargo = param.position
+        user_departament.nome = param.name
+        user_departament.acesso = param.access
+        user_departament.senha = param.password
+        user_departament.cargo = param.position
 
-            session.add(user_departament)
-            session.commit()
+        self.session.add(user_departament)

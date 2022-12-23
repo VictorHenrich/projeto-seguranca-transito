@@ -17,19 +17,17 @@ class DepartamentUserExclusionRepositoryParam:
 
 class DepartamentUserExclusionRepository(BaseRepository):
     def delete(self, param: DepartamentUserExclusionRepositoryParam) -> None:
-        with self.database.create_session() as session:
-            getting_repository: IGettingRepository[DepartamentUserGettingRepositoryParam, UsuarioDepartamento] = \
-                DepartamentUserGettingRepository(self.database)
+        getting_repository: IGettingRepository[DepartamentUserGettingRepositoryParam, UsuarioDepartamento] = \
+            DepartamentUserGettingRepository(self.session)
 
-            getting_repository_param: DepartamentUserGettingRepositoryParam = \
-                DepartamentUserGettingRepositoryParam(
-                    uuid_departament_user=param.uuid_departament_user,
-                    departament=param.departament
-                )
+        getting_repository_param: DepartamentUserGettingRepositoryParam = \
+            DepartamentUserGettingRepositoryParam(
+                uuid_departament_user=param.uuid_departament_user,
+                departament=param.departament
+            )
 
-            user_departament: UsuarioDepartamento = getting_repository.get(getting_repository_param)
+        user_departament: UsuarioDepartamento = getting_repository.get(getting_repository_param)
 
-            session.delete(user_departament)
-            session.commit()
+        self.session.delete(user_departament)
 
 

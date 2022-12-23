@@ -14,14 +14,13 @@ class DepartamentGettingRepositoryParam:
 
 class DepartamentGettingRepository(BaseRepository):
     def get(self, param: DepartamentGettingRepositoryParam) -> Departamento:
-        with self.database.create_session() as session:
-            departament: Departamento = \
-                session\
+        departament: Departamento = \
+            self.session\
                     .query(Departamento)\
                     .filter(Departamento.id == param.departament_id)\
                     .first()
 
-            if not departament:
-                raise DepartamentNotFoundError()
+        if not departament:
+            raise DepartamentNotFoundError()
 
-            return departament
+        return departament

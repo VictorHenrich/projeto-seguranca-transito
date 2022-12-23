@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 from start import app
 from server.database import Database
 from patterns.repository import IAuthRepository
-from patterns.service import IService
 from repositories.user import (
     UserAuthRepository,
     UserAuthRepositoryParam
@@ -31,24 +30,24 @@ class UserAuthenticationService:
         email: str,
         password: str
     ) -> str:
-        database: Database = app.databases.get_database()
+        with app.databases.create_session() as session:
+            repository: IAuthRepository[UserAuthRepositoryParam, Usuario] = \
+                UserAuthRepository(session)
 
-        repository: IAuthRepository[UserAuthRepositoryParam, Usuario] = UserAuthRepository(database)
+            repository_param: UserAuthRepositoryParam = \
+                self.__handle_repository_param(
+                    email,
+                    password
+                )
 
-        repository_param: UserAuthRepositoryParam = \
-            self.__handle_repository_param(
-                email,
-                password
-            )
+            user: Usuario = repository.auth(repository_param)
 
-        user: Usuario = repository.auth(repository_param)
+            max_time: float = Constants.Authentication.max_minute_authenticated
+            
+            expired: float = (datetime.now() + timedelta(minutes=max_time)).timestamp()
 
-        max_time: float = Constants.Authentication.max_minute_authenticated
-        
-        expired: float = (datetime.now() + timedelta(minutes=max_time)).timestamp()
+            payload: PayloadUserJWT = PayloadUserJWT(user.id_uuid, expired)
 
-        payload: PayloadUserJWT = PayloadUserJWT(user.id_uuid, expired)
+            token: str = UtilsJWT.encode(payload.__dict__, app.http.configs.secret_key)
 
-        token: str = UtilsJWT.encode(payload.__dict__, app.http.configs.secret_key)
-
-        return f"Bearer {token}"
+            return f"Bearer {token}"

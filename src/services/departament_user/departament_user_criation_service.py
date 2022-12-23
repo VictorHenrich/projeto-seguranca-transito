@@ -1,5 +1,4 @@
 from start import app
-from server.database import Database
 from patterns.repository import ICreationRepository
 from models import Departamento
 from repositories.departament_user import (
@@ -17,18 +16,19 @@ class DepartamentUserCriationService:
         password: str,
         position: str
     ) -> None:
-        database: Database = app.databases.get_database()
+        with app.databases.create_session() as session:
+            creating_repository_param: DepartamentUserCreationRepositoryParam = \
+                DepartamentUserCreationRepositoryParam(
+                    departament=departament,
+                    name=name,
+                    access=user,
+                    password=password,
+                    position=position
+                )
 
-        creating_repository_param: DepartamentUserCreationRepositoryParam = \
-            DepartamentUserCreationRepositoryParam(
-                departament=departament,
-                name=name,
-                access=user,
-                password=password,
-                position=position
-            )
+            creating_repository: ICreationRepository[DepartamentUserCreationRepositoryParam] = \
+                DepartamentUserCreationRepository(session)
 
-        creating_repository: ICreationRepository[DepartamentUserCreationRepositoryParam] = \
-            DepartamentUserCreationRepository(database)
+            creating_repository.create(creating_repository_param)
 
-        creating_repository.create(creating_repository_param)
+            session.commit()

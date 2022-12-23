@@ -1,5 +1,4 @@
 from start import app
-from server.database import Database
 from patterns.repository import IExclusionRepository
 from repositories.departament_user import (
     DepartamentUserExclusionRepository,
@@ -14,15 +13,16 @@ class DepartamentUserExclusionService:
         departament: Departamento,
         uuid_departament_user: UsuarioDepartamento
     ) -> None:
-        database: Database = app.databases.get_database()
+        with app.databases.create_session() as session:
+            exclusion_repository_param: DepartamentUserExclusionRepositoryParam = \
+                DepartamentUserExclusionRepositoryParam(
+                    departament=departament,
+                    uuid_departament_user=uuid_departament_user
+                )
 
-        exclusion_repository_param: DepartamentUserExclusionRepositoryParam = \
-            DepartamentUserExclusionRepositoryParam(
-                departament=departament,
-                uuid_departament_user=uuid_departament_user
-            )
+            exclusion_repository: IExclusionRepository[DepartamentUserExclusionRepositoryParam] = \
+                DepartamentUserExclusionRepository(session)
 
-        exclusion_repository: IExclusionRepository[DepartamentUserExclusionRepositoryParam] = \
-            DepartamentUserExclusionRepository(database)
+            exclusion_repository.delete(exclusion_repository_param)
 
-        exclusion_repository.delete(exclusion_repository_param)
+            session.commit()

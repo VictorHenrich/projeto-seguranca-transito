@@ -1,5 +1,4 @@
 from start import app
-from server.database import Database
 from patterns.repository import IGettingRepository
 from repositories.user import (
     UserGettingRepository,
@@ -16,13 +15,13 @@ class UserGettingService:
         )
 
     def execute(self, uuid_user: str) -> Usuario:
-        database: Database = app.databases.get_database()
+        with app.databases.create_session() as session:
+            repository_param: UserGettingRepositoryParam = \
+                self.__handle_repository_param(uuid_user)
 
-        repository_param: UserGettingRepositoryParam = \
-            self.__handle_repository_param(uuid_user)
+            repository: IGettingRepository[UserGettingRepositoryParam, Usuario] = \
+                UserGettingRepository(session)
 
-        repository: IGettingRepository[UserGettingRepositoryParam, Usuario] = UserGettingRepository(database)
+            user: Usuario = repository.get(repository_param)
 
-        user: Usuario = repository.get(repository_param)
-
-        return user
+            return user

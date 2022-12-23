@@ -16,14 +16,12 @@ class DepartamentUserCreationRepositoryParam:
 
 class DepartamentUserCreationRepository(BaseRepository):
     def create(self, param: DepartamentUserCreationRepositoryParam) -> None:
-        with self.database.create_session() as session:
-            departament_user: UsuarioDepartamento = UsuarioDepartamento()
+        departament_user: UsuarioDepartamento = UsuarioDepartamento()
 
-            departament_user.id_departamento = param.departament.id
-            departament_user.nome = param.name
-            departament_user.acesso = param.access
-            departament_user.senha = param.password
-            departament_user.cargo = param.position
+        departament_user.id_departamento = param.departament.id
+        departament_user.nome = param.name
+        departament_user.acesso = param.access
+        departament_user.senha = param.password
+        departament_user.cargo = param.position
 
-            session.add(departament_user)
-            session.commit()
+        self.session.add(departament_user)

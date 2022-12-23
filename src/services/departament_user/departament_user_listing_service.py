@@ -1,6 +1,5 @@
 from typing import List
 from start import app
-from server.database import Database
 from patterns.repository import IListingRepository
 from repositories.departament_user import (
     DepartamentUserListingRepository,
@@ -15,16 +14,15 @@ class DepartamentUserListingService:
         departament: Departamento
     ) -> List[UsuarioDepartamento]:
 
-        database: Database = app.databases.get_database()
+        with app.databases.create_session() as session:
+            listing_repository_param: DepartamentUserListingRepositoryParam = \
+                DepartamentUserListingRepositoryParam(
+                    departament=departament
+                )
 
-        listing_repository_param: DepartamentUserListingRepositoryParam = \
-            DepartamentUserListingRepositoryParam(
-                departament=departament
-            )
+            listing_repository: IListingRepository[DepartamentUserListingRepositoryParam, UsuarioDepartamento] = \
+                DepartamentUserListingRepository(session)
 
-        listing_repository: IListingRepository[DepartamentUserListingRepositoryParam, UsuarioDepartamento] = \
-            DepartamentUserListingRepository(database)
+            users: List[UsuarioDepartamento] = listing_repository.list(listing_repository_param)
 
-        users: List[UsuarioDepartamento] = listing_repository.list(listing_repository_param)
-
-        return users
+            return users

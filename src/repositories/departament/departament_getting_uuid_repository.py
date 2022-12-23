@@ -14,14 +14,13 @@ class DepartamentGettingUUIDRepositoryParam:
 
 class DepartamentGettingUUIDRepository(BaseRepository):
     def get(self, param: DepartamentGettingUUIDRepositoryParam) -> Departamento:
-        with self.database.create_session() as session:
-            departament: Departamento = \
-                session\
+        departament: Departamento = \
+            self.session\
                     .query(Departamento)\
                     .filter(Departamento.id_uuid == param.uuid_departament)\
                     .first()
 
-            if not departament:
-                raise DepartamentNotFoundError()
+        if not departament:
+            raise DepartamentNotFoundError()
 
-            return departament
+        return departament

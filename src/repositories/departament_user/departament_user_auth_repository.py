@@ -15,9 +15,8 @@ class DepartamentUserAuthRepositoryParam:
 
 class DepartamentUserAuthRepository(BaseRepository):
     def auth(self, param: DepartamentUserAuthRepositoryParam) -> UsuarioDepartamento:
-        with self.database.create_session() as session:
-            departament_user: UsuarioDepartamento = \
-                session\
+        departament_user: UsuarioDepartamento = \
+            self.session\
                     .query(UsuarioDepartamento)\
                     .join(Departamento, UsuarioDepartamento.id_departamento == Departamento.id)\
                     .filter(
@@ -27,7 +26,7 @@ class DepartamentUserAuthRepository(BaseRepository):
                     )\
                     .first()
 
-            if not departament_user:
-                raise UserNotFoundError()
+        if not departament_user:
+            raise UserNotFoundError()
 
-            return departament_user
+        return departament_user

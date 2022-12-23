@@ -13,15 +13,14 @@ class UserGettingRepositoryParam:
 
 class UserGettingRepository(BaseRepository):
     def get(self, param: UserGettingRepositoryParam) -> Usuario:
-        with self.database.create_session() as session:
-            user: Optional[Usuario] = \
-                session\
+        user: Optional[Usuario] = \
+            self.session\
                     .query(Usuario)\
                     .filter(Usuario.id_uuid == param.uuid_user)\
                     .first()
 
-            if not user:
-                raise UserNotFoundError()
+        if not user:
+            raise UserNotFoundError()
 
-            return user
+        return user
 

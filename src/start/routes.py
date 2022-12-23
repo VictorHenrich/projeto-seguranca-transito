@@ -10,6 +10,9 @@ from controllers.http.usuarios import (
 from controllers.http.usuarios_departamento import (
     CrudUsuariosDepartamentosController
 )
+from controllers.http.ocorrencias import (
+    CrudOcorrenciasController
+)
 
 
 
@@ -22,6 +25,9 @@ app.http.add_route(CrudUsuariosController, "/usuario/crud", "/usuario/crud/<uuid
 
 # CRUD DE USUÁRIOS DE DEPARTAMENTO
 app.http.add_route(CrudUsuariosDepartamentosController, "/departamento/usuario/crud", "/departamento/usuario/crud/<uuid:user_hash>")
+
+# CRUD DE OCORRÊNCIAS
+app.http.add_route(CrudOcorrenciasController, "/ocorrencia/crud", "/ocorrencia/crud/<uuid:occurrence_hash>")
 
 
 

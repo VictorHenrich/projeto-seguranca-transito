@@ -16,16 +16,14 @@ class UserExclusionRepositoryParam:
 
 class UserExclusionRepository(BaseRepository):
     def delete(self, param: UserExclusionRepositoryParam) -> None:
-        with self.database.create_session() as session:
-            getting_repostiory_param: UserGettingRepositoryParam = \
-                UserGettingRepositoryParam(
-                    uuid_user=param.uuid_ser
-                )
+        getting_repostiory_param: UserGettingRepositoryParam = \
+            UserGettingRepositoryParam(
+                uuid_user=param.uuid_ser
+            )
 
-            getting_repository: IGettingRepository[UserGettingRepositoryParam, Usuario] = \
-                UserGettingRepository(self.database)
+        getting_repository: IGettingRepository[UserGettingRepositoryParam, Usuario] = \
+            UserGettingRepository(self.session)
 
-            user: Usuario = getting_repository.get(getting_repostiory_param)
+        user: Usuario = getting_repository.get(getting_repostiory_param)
 
-            session.delete(user)
-            session.commit()
+        self.session.delete(user)

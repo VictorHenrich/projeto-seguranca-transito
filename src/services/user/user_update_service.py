@@ -52,19 +52,21 @@ class UserUpdateService:
         birthday: str,
         status: bool = False
     ) -> None:
-        database: Database = app.databases.get_database()
+        with app.databases.create_session() as session:
+            repository_param: UserUpdateRepositoryParam = \
+                self.__handle_repository_param(
+                    uuid_user=uuid_user,
+                    name=name,
+                    email=email,
+                    password=password,
+                    document=document,
+                    birthday=birthday,
+                    status=status
+                )
 
-        repository_param: UserUpdateRepositoryParam = \
-            self.__handle_repository_param(
-                uuid_user=uuid_user,
-                name=name,
-                email=email,
-                password=password,
-                document=document,
-                birthday=birthday,
-                status=status
-            )
+            repository: IUpdateRepository[UserUpdateRepositoryParam] = \
+                UserUpdateRepository(session)
 
-        repository: IUpdateRepository[UserUpdateRepositoryParam] = UserUpdateRepository(database)
+            repository.update(repository_param)
 
-        repository.update(repository_param)
+            session.commit()
