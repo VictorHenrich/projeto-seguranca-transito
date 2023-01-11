@@ -1,0 +1,2 @@
+from .usuario import AutenticacaoUsuarioController
+from .usuario_departamento import AutenticaoUsuarioDepartamentoController
