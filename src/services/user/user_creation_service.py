@@ -25,9 +25,12 @@ class UserCreationService:
 
         traety_password: str = password.strip()
 
-        treaty_birthday: Optional[date] = (
-            date(*(birthday.split("-"))) if birthday and len(birthday) else None
-        )
+        treaty_birthday: Optional[date] = None
+
+        if birthday and len(birthday):
+            treaty_birthday = date(
+                *([int(d) for d in birthday.split('-')])
+            )
 
         return UserCreationRepositoryParam(
             name=treaty_name,

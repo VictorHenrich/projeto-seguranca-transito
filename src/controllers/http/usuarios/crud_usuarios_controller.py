@@ -23,7 +23,7 @@ class UserRegistrationRequestBody:
     email: str
     cpf: str
     senha: str
-    data_aniversario: Optional[None] = None
+    data_nascimento: Optional[None] = None
 
 
 class CrudUsuariosController(Controller):
@@ -34,7 +34,7 @@ class CrudUsuariosController(Controller):
         service.execute(
             name=body_request.nome,
             document=body_request.cpf,
-            birthday=body_request.data_aniversario,
+            birthday=body_request.data_nascimento,
             email=body_request.email,
             password=body_request.senha,
         )
@@ -51,7 +51,7 @@ class CrudUsuariosController(Controller):
         service.execute(
             name=body_request.nome,
             document=body_request.cpf,
-            birthday=body_request.data_aniversario,
+            birthday=body_request.data_nascimento,
             email=body_request.email,
             password=body_request.senha,
             uuid_user=auth.id_uuid,
