@@ -1,11 +1,7 @@
-from typing import (
-    Protocol, 
-    Generic,
-    TypeVar
-)
+from typing import Protocol, Generic, TypeVar
 
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 class IUpdateRepository(Protocol, Generic[T]):

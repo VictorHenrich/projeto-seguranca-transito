@@ -3,11 +3,10 @@ from flask import request
 from server.http import Middleware, ResponseDefaultJSON, ResponseFailure
 
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 JsonData: TypeAlias = Mapping[str, Any]
 ParamsData: TypeAlias = Mapping[str, T]
-
 
 
 class BodyRequestValidationMiddleware(Middleware):
@@ -18,7 +17,6 @@ class BodyRequestValidationMiddleware(Middleware):
         dados_corpo: T = classe(**dados_json)
 
         return {"body_request": dados_corpo}
-
 
     @classmethod
     def catch(cls, exception: Exception) -> ResponseDefaultJSON:

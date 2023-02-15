@@ -4,14 +4,12 @@ from patterns.repository import BaseRepository
 from models import Ocorrencia, Usuario, Departamento
 
 
-
 @dataclass
 class OccurrenceCreationRepositoryParam:
     user: Usuario
     departament: Departamento
     description: str
     obs: str
-
 
 
 class OccurrenceCreationRepository(BaseRepository):

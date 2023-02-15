@@ -1,24 +1,12 @@
 from jwt import PyJWT
-from typing import (
-    Sequence, 
-    TypeAlias, 
-    Any, 
-    Mapping, 
-    TypeVar, 
-    Type,
-    Optional,
-    Union
-)
+from typing import Sequence, TypeAlias, Any, Mapping, TypeVar, Type, Optional, Union
 
 
-
-T = TypeVar('T')
+T = TypeVar("T")
 
 JWTOptions: TypeAlias = Mapping[str, Any]
 
 JWTPayload: TypeAlias = Union[JWTOptions, T]
-
-
 
 
 class UtilsJWT:
@@ -26,22 +14,20 @@ class UtilsJWT:
 
     @classmethod
     def decode(
-        cls, 
-        token: str, 
+        cls,
+        token: str,
         key: str,
         class_: Optional[Type[T]] = None,
         **options: JWTOptions
     ) -> JWTPayload:
 
-        payload: JWTPayload = \
-            PyJWT().decode(token, key, list(cls.algorithm), **options)
+        payload: JWTPayload = PyJWT().decode(token, key, list(cls.algorithm), **options)
 
         if class_:
             return class_(**payload)
 
         else:
             return payload
-
 
     @classmethod
     def encode(cls, payload: Mapping[str, Any], key: str, **options: JWTOptions) -> str:

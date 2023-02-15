@@ -1,24 +1,24 @@
 from .occurrence_creation_repository import (
     OccurrenceCreationRepository,
-    OccurrenceCreationRepositoryParam
+    OccurrenceCreationRepositoryParam,
 )
 
 from .occurrence_exclusion_repository import (
     OccurrenceExclusionRepository,
-    OccurrenceExclusionRepositoryParam
+    OccurrenceExclusionRepositoryParam,
 )
 
 from .occurrence_getting_repository import (
     OccurrenceGettingRepository,
-    OccurrenceGettingRepositoryParam
+    OccurrenceGettingRepositoryParam,
 )
 
 from .occurrence_listing_repository import (
     OccurrenceListingRepository,
-    OccurrenceListingRepositoryParam
+    OccurrenceListingRepositoryParam,
 )
 
 from .occurrence_update_repository import (
     OccurrenceUpdateRepository,
-    OccurrenceUpdateRepositoryParam
+    OccurrenceUpdateRepositoryParam,
 )

@@ -4,7 +4,6 @@ from abc import ABC
 from .exceptions import NameControllerNotDefinedError
 
 
-
 class Controller(Namespace, ABC):
     name: str
 

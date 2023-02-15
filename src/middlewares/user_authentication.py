@@ -8,31 +8,31 @@ from patterns.service import IService
 from models import Usuario
 from services.user import UserGettingService
 from exceptions import (
-    AuthorizationNotFoundHeader, 
+    AuthorizationNotFoundHeader,
     TokenTypeNotBearerError,
     ExpiredTokenError,
-    UserNotFoundError
+    UserNotFoundError,
 )
 from utils.entities import PayloadUserJWT
 from start import app
 
 
-
 class UserAuthenticationMiddleware(Middleware):
     @classmethod
     def handle(cls):
-        token: Optional[str] = request.headers.get('Authorization')
+        token: Optional[str] = request.headers.get("Authorization")
 
         if not token:
             raise AuthorizationNotFoundHeader()
 
-        if 'Bearer' not in token:
+        if "Bearer" not in token:
             raise TokenTypeNotBearerError()
 
-        token = token.replace('Bearer ', '')
+        token = token.replace("Bearer ", "")
 
-        payload: PayloadUserJWT = \
-            UtilsJWT.decode(token, app.http.configs.secret_key, PayloadUserJWT)
+        payload: PayloadUserJWT = UtilsJWT.decode(
+            token, app.http.configs.secret_key, PayloadUserJWT
+        )
 
         if payload.expired <= datetime.now().timestamp():
             raise ExpiredTokenError()
@@ -50,11 +50,10 @@ class UserAuthenticationMiddleware(Middleware):
             ExpiredTokenError,
             UserNotFoundError,
             TokenTypeNotBearerError,
-            AuthorizationNotFoundHeader
+            AuthorizationNotFoundHeader,
         )
 
         if validation:
             return ResponseInauthorized(data=str(exception))
 
         raise exception
-        

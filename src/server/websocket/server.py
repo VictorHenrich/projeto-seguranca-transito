@@ -10,32 +10,22 @@ class ConfigSocket(Protocol):
     debug: bool = False
 
 
-
 class ServerSocket(SocketIO):
-    def __init__(self, 
-        app: ServerHttp,
-        config: ConfigSocket,
-        **options: Mapping[str, Any]
+    def __init__(
+        self, app: ServerHttp, config: ConfigSocket, **options: Mapping[str, Any]
     ):
         self.__app: ServerHttp = app
 
         self.__config: ConfigSocket = config
 
-        super().__init__(
-            app.application,
-            **options
-        )
+        super().__init__(app.application, **options)
 
     @property
     def config(self) -> ConfigSocket:
         return self.__config
 
     def start_app(self) -> None:
-        self.run(
-            self.__app.application,
-            self.__config.host,
-            self.__config.port
-        )
+        self.run(self.__app.application, self.__config.host, self.__config.port)
 
     def add_route(self, controller: Type[Controller]) -> None:
         self.on_namespace(controller())

@@ -3,10 +3,7 @@ from datetime import date
 
 from patterns.repository import IGettingRepository, BaseRepository
 from models import Usuario
-from .user_getting_repository import (
-    UserGettingRepository,
-    UserGettingRepositoryParam
-)
+from .user_getting_repository import UserGettingRepository, UserGettingRepositoryParam
 
 
 @dataclass
@@ -22,13 +19,13 @@ class UserUpdateRepositoryParam:
 
 class UserUpdateRepository(BaseRepository):
     def update(self, param: UserUpdateRepositoryParam) -> None:
-        getting_repository_param: UserGettingRepositoryParam = \
-            UserGettingRepositoryParam(
-                uuid_user=param.uuid_user
-            )
+        getting_repository_param: UserGettingRepositoryParam = (
+            UserGettingRepositoryParam(uuid_user=param.uuid_user)
+        )
 
-        getting_repository: IGettingRepository[UserGettingRepositoryParam, Usuario] = \
-            UserGettingRepository(self.session)
+        getting_repository: IGettingRepository[
+            UserGettingRepositoryParam, Usuario
+        ] = UserGettingRepository(self.session)
 
         user: Usuario = getting_repository.get(getting_repository_param)
 

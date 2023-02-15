@@ -6,7 +6,6 @@ from flask_restful import Api
 from .controller import Controller
 
 
-
 @dataclass
 class HttpServerConfig:
     host: str
@@ -37,8 +36,10 @@ class HttpServer(Api):
         self.__application.run(
             host=self.__configs.host,
             port=self.__configs.port,
-            debug=self.__configs.debug
+            debug=self.__configs.debug,
         )
 
-    def add_route(self, controller: Controller, *urls: str, **kwargs: Mapping[str, Any]):
+    def add_route(
+        self, controller: Controller, *urls: str, **kwargs: Mapping[str, Any]
+    ):
         return self.add_resource(controller, *urls, **kwargs)

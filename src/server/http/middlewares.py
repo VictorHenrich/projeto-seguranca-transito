@@ -1,14 +1,14 @@
 from abc import ABC, abstractclassmethod
 from flask import Response
 from typing import (
-    Any, 
-    Mapping, 
-    Optional, 
-    Sequence, 
+    Any,
+    Mapping,
+    Optional,
+    Sequence,
     Callable,
     TypeAlias,
     TypeVar,
-    Generic
+    Generic,
 )
 
 
@@ -21,10 +21,11 @@ MiddlewareHandled: TypeAlias = Optional[Mapping[str, Any]]
 MiddlewareTarget: TypeAlias = Callable[[Any], Response]
 
 
-
 class Middleware(ABC):
     @abstractclassmethod
-    def handle(cls, *args: MiddlewareArgs, **kwargs: MiddlewareKwargs) -> MiddlewareHandled:
+    def handle(
+        cls, *args: MiddlewareArgs, **kwargs: MiddlewareKwargs
+    ) -> MiddlewareHandled:
         pass
 
     @classmethod
@@ -35,8 +36,8 @@ class Middleware(ABC):
     def apply(cls, *args: MiddlewareArgs, **kwargs: MiddlewareKwargs) -> Callable:
 
         """
-            Isto é um decorator responsável por aplicar alguma funcionalidade intermediaria ao metodo 
-            http criada a partir da classe Middleware
+        Isto é um decorator responsável por aplicar alguma funcionalidade intermediaria ao metodo
+        http criada a partir da classe Middleware
         """
 
         def wrapper(target: MiddlewareTarget) -> MiddlewareTarget:

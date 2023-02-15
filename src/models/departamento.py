@@ -1,24 +1,22 @@
-from sqlalchemy import (
-    Column,
-    Integer,
-    String
-)
+from sqlalchemy import Column, Integer, String
 from uuid import uuid4
 from sqlalchemy.dialects.postgresql import UUID
 from start import app
 from server.database import Database
 
 
-
 db: Database = app.databases.get_database()
-
 
 
 class Departamento(db.Model):
     __tablename__: str = "departamentos"
 
-    id: int = Column(Integer, primary_key=True, nullable=False, autoincrement=True, unique=True)
-    id_uuid: str = Column(UUID(False), unique=True, nullable=False, default=lambda _: str(uuid4()))
+    id: int = Column(
+        Integer, primary_key=True, nullable=False, autoincrement=True, unique=True
+    )
+    id_uuid: str = Column(
+        UUID(False), unique=True, nullable=False, default=lambda _: str(uuid4())
+    )
     codigo: int = Column(Integer, nullable=False, autoincrement=True, unique=True)
     nome: str = Column(String(250), nullable=False)
     unidade: str = Column(String(200))

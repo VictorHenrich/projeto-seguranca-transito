@@ -6,7 +6,7 @@ from typing import (
     Sequence,
     Mapping,
     Optional,
-    Any
+    Any,
 )
 
 
@@ -14,7 +14,7 @@ Args: TypeAlias = Sequence[Any]
 
 Kwargs: TypeAlias = Mapping[str, Any]
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 class IService(Protocol, Generic[T]):

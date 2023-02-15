@@ -1,14 +1,10 @@
-from typing import (
-    Protocol,
-    TypeVar,
-    Generic
-)
+from typing import Protocol, TypeVar, Generic
 from sqlalchemy.orm.decl_api import DeclarativeMeta
 
 
-T = TypeVar('T')
+T = TypeVar("T")
 
-M = TypeVar('M', bound=DeclarativeMeta)
+M = TypeVar("M", bound=DeclarativeMeta)
 
 
 class IGettingRepository(Protocol, Generic[T, M]):

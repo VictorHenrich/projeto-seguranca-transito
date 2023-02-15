@@ -1,29 +1,29 @@
 from .departament_user_creation_repository import (
     DepartamentUserCreationRepository,
-    DepartamentUserCreationRepositoryParam
+    DepartamentUserCreationRepositoryParam,
 )
 
 from .departament_user_exclusion_repository import (
     DepartamentUserExclusionRepository,
-    DepartamentUserExclusionRepositoryParam
+    DepartamentUserExclusionRepositoryParam,
 )
 
 from .departament_user_getting_repository import (
     DepartamentUserGettingRepository,
-    DepartamentUserGettingRepositoryParam
+    DepartamentUserGettingRepositoryParam,
 )
 
 from .departament_user_update_repository import (
     DepartamentUserUpdateRepository,
-    DepartamentUserUpdateRepositoryParam
+    DepartamentUserUpdateRepositoryParam,
 )
 
 from .departament_user_listing_repository import (
     DepartamentUserListingRepository,
-    DepartamentUserListingRepositoryParam
+    DepartamentUserListingRepositoryParam,
 )
 
 from .departament_user_auth_repository import (
     DepartamentUserAuthRepository,
-    DepartamentUserAuthRepositoryParam
+    DepartamentUserAuthRepositoryParam,
 )

@@ -1,9 +1,9 @@
 from .departament_getting_repository import (
     DepartamentGettingRepository,
-    DepartamentGettingRepositoryParam
+    DepartamentGettingRepositoryParam,
 )
 
 from .departament_getting_uuid_repository import (
     DepartamentGettingUUIDRepository,
-    DepartamentGettingUUIDRepositoryParam
+    DepartamentGettingUUIDRepositoryParam,
 )

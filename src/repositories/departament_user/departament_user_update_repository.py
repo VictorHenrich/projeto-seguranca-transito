@@ -4,9 +4,8 @@ from patterns.repository import BaseRepository, IGettingRepository
 from models import UsuarioDepartamento, Departamento
 from .departament_user_getting_repository import (
     DepartamentUserGettingRepository,
-    DepartamentUserGettingRepositoryParam
+    DepartamentUserGettingRepositoryParam,
 )
-
 
 
 @dataclass
@@ -19,19 +18,22 @@ class DepartamentUserUpdateRepositoryParam:
     position: str
 
 
-
 class DepartamentUserUpdateRepository(BaseRepository):
     def update(self, param: DepartamentUserUpdateRepositoryParam) -> None:
-        getting_repository: IGettingRepository[DepartamentUserGettingRepositoryParam, UsuarioDepartamento] = \
-            DepartamentUserGettingRepository(self.session)
+        getting_repository: IGettingRepository[
+            DepartamentUserGettingRepositoryParam, UsuarioDepartamento
+        ] = DepartamentUserGettingRepository(self.session)
 
-        getting_repository_param: DepartamentUserGettingRepositoryParam = \
+        getting_repository_param: DepartamentUserGettingRepositoryParam = (
             DepartamentUserGettingRepositoryParam(
                 uuid_departament_user=param.uuid_departament_user,
-                departament=param.departament
+                departament=param.departament,
             )
+        )
 
-        user_departament: UsuarioDepartamento = getting_repository.get(getting_repository_param)
+        user_departament: UsuarioDepartamento = getting_repository.get(
+            getting_repository_param
+        )
 
         user_departament.nome = param.name
         user_departament.acesso = param.access

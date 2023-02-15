@@ -3,8 +3,6 @@ from patterns.repository import BaseRepository
 from models import Departamento, UsuarioDepartamento
 
 
-
-
 @dataclass
 class DepartamentUserCreationRepositoryParam:
     departament: Departamento

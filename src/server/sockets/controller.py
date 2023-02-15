@@ -3,7 +3,6 @@ from abc import ABC
 from typing import Optional
 
 
-
 class Controller(ABC, Namespace):
     name: str = ""
 

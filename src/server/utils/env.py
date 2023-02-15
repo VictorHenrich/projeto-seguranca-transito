@@ -4,16 +4,13 @@ from typing import Mapping, Optional, Union, Any
 from .execeptions import FileEnvNotFoundError
 
 
-
-
 EnvPathParameter = Optional[Union[str, Path]]
 EnvReturn = Mapping[str, Optional[str]]
 EnvOptions = Mapping[str, Any]
 
 
-
 class UtilsEnv:
-    __default_path: list[Path] = list(Path.cwd().glob('**/*.env'))
+    __default_path: list[Path] = list(Path.cwd().glob("**/*.env"))
 
     @classmethod
     def __handle_path(cls, path: EnvPathParameter) -> Path:
@@ -21,18 +18,21 @@ class UtilsEnv:
 
         if not Path(path_).exists():
             raise FileEnvNotFoundError()
-            
 
         return Path(path_)
 
     @classmethod
-    def get_values(cls, path: EnvPathParameter = False, **options: EnvOptions) -> EnvReturn:
+    def get_values(
+        cls, path: EnvPathParameter = False, **options: EnvOptions
+    ) -> EnvReturn:
         path_: Path = cls.__handle_path(path)
 
         return dotenv_values(path_, **options)
 
     @classmethod
-    def get_value(cls,key: str, path: EnvPathParameter = False, **options: EnvOptions) -> EnvReturn:
+    def get_value(
+        cls, key: str, path: EnvPathParameter = False, **options: EnvOptions
+    ) -> EnvReturn:
         path_: Path = cls.__default_path(path)
 
         return get_key(path_, key, **options)

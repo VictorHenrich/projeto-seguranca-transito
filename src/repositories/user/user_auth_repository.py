@@ -13,14 +13,13 @@ class UserAuthRepositoryParam:
 
 class UserAuthRepository(BaseRepository):
     def auth(self, param: UserAuthRepositoryParam) -> Usuario:
-        user: Usuario = \
-            self.session\
-                    .query(Usuario)\
-                    .filter(
-                        Usuario.email == param.email.upper(),
-                        Usuario.senha == param.password
-                    )\
-                    .first()
+        user: Usuario = (
+            self.session.query(Usuario)
+            .filter(
+                Usuario.email == param.email.upper(), Usuario.senha == param.password
+            )
+            .first()
+        )
 
         if not user:
             raise UserNotFoundError()

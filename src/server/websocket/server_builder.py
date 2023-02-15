@@ -12,7 +12,6 @@ class ServerSocketBuilder:
     debug: bool = False
     app: Optional[ServerHttp] = None
 
-
     def set_host(self, host: str) -> ServerSocketBuilder:
         self.host = host
 
@@ -34,7 +33,4 @@ class ServerSocketBuilder:
         return self
 
     def build(self) -> ServerSocket:
-        return ServerSocket(
-            self.app,
-            self
-        )
+        return ServerSocket(self.app, self)

@@ -13,17 +13,11 @@ class SocketServerConfig:
     debug: bool = True
 
 
-
 class SocketServer(SocketIO):
-    def __init__(
-        self, 
-        http: Optional[HttpServer], 
-        config: SocketServerConfig
-    ) -> None:
+    def __init__(self, http: Optional[HttpServer], config: SocketServerConfig) -> None:
         self.__configs: SocketServerConfig = config
 
-        self.__application: Flask = \
-            http.application if http else Flask(__name__)
+        self.__application: Flask = http.application if http else Flask(__name__)
 
         super().__init__(self.__application)
 

@@ -32,7 +32,9 @@ class Database:
     def name(self) -> str:
         return self.__name
 
-    def create_session(self, **options: Mapping[str, Any]) -> Union[Session, AsyncSession]:
+    def create_session(
+        self, **options: Mapping[str, Any]
+    ) -> Union[Session, AsyncSession]:
         return sessionmaker(
             self.__engine,
             Session if type(self.__engine) is Engine else AsyncSession,
@@ -51,7 +53,7 @@ class Database:
             self.__migrate_default(drop_tables)
 
         else:
-           asyncio.run(self.__migrate_async(drop_tables))
+            asyncio.run(self.__migrate_async(drop_tables))
 
     def __migrate_default(self, drop_tables: bool) -> None:
         if type(self.__engine) is not Engine:
@@ -65,7 +67,7 @@ class Database:
     async def __migrate_async(self, drop_tables: bool) -> None:
         if self.__engine is not AsyncEngine:
             raise InstanceEngineError()
-            
+
         async with self.__engine.begin() as transaction:
             if drop_tables:
                 await transaction.run_sync(self.__Model.metadata.drop_all)

@@ -1,15 +1,13 @@
 from start import app
 
 
-#@app.initialize
-def migrate():
-    import models
+# @app.initialize
+# def migrate():
+#     import models
 
-    app\
-        .databases\
-        .migrate(True)
+#     app.databases.migrate(True)
 
-    print('Migração feita com sucesso!')
+#     print("Migração feita com sucesso!")
 
 
 @app.initialize
