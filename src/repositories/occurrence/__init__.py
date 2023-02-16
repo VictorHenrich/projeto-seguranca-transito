@@ -8,9 +8,9 @@ from .occurrence_exclusion_repository import (
     OccurrenceExclusionRepositoryParam,
 )
 
-from .occurrence_getting_repository import (
-    OccurrenceGettingRepository,
-    OccurrenceGettingRepositoryParam,
+from .occurrence_find_repository import (
+    OccurrenceFindRepository,
+    OccurrenceFindRepositoryParams,
 )
 
 from .occurrence_listing_repository import (

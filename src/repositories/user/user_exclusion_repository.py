@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from patterns.repository import BaseRepository, IGettingRepository
+from patterns.repository import BaseRepository, IFindRepository
 from models import Usuario
 from .user_getting_repository import UserGettingRepository, UserGettingRepositoryParam
 
@@ -16,7 +16,7 @@ class UserExclusionRepository(BaseRepository):
             UserGettingRepositoryParam(uuid_user=param.uuid_ser)
         )
 
-        getting_repository: IGettingRepository[
+        getting_repository: IFindRepository[
             UserGettingRepositoryParam, Usuario
         ] = UserGettingRepository(self.session)
 

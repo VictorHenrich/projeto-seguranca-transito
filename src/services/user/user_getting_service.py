@@ -1,5 +1,5 @@
 from start import app
-from patterns.repository import IGettingRepository
+from patterns.repository import IFindRepository
 from repositories.user import UserGettingRepository, UserGettingRepositoryParam
 from models import Usuario
 
@@ -14,7 +14,7 @@ class UserGettingService:
                 self.__handle_repository_param(uuid_user)
             )
 
-            repository: IGettingRepository[
+            repository: IFindRepository[
                 UserGettingRepositoryParam, Usuario
             ] = UserGettingRepository(session)
 

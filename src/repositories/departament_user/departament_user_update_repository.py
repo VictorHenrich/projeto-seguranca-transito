@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 
-from patterns.repository import BaseRepository, IGettingRepository
+from patterns.repository import BaseRepository, IFindRepository
 from models import UsuarioDepartamento, Departamento
-from .departament_user_getting_repository import (
-    DepartamentUserGettingRepository,
-    DepartamentUserGettingRepositoryParam,
+from .departament_user_find_repository import (
+    DepartamentUserFindRepository,
+    DepartamentUserFindRepositoryParams,
 )
 
 
@@ -18,14 +18,20 @@ class DepartamentUserUpdateRepositoryParam:
     position: str
 
 
+@dataclass
+class DepartamentUserFindProps:
+    uuid_departament_user: str
+    departament: Departamento
+
+
 class DepartamentUserUpdateRepository(BaseRepository):
     def update(self, param: DepartamentUserUpdateRepositoryParam) -> None:
-        getting_repository: IGettingRepository[
-            DepartamentUserGettingRepositoryParam, UsuarioDepartamento
-        ] = DepartamentUserGettingRepository(self.session)
+        getting_repository: IFindRepository[
+            DepartamentUserFindRepositoryParams, UsuarioDepartamento
+        ] = DepartamentUserFindRepository(self.session)
 
-        getting_repository_param: DepartamentUserGettingRepositoryParam = (
-            DepartamentUserGettingRepositoryParam(
+        getting_repository_param: DepartamentUserFindRepositoryParams = (
+            DepartamentUserFindProps(
                 uuid_departament_user=param.uuid_departament_user,
                 departament=param.departament,
             )

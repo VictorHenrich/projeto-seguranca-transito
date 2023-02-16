@@ -8,9 +8,9 @@ from .departament_user_exclusion_repository import (
     DepartamentUserExclusionRepositoryParam,
 )
 
-from .departament_user_getting_repository import (
-    DepartamentUserGettingRepository,
-    DepartamentUserGettingRepositoryParam,
+from .departament_user_find_repository import (
+    DepartamentUserFindRepository,
+    DepartamentUserFindRepositoryParams,
 )
 
 from .departament_user_update_repository import (

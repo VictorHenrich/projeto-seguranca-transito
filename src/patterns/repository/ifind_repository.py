@@ -7,6 +7,6 @@ T = TypeVar("T")
 M = TypeVar("M", bound=DeclarativeMeta)
 
 
-class IGettingRepository(Protocol, Generic[T, M]):
-    def get(self, param: T) -> M:
+class IFindRepository(Protocol, Generic[T, M]):
+    def get(self, params: T) -> M:
         pass

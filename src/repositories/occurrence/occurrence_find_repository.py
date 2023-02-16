@@ -1,17 +1,16 @@
-from dataclasses import dataclass
+from typing import Protocol
 
 from patterns.repository import BaseRepository
 from models import Ocorrencia
 from exceptions import OccurrenceNotFoundError
 
 
-@dataclass
-class OccurrenceGettingRepositoryParam:
+class OccurrenceFindRepositoryParams(Protocol):
     uuid_occurrence: str
 
 
-class OccurrenceGettingRepository(BaseRepository):
-    def get(self, param: OccurrenceGettingRepositoryParam) -> Ocorrencia:
+class OccurrenceFindRepository(BaseRepository):
+    def get(self, param: OccurrenceFindRepositoryParams) -> Ocorrencia:
         occurrence: Ocorrencia = (
             self.session.query(Ocorrencia)
             .filter(Ocorrencia.id_uuid == param.uuid_occurrence)

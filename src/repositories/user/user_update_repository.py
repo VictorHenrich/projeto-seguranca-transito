@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import date
 
-from patterns.repository import IGettingRepository, BaseRepository
+from patterns.repository import IFindRepository, BaseRepository
 from models import Usuario
 from .user_getting_repository import UserGettingRepository, UserGettingRepositoryParam
 
@@ -23,7 +23,7 @@ class UserUpdateRepository(BaseRepository):
             UserGettingRepositoryParam(uuid_user=param.uuid_user)
         )
 
-        getting_repository: IGettingRepository[
+        getting_repository: IFindRepository[
             UserGettingRepositoryParam, Usuario
         ] = UserGettingRepository(self.session)
 

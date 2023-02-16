@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 
-from patterns.repository import BaseRepository, IGettingRepository
+from patterns.repository import BaseRepository, IFindRepository
 from models import Ocorrencia
-from .occurrence_getting_repository import (
-    OccurrenceGettingRepository,
-    OccurrenceGettingRepositoryParam,
+from .occurrence_find_repository import (
+    OccurrenceFindRepository,
+    OccurrenceFindRepositoryParams,
 )
 
 
@@ -15,14 +15,10 @@ class OccurrenceExclusionRepositoryParam:
 
 class OccurrenceExclusionRepository(BaseRepository):
     def delete(self, param: OccurrenceExclusionRepositoryParam) -> None:
-        getting_repository_param: OccurrenceGettingRepositoryParam = (
-            OccurrenceGettingRepositoryParam(uuid_occurrence=param.uuid_occurrence)
-        )
+        getting_repository: IFindRepository[
+            OccurrenceFindRepositoryParams, Ocorrencia
+        ] = OccurrenceFindRepository(self.session)
 
-        getting_repository: IGettingRepository[
-            OccurrenceGettingRepositoryParam, Ocorrencia
-        ] = OccurrenceGettingRepository(self.session)
-
-        occurrence: Ocorrencia = getting_repository.get(getting_repository_param)
+        occurrence: Ocorrencia = getting_repository.get(param)
 
         self.session.delete(occurrence)

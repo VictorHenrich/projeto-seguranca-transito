@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from patterns.repository import BaseRepository, IGettingRepository
+from patterns.repository import BaseRepository, IFindRepository
 from models import Usuario
 from exceptions import UserNotFoundError
 

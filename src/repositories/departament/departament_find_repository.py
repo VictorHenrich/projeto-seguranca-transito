@@ -1,20 +1,19 @@
-from dataclasses import dataclass
+from typing import Protocol
 
 from patterns.repository import BaseRepository
 from models import Departamento
 from exceptions import DepartamentNotFoundError
 
 
-@dataclass
-class DepartamentGettingUUIDRepositoryParam:
-    uuid_departament: str
+class DepartamentFindRepositoryParams(Protocol):
+    departament_id: str
 
 
-class DepartamentGettingUUIDRepository(BaseRepository):
-    def get(self, param: DepartamentGettingUUIDRepositoryParam) -> Departamento:
+class DepartamentFindRepository(BaseRepository):
+    def get(self, params: DepartamentFindRepositoryParams) -> Departamento:
         departament: Departamento = (
             self.session.query(Departamento)
-            .filter(Departamento.id_uuid == param.uuid_departament)
+            .filter(Departamento.id == params.departament_id)
             .first()
         )
 
