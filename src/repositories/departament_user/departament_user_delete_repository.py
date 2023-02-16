@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Protocol
 
 from patterns.repository import BaseRepository, IFindRepository
 from models import UsuarioDepartamento, Departamento
@@ -8,8 +9,8 @@ from .departament_user_find_repository import (
 )
 
 
-@dataclass
-class DepartamentUserExclusionRepositoryParam:
+
+class DepartamentUserDeleteRepositoryParams(Protocol):
     departament: str
     uuid_departament_user: str
 
@@ -20,8 +21,8 @@ class DepartamentUserFindProps:
     departament: Departamento
 
 
-class DepartamentUserExclusionRepository(BaseRepository):
-    def delete(self, params: DepartamentUserExclusionRepositoryParam) -> None:
+class DepartamentUserDeleteRepository(BaseRepository):
+    def delete(self, params: DepartamentUserDeleteRepositoryParams) -> None:
         getting_repository: IFindRepository[
             DepartamentUserFindRepositoryParams, UsuarioDepartamento
         ] = DepartamentUserFindRepository(self.session)

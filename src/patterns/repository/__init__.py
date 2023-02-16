@@ -1,5 +1,5 @@
 from .icreate_repository import ICreateRepository
-from .iexclusion_repository import IExclusionRepository
+from .idelete_repository import IDeleteRepository
 from .ifind_repository import IFindRepository
 from .ifindmany_repository import IFindManyRepository
 from .iupdate_repository import IUpdateRepository

@@ -25,15 +25,15 @@ class DepartamentUserFindProps:
 
 
 class DepartamentUserUpdateRepository(BaseRepository):
-    def update(self, param: DepartamentUserUpdateRepositoryParam) -> None:
+    def update(self, params: DepartamentUserUpdateRepositoryParam) -> None:
         getting_repository: IFindRepository[
             DepartamentUserFindRepositoryParams, UsuarioDepartamento
         ] = DepartamentUserFindRepository(self.session)
 
         getting_repository_param: DepartamentUserFindRepositoryParams = (
             DepartamentUserFindProps(
-                uuid_departament_user=param.uuid_departament_user,
-                departament=param.departament,
+                uuid_departament_user=params.uuid_departament_user,
+                departament=params.departament,
             )
         )
 
@@ -41,9 +41,9 @@ class DepartamentUserUpdateRepository(BaseRepository):
             getting_repository_param
         )
 
-        user_departament.nome = param.name
-        user_departament.acesso = param.access
-        user_departament.senha = param.password
-        user_departament.cargo = param.position
+        user_departament.nome = params.name
+        user_departament.acesso = params.access
+        user_departament.senha = params.password
+        user_departament.cargo = params.position
 
         self.session.add(user_departament)

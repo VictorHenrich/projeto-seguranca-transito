@@ -3,9 +3,9 @@ from .departament_user_create_repository import (
     DepartamentUserCreateRepositoryParam,
 )
 
-from .departament_user_exclusion_repository import (
-    DepartamentUserExclusionRepository,
-    DepartamentUserExclusionRepositoryParam,
+from .departament_user_delete_repository import (
+    DepartamentUserDeleteRepository,
+    DepartamentUserDeleteRepositoryParams,
 )
 
 from .departament_user_find_repository import (

@@ -3,9 +3,9 @@ from .occurrence_create_repository import (
     OccurrenceCreateRepositoryParam,
 )
 
-from .occurrence_exclusion_repository import (
-    OccurrenceExclusionRepository,
-    OccurrenceExclusionRepositoryParam,
+from .occurrence_delete_repository import (
+    OccurrenceDeleteRepository,
+    OccurrenceDeleteRepositoryParams,
 )
 
 from .occurrence_find_repository import (

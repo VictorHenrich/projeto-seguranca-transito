@@ -1,10 +1,11 @@
 from typing import Protocol, Generic, TypeVar
-from sqlalchemy.orm.decl_api import DeclarativeMeta
+
+from models import BaseModel
 
 
 T = TypeVar("T")
 
-M = TypeVar("M", bound=DeclarativeMeta)
+M = TypeVar("M", bound=BaseModel)
 
 
 class IAuthRepository(Protocol, Generic[T, M]):

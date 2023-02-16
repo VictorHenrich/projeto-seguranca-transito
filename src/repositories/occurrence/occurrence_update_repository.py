@@ -21,18 +21,18 @@ class OccurrenceFindProps:
 
 
 class OccurrenceUpdateRepository(BaseRepository):
-    def update(self, param: OccurrenceUpdateRepositoryParam) -> None:
+    def update(self, params: OccurrenceUpdateRepositoryParam) -> None:
         getting_repository: IFindRepository[
             OccurrenceFindRepositoryParams, Ocorrencia
         ] = OccurrenceFindRepository(self.session)
 
         getting_repository_param: OccurrenceFindRepositoryParams = OccurrenceFindProps(
-            uuid_occurrence=param.uuid_occurrence
+            uuid_occurrence=params.uuid_occurrence
         )
 
         occurrence: Ocorrencia = getting_repository.get(getting_repository_param)
 
-        occurrence.descricao = param.description
-        occurrence.obs = param.obs
+        occurrence.descricao = params.description
+        occurrence.obs = params.obs
 
         self.session.add(occurrence)
