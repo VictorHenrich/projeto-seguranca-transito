@@ -5,7 +5,6 @@ from .base_model import BaseModel
 from .departamento import Departamento
 
 
-
 class UsuarioDepartamento(BaseModel):
     __tablename__: str = "usuarios_departamentos"
 

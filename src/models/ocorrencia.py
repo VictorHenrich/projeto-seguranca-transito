@@ -6,7 +6,6 @@ from .usuario import Usuario
 from .departamento import Departamento
 
 
-
 class Ocorrencia(BaseModel):
     __tablename__: str = "ocorrencias"
 

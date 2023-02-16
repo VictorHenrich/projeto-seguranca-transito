@@ -35,8 +35,5 @@ app.http.add_route(
     "/ocorrencia/crud/<uuid:occurrence_hash>",
 )
 
-#CRUD DE DEPARTAMENTOS
-app.http.add_route(
-    CrudDepartamentoController,
-    "/departamento/crud"
-)
+# CRUD DE DEPARTAMENTOS
+app.http.add_route(CrudDepartamentoController, "/departamento/crud")

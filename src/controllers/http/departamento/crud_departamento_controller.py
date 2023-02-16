@@ -33,7 +33,7 @@ class CrudDepartamentoController(Controller):
             city=body_request.cidade,
             district=body_request.bairro,
             street=body_request.logradouro,
-            complement=body_request.complemento
+            complement=body_request.complemento,
         )
 
         return ResponseSuccess()

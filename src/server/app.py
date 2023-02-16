@@ -1,11 +1,19 @@
-from typing import Optional, Callable, Coroutine, Union, Any, Mapping, Sequence, TypeAlias
+from typing import (
+    Optional,
+    Callable,
+    Coroutine,
+    Union,
+    Any,
+    Mapping,
+    Sequence,
+    TypeAlias,
+)
 import asyncio
 from threading import Thread
 from server.http import HttpServer, HttpServerConfig
 from server.sockets import SocketServer, SocketServerConfig
 from server.database import Databases
 from server.database.dialects import MySQL, Postgres, DialectDefaultBuilder
-
 
 
 Target: TypeAlias = Callable[[None], None]
@@ -125,9 +133,7 @@ class AppFactory:
     ) -> App:
         instance_http: HttpServer = cls.__handle_http(http)
         instance_databases: Databases = cls.__handle_databases(databases)
-        instance_websocket: WebSocket = cls.__handle_websocket(
-            instance_http, websocket
-        )
+        instance_websocket: WebSocket = cls.__handle_websocket(instance_http, websocket)
 
         return App(
             http=instance_http,

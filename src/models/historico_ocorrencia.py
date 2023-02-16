@@ -4,7 +4,6 @@ from .base_model import BaseModel
 from .ocorrencia import Ocorrencia
 
 
-
 class HistoricoOcorrencia(BaseModel):
     __tablename__: str = "historicos_localizacao"
 
