@@ -1,23 +1,22 @@
-from typing import List
-from dataclasses import dataclass
+from typing import List, Protocol
 
 from patterns.repository import BaseRepository
 from models import Departamento, UsuarioDepartamento
 
 
-@dataclass
-class DepartamentUserListingRepositoryParam:
+
+class DepartamentUserFindManyRepositoryParams(Protocol):
     departament: Departamento
 
 
-class DepartamentUserListingRepository(BaseRepository):
+class DepartamentUserFindManyRepository(BaseRepository):
     def list(
-        self, param: DepartamentUserListingRepositoryParam
+        self, params: DepartamentUserFindManyRepositoryParams
     ) -> List[UsuarioDepartamento]:
         departament_users: List[UsuarioDepartamento] = (
             self.session.query(UsuarioDepartamento)
             .join(Departamento, UsuarioDepartamento.id_departamento == Departamento.id)
-            .filter(UsuarioDepartamento.id_departamento == param.departament.id)
+            .filter(UsuarioDepartamento.id_departamento == params.departament.id)
             .all()
         )
 

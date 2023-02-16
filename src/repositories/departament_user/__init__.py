@@ -18,9 +18,9 @@ from .departament_user_update_repository import (
     DepartamentUserUpdateRepositoryParam,
 )
 
-from .departament_user_listing_repository import (
-    DepartamentUserListingRepository,
-    DepartamentUserListingRepositoryParam,
+from .departament_user_findmany_repository import (
+    DepartamentUserFindManyRepository,
+    DepartamentUserFindManyRepositoryParams,
 )
 
 from .departament_user_auth_repository import (

@@ -1,21 +1,20 @@
-from typing import List
-from dataclasses import dataclass
+from typing import List, Protocol
 
 from patterns.repository import BaseRepository
 from models import Usuario, Ocorrencia
 
 
-@dataclass
-class OccurrenceListingRepositoryParam:
+
+class OccurrenceFindManyRepositoryParams(Protocol):
     user: Usuario
 
 
-class OccurrenceListingRepository(BaseRepository):
-    def list(self, param: OccurrenceListingRepositoryParam) -> List[Ocorrencia]:
+class OccurrenceFindManyRepository(BaseRepository):
+    def list(self, params: OccurrenceFindManyRepositoryParams) -> List[Ocorrencia]:
         occurrences: List[Ocorrencia] = (
             self.session.query(Ocorrencia)
             .join(Usuario, Ocorrencia.id_usuario == Usuario.id)
-            .filter(Ocorrencia.id_usuario == param.user.id)
+            .filter(Ocorrencia.id_usuario == params.user.id)
             .all()
         )
 

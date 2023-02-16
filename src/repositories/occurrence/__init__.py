@@ -13,9 +13,9 @@ from .occurrence_find_repository import (
     OccurrenceFindRepositoryParams,
 )
 
-from .occurrence_listing_repository import (
-    OccurrenceListingRepository,
-    OccurrenceListingRepositoryParam,
+from .occurrence_findmany_repository import (
+    OccurrenceFindManyRepository,
+    OccurrenceFindManyRepositoryParams,
 )
 
 from .occurrence_update_repository import (
