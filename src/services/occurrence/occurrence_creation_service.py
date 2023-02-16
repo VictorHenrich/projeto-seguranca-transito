@@ -1,12 +1,23 @@
+from dataclasses import dataclass
+
+
 from start import app
-from patterns.repository import ICreationRepository
+from patterns.repository import ICreateRepository
 from patterns.service import IService
 from models import Usuario, Departamento
 from services.departament import DepartamentGettingUUIDService
 from repositories.occurrence import (
-    OccurrenceCreationRepository,
-    OccurrenceCreationRepositoryParam,
+    OccurrenceCreateRepository,
+    OccurrenceCreateRepositoryParam,
 )
+
+
+@dataclass
+class DepartamentCreateProps:
+    user: Usuario
+    departament: Departamento
+    description: str
+    obs: str
 
 
 class OccurrenceCreationService:
@@ -23,15 +34,15 @@ class OccurrenceCreationService:
                 uuid_departament=uuid_departament
             )
 
-            occurrence_creation_repo_param: OccurrenceCreationRepositoryParam = (
-                OccurrenceCreationRepositoryParam(
+            occurrence_creation_repo_param: OccurrenceCreateRepositoryParam = (
+                DepartamentCreateProps(
                     user=user, departament=departament, description=description, obs=obs
                 )
             )
 
-            occurrence_creation_repository: ICreationRepository[
-                OccurrenceCreationRepositoryParam
-            ] = OccurrenceCreationRepository(session)
+            occurrence_creation_repository: ICreateRepository[
+                OccurrenceCreateRepositoryParam
+            ] = OccurrenceCreateRepository(session)
 
             occurrence_creation_repository.create(occurrence_creation_repo_param)
 

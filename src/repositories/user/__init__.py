@@ -1,6 +1,6 @@
-from .user_creation_repository import (
-    UserCreationRepository,
-    UserCreationRepositoryParam,
+from .user_create_repository import (
+    UserCreateRepository,
+    UserCreateRepositoryParams,
 )
 from .user_update_repository import UserUpdateRepositoryParam, UserUpdateRepository
 from .user_exclusion_repository import (

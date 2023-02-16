@@ -7,6 +7,7 @@ from controllers.http.autenticacao import (
 from controllers.http.usuarios import CrudUsuariosController
 from controllers.http.usuarios_departamento import CrudUsuariosDepartamentosController
 from controllers.http.ocorrencias import CrudOcorrenciasController
+from controllers.http.departamento import CrudDepartamentoController
 
 
 # AUTENTICAÇÃO
@@ -32,4 +33,10 @@ app.http.add_route(
     CrudOcorrenciasController,
     "/ocorrencia/crud",
     "/ocorrencia/crud/<uuid:occurrence_hash>",
+)
+
+#CRUD DE DEPARTAMENTOS
+app.http.add_route(
+    CrudDepartamentoController,
+    "/departamento/crud"
 )

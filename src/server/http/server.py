@@ -1,6 +1,6 @@
 from typing import Any, Mapping, Union
 from dataclasses import dataclass
-from flask import Flask
+from flask import Flask, Request, request
 from flask_cors import CORS
 from flask_restful import Api
 
@@ -23,6 +23,8 @@ class HttpServer(Api):
 
         self.__cors: CORS = CORS(self.__application)
 
+        self.__global_request: Request = request
+
         self.__application.secret_key = self.__configs.secret_key
 
         super().__init__(self.__application)
@@ -38,6 +40,10 @@ class HttpServer(Api):
     @property
     def cors(self) -> CORS:
         return self.__cors
+
+    @property
+    def global_request(self) -> Request:
+        return self.__global_request
 
     def start_app(self) -> None:
         self.__application.run(

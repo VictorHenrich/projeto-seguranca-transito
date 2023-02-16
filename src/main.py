@@ -15,9 +15,8 @@ def start_http():
     import controllers
     import start.routes
 
-    app\
-        .http\
-        .start_app()
+    app.http.start_app()
 
 
-app.start()
+if __name__ == "__main__":
+    app.start()

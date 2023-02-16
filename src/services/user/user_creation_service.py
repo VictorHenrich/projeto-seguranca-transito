@@ -1,10 +1,20 @@
 from typing import Optional
 from datetime import date
 import re
+from dataclasses import dataclass
 
 from start import app
-from patterns.repository import ICreationRepository
-from repositories.user import UserCreationRepository, UserCreationRepositoryParam
+from patterns.repository import ICreateRepository
+from repositories.user import UserCreateRepository, UserCreateRepositoryParams
+
+
+@dataclass
+class UserCreateProps:
+    name: str
+    email: str
+    password: str
+    document: str
+    birthday: Optional[date]
 
 
 class UserCreationService:
@@ -15,7 +25,7 @@ class UserCreationService:
         document: str,
         password: str,
         birthday: Optional[str],
-    ) -> UserCreationRepositoryParam:
+    ) -> UserCreateProps:
 
         treaty_name: str = name.upper()
 
@@ -28,11 +38,9 @@ class UserCreationService:
         treaty_birthday: Optional[date] = None
 
         if birthday and len(birthday):
-            treaty_birthday = date(
-                *([int(d) for d in birthday.split('-')])
-            )
+            treaty_birthday = date(*([int(d) for d in birthday.split("-")]))
 
-        return UserCreationRepositoryParam(
+        return UserCreateProps(
             name=treaty_name,
             email=treaty_email,
             document=treaty_document,
@@ -44,7 +52,7 @@ class UserCreationService:
         self, name: str, email: str, document: str, password: str, birthday: str
     ) -> None:
         with app.databases.create_session() as session:
-            repository_param: UserCreationRepositoryParam = (
+            repository_param: UserCreateRepositoryParams = (
                 self.__handle_params_repository(
                     name=name,
                     email=email,
@@ -54,9 +62,9 @@ class UserCreationService:
                 )
             )
 
-            repository: ICreationRepository[
-                UserCreationRepositoryParam
-            ] = UserCreationRepository(session)
+            repository: ICreateRepository[
+                UserCreateRepositoryParams
+            ] = UserCreateRepository(session)
 
             repository.create(repository_param)
 

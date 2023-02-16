@@ -1,9 +1,16 @@
-from typing import Optional, Callable, Coroutine, Union, Any, Mapping, Sequence
+from typing import Optional, Callable, Coroutine, Union, Any, Mapping, Sequence, TypeAlias
 import asyncio
+from threading import Thread
 from server.http import HttpServer, HttpServerConfig
 from server.sockets import SocketServer, SocketServerConfig
 from server.database import Databases
 from server.database.dialects import MySQL, Postgres, DialectDefaultBuilder
+
+
+
+Target: TypeAlias = Callable[[None], None]
+WebSocket: TypeAlias = Optional[SocketServer]
+ParamDict: TypeAlias = Mapping[str, Any]
 
 
 class App:
@@ -11,13 +18,13 @@ class App:
         self,
         http: HttpServer,
         databases: Databases,
-        websocket: Optional[SocketServer] = None,
+        websocket: WebSocket = None,
     ) -> None:
         self.__http: HttpServer = http
         self.__databases: Databases = databases
-        self.__websocket: Optional[SocketServer] = websocket
+        self.__websocket: WebSocket = websocket
 
-        self.__listeners: list[Callable[[None], None]] = []
+        self.__listeners: list[Target] = []
 
     @property
     def http(self) -> HttpServer:
@@ -28,20 +35,23 @@ class App:
         return self.__databases
 
     @property
-    def websocket(self) -> Optional[SocketServer]:
+    def websocket(self) -> WebSocket:
         return self.__websocket
 
-    def initialize(self, target: Callable[[None], None]) -> Callable[[None], None]:
+    def initialize(self, target: Target) -> Target:
         self.__listeners.append(target)
 
         return target
 
+    def __handle_target(self, target: Target) -> None:
+        result: Union[Coroutine, Any] = target()
+
+        if isinstance(result, Coroutine):
+            asyncio.run(result)
+
     def start(self) -> None:
         for target in self.__listeners:
-            result: Union[Coroutine, Any] = target()
-
-            if isinstance(result, Coroutine):
-                asyncio.run(result)
+            self.__handle_target(target)
 
 
 class AppFactory:
@@ -49,7 +59,7 @@ class AppFactory:
     __bases: Sequence[DialectDefaultBuilder] = [MySQL(), Postgres()]
 
     @classmethod
-    def __handle_http(cls, data: Mapping[str, Any]) -> HttpServer:
+    def __handle_http(cls, data: ParamDict) -> HttpServer:
         config: HttpServerConfig = HttpServerConfig(
             host=data["host"],
             port=data["port"],
@@ -60,7 +70,7 @@ class AppFactory:
         return HttpServer(config)
 
     @classmethod
-    def __handle_databases(cls, data: Mapping[str, Mapping]) -> Databases:
+    def __handle_databases(cls, data: Mapping[str, ParamDict]) -> Databases:
         databases: Databases = Databases()
 
         for base_name, base_props in data.items():
@@ -93,8 +103,8 @@ class AppFactory:
 
     @classmethod
     def __handle_websocket(
-        cls, http: SocketServer, data: Optional[Mapping]
-    ) -> Optional[SocketServer]:
+        cls, http: SocketServer, data: Optional[ParamDict]
+    ) -> WebSocket:
         if not data:
             return None
 
@@ -109,13 +119,13 @@ class AppFactory:
     @classmethod
     def create(
         cls,
-        http: Mapping[str, Any],
-        databases: Mapping[str, Any],
-        websocket: Optional[Mapping[str, Any]] = None,
+        http: ParamDict,
+        databases: ParamDict,
+        websocket: Optional[ParamDict] = None,
     ) -> App:
         instance_http: HttpServer = cls.__handle_http(http)
         instance_databases: Databases = cls.__handle_databases(databases)
-        instance_websocket: Optional[SocketServer] = cls.__handle_websocket(
+        instance_websocket: WebSocket = cls.__handle_websocket(
             instance_http, websocket
         )
 

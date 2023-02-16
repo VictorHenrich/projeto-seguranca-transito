@@ -1,6 +1,6 @@
-from .departament_user_creation_repository import (
-    DepartamentUserCreationRepository,
-    DepartamentUserCreationRepositoryParam,
+from .departament_user_create_repository import (
+    DepartamentUserCreateRepository,
+    DepartamentUserCreateRepositoryParam,
 )
 
 from .departament_user_exclusion_repository import (

@@ -1,6 +1,6 @@
-from .occurrence_creation_repository import (
-    OccurrenceCreationRepository,
-    OccurrenceCreationRepositoryParam,
+from .occurrence_create_repository import (
+    OccurrenceCreateRepository,
+    OccurrenceCreateRepositoryParam,
 )
 
 from .occurrence_exclusion_repository import (
