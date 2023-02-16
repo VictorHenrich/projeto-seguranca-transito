@@ -9,7 +9,6 @@ from .departament_user_find_repository import (
 )
 
 
-
 class DepartamentUserDeleteRepositoryParams(Protocol):
     departament: str
     uuid_departament_user: str

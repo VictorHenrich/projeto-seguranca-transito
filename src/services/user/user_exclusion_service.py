@@ -5,7 +5,6 @@ from patterns.repository import IDeleteRepository
 from repositories.user import UserDeleteRepository, UserDeleteRepositoryParams
 
 
-
 @dataclass
 class UserDeleteProps:
     uuid_ser: str

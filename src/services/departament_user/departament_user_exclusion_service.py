@@ -9,7 +9,6 @@ from repositories.departament_user import (
 from models import UsuarioDepartamento, Departamento
 
 
-
 @dataclass
 class DepartamentUserDeleteProps:
     epartament: str

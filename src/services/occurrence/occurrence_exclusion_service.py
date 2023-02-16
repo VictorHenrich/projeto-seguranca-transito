@@ -8,7 +8,6 @@ from repositories.occurrence import (
 )
 
 
-
 @dataclass
 class OccurrenceDeleteProps:
     uuid_occurrence: str

@@ -5,7 +5,6 @@ from models import Usuario
 from exceptions import UserNotFoundError
 
 
-
 class UserFindRepositoryParams(Protocol):
     uuid_user: str
 

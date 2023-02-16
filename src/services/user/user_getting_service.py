@@ -6,7 +6,6 @@ from repositories.user import UserFindRepository, UserFindRepositoryParams
 from models import Usuario
 
 
-
 @dataclass
 class UserFindProps:
     uuid_user: str
@@ -18,9 +17,7 @@ class UserGettingService:
 
     def execute(self, uuid_user: str) -> Usuario:
         with app.databases.create_session() as session:
-            repository_param: UserFindRepositoryParams = (
-               UserFindProps(uuid_user)
-            )
+            repository_param: UserFindRepositoryParams = UserFindProps(uuid_user)
 
             repository: IFindRepository[
                 UserFindRepositoryParams, Usuario

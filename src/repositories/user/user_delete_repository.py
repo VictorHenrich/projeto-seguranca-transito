@@ -6,7 +6,6 @@ from models import Usuario
 from .user_find_repository import UserFindRepository, UserFindRepositoryParams
 
 
-
 class UserDeleteRepositoryParams(Protocol):
     uuid_ser: str
 
@@ -18,8 +17,8 @@ class UserFindProps:
 
 class UserDeleteRepository(BaseRepository):
     def delete(self, params: UserDeleteRepositoryParams) -> None:
-        getting_repostiory_param: UserFindRepositoryParams = (
-            UserFindProps(uuid_user=params.uuid_ser)
+        getting_repostiory_param: UserFindRepositoryParams = UserFindProps(
+            uuid_user=params.uuid_ser
         )
 
         getting_repository: IFindRepository[

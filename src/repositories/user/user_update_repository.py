@@ -24,8 +24,8 @@ class UserFindProps:
 
 class UserUpdateRepository(BaseRepository):
     def update(self, params: UserUpdateRepositoryParam) -> None:
-        getting_repository_param: UserFindRepositoryParams = (
-            UserFindProps(uuid_user=params.uuid_user)
+        getting_repository_param: UserFindRepositoryParams = UserFindProps(
+            uuid_user=params.uuid_user
         )
 
         getting_repository: IFindRepository[

@@ -8,7 +8,6 @@ from .occurrence_find_repository import (
 )
 
 
-
 class OccurrenceDeleteRepositoryParams(Protocol):
     uuid_occurrence: str
 
