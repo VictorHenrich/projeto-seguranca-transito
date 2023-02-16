@@ -4,7 +4,6 @@ from patterns.repository import BaseRepository
 from models import Departamento, UsuarioDepartamento
 
 
-
 class DepartamentUserFindManyRepositoryParams(Protocol):
     departament: Departamento
 

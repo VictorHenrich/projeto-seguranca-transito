@@ -4,7 +4,6 @@ from patterns.repository import BaseRepository
 from models import Usuario, Ocorrencia
 
 
-
 class OccurrenceFindManyRepositoryParams(Protocol):
     user: Usuario
 
