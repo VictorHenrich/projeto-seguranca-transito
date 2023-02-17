@@ -26,8 +26,9 @@ HTTP = {
 }
 
 
-SOCKET = {
+WEBSOCKET = {
     "host": env_value["SOCKET_HOST"],
     "port": env_value["SOCKET_PORT"],
+    "secret_key": env_value["APP_KEY"],
     "debug": True,
 }

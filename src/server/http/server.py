@@ -45,7 +45,7 @@ class HttpServer(Api):
     def global_request(self) -> Request:
         return self.__global_request
 
-    def start_app(self) -> None:
+    def run(self) -> None:
         self.__application.run(
             host=self.__configs.host,
             port=self.__configs.port,

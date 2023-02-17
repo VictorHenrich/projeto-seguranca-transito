@@ -1,5 +1,4 @@
 from typing import (
-    Optional,
     Callable,
     Coroutine,
     Union,
@@ -8,16 +7,17 @@ from typing import (
     Sequence,
     TypeAlias,
 )
-import asyncio
+from multiprocessing import Process
 from threading import Thread
+from queue import Queue
+import asyncio
 from server.http import HttpServer, HttpServerConfig
-from server.sockets import SocketServer, SocketServerConfig
+from server.websocket import SocketServer, SocketServerConfig
 from server.database import Databases
 from server.database.dialects import MySQL, Postgres, DialectDefaultBuilder
 
 
 Target: TypeAlias = Callable[[None], None]
-WebSocket: TypeAlias = Optional[SocketServer]
 ParamDict: TypeAlias = Mapping[str, Any]
 
 
@@ -26,13 +26,13 @@ class App:
         self,
         http: HttpServer,
         databases: Databases,
-        websocket: WebSocket = None,
+        websocket: SocketServer = None,
     ) -> None:
         self.__http: HttpServer = http
         self.__databases: Databases = databases
-        self.__websocket: WebSocket = websocket
+        self.__websocket: SocketServer = websocket
 
-        self.__listeners: list[Target] = []
+        self.__listeners: Sequence[Process] = []
 
     @property
     def http(self) -> HttpServer:
@@ -43,23 +43,19 @@ class App:
         return self.__databases
 
     @property
-    def websocket(self) -> WebSocket:
+    def websocket(self) -> SocketServer:
         return self.__websocket
 
-    def initialize(self, target: Target) -> Target:
-        self.__listeners.append(target)
+    def initialize(self, t: Target) -> Target:
+        process: Process = Process(target=t)
 
-        return target
+        self.__listeners.append(process)
 
-    def __handle_target(self, target: Target) -> None:
-        result: Union[Coroutine, Any] = target()
-
-        if isinstance(result, Coroutine):
-            asyncio.run(result)
+        return t
 
     def start(self) -> None:
-        for target in self.__listeners:
-            self.__handle_target(target)
+        [process.start() for process in self.__listeners]
+        [process.join() for process in self.__listeners]
 
 
 class AppFactory:
@@ -110,17 +106,15 @@ class AppFactory:
         return databases
 
     @classmethod
-    def __handle_websocket(
-        cls, http: SocketServer, data: Optional[ParamDict]
-    ) -> WebSocket:
-        if not data:
-            return None
-
+    def __handle_websocket(cls, data: ParamDict) -> SocketServer:
         config: SocketServerConfig = SocketServerConfig(
-            host=data["host"], port=data["port"], debug=data["debug"]
+            host=data["host"],
+            port=data["port"],
+            secret_key=data["secret_key"],
+            debug=data["debug"],
         )
 
-        app_socket: SocketServer = SocketServer(http, config)
+        app_socket: SocketServer = SocketServer(config)
 
         return app_socket
 
@@ -129,11 +123,11 @@ class AppFactory:
         cls,
         http: ParamDict,
         databases: ParamDict,
-        websocket: Optional[ParamDict] = None,
+        websocket: ParamDict,
     ) -> App:
         instance_http: HttpServer = cls.__handle_http(http)
         instance_databases: Databases = cls.__handle_databases(databases)
-        instance_websocket: WebSocket = cls.__handle_websocket(instance_http, websocket)
+        instance_websocket: SocketServer = cls.__handle_websocket(websocket)
 
         return App(
             http=instance_http,

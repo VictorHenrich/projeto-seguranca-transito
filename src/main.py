@@ -1,3 +1,5 @@
+from multiprocessing import Process
+
 from start import app
 
 
@@ -15,7 +17,14 @@ def start_http():
     import controllers
     import start.routes
 
-    app.http.start_app()
+    app.http.run()
+
+
+@app.initialize
+def start_websocket():
+    import controllers
+
+    app.websocket.run()
 
 
 if __name__ == "__main__":
