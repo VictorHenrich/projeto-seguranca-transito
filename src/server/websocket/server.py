@@ -1,6 +1,6 @@
 from flask_socketio import SocketIO
 from typing import Optional, Protocol, Mapping, Any, Type, Union
-from ..http.server import ServerHttp
+from ..http.server import HttpServer
 from .controller import Controller
 
 
@@ -10,11 +10,11 @@ class ConfigSocket(Protocol):
     debug: bool = False
 
 
-class ServerSocket(SocketIO):
+class SocketServer(SocketIO):
     def __init__(
-        self, app: ServerHttp, config: ConfigSocket, **options: Mapping[str, Any]
+        self, app: HttpServer, config: ConfigSocket, **options: Mapping[str, Any]
     ):
-        self.__app: ServerHttp = app
+        self.__app: HttpServer = app
 
         self.__config: ConfigSocket = config
 

@@ -9,5 +9,5 @@ M = TypeVar("M", bound=BaseModel)
 
 
 class IAuthRepository(Protocol, Generic[T, M]):
-    def auth(self, param: T) -> M:
+    def auth(self, params: T) -> M:
         pass

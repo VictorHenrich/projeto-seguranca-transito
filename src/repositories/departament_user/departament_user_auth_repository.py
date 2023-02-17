@@ -12,14 +12,14 @@ class DepartamentUserAuthRepositoryParam:
 
 
 class DepartamentUserAuthRepository(BaseRepository):
-    def auth(self, param: DepartamentUserAuthRepositoryParam) -> UsuarioDepartamento:
+    def auth(self, params: DepartamentUserAuthRepositoryParam) -> UsuarioDepartamento:
         departament_user: UsuarioDepartamento = (
             self.session.query(UsuarioDepartamento)
             .join(Departamento, UsuarioDepartamento.id_departamento == Departamento.id)
             .filter(
-                UsuarioDepartamento.acesso == param.user,
-                UsuarioDepartamento.senha == param.password,
-                Departamento.acesso == param.departament_access,
+                UsuarioDepartamento.acesso == params.user,
+                UsuarioDepartamento.senha == params.password,
+                Departamento.acesso == params.departament_access,
             )
             .first()
         )

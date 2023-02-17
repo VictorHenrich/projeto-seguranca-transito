@@ -12,11 +12,11 @@ class UserAuthRepositoryParam:
 
 
 class UserAuthRepository(BaseRepository):
-    def auth(self, param: UserAuthRepositoryParam) -> Usuario:
+    def auth(self, params: UserAuthRepositoryParam) -> Usuario:
         user: Usuario = (
             self.session.query(Usuario)
             .filter(
-                Usuario.email == param.email.upper(), Usuario.senha == param.password
+                Usuario.email == params.email.upper(), Usuario.senha == params.password
             )
             .first()
         )
