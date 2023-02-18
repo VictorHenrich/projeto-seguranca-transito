@@ -1,20 +1,15 @@
 from typing import (
     Callable,
-    Coroutine,
-    Union,
     Any,
     Mapping,
     Sequence,
     TypeAlias,
 )
-from multiprocessing import Process
-from threading import Thread
-from queue import Queue
-import asyncio
-from server.http import HttpServer, HttpServerConfig
-from server.websocket import SocketServer, SocketServerConfig
-from server.database import Databases
-from server.database.dialects import MySQL, Postgres, DialectDefaultBuilder
+from .http import HttpServer, HttpServerConfig
+from .websocket import SocketServer, SocketServerConfig
+from .database import Databases
+from .database.dialects import MySQL, Postgres, DialectDefaultBuilder
+from .cli import ManagerController
 
 
 Target: TypeAlias = Callable[[None], None]
@@ -26,13 +21,13 @@ class App:
         self,
         http: HttpServer,
         databases: Databases,
-        websocket: SocketServer = None,
+        websocket: SocketServer,
+        cli: ManagerController,
     ) -> None:
         self.__http: HttpServer = http
         self.__databases: Databases = databases
         self.__websocket: SocketServer = websocket
-
-        self.__listeners: Sequence[Process] = []
+        self.__cli: ManagerController = cli
 
     @property
     def http(self) -> HttpServer:
@@ -46,16 +41,12 @@ class App:
     def websocket(self) -> SocketServer:
         return self.__websocket
 
-    def initialize(self, t: Target) -> Target:
-        process: Process = Process(target=t)
-
-        self.__listeners.append(process)
-
-        return t
+    @property
+    def cli(self) -> ManagerController:
+        return self.__cli
 
     def start(self) -> None:
-        [process.start() for process in self.__listeners]
-        [process.join() for process in self.__listeners]
+        self.__cli.run()
 
 
 class AppFactory:
@@ -119,18 +110,25 @@ class AppFactory:
         return app_socket
 
     @classmethod
+    def __handle_cli(cls, data: ParamDict) -> ManagerController:
+        manager_controller: ManagerController = ManagerController(
+            name=data["name"], description=data["description"], version=data["version"]
+        )
+
+        return manager_controller
+
+    @classmethod
     def create(
-        cls,
-        http: ParamDict,
-        databases: ParamDict,
-        websocket: ParamDict,
+        cls, http: ParamDict, databases: ParamDict, websocket: ParamDict, cli: ParamDict
     ) -> App:
         instance_http: HttpServer = cls.__handle_http(http)
         instance_databases: Databases = cls.__handle_databases(databases)
         instance_websocket: SocketServer = cls.__handle_websocket(websocket)
+        instance_manager_controller: ManagerController = cls.__handle_cli(cli)
 
         return App(
             http=instance_http,
             databases=instance_databases,
             websocket=instance_websocket,
+            cli=instance_manager_controller,
         )
