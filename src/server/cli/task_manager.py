@@ -5,13 +5,12 @@ from .task import Task
 from patterns.command import ICommand
 
 
-SubParser: TypeAlias = _SubParsersAction[ArgumentParser]
 ITask: TypeAlias = ICommand[None, None]
 Tasks: TypeAlias = Mapping[str, ITask]
 
 
 class TaskManager:
-    def __init__(self, name: str, subparser: SubParser) -> None:
+    def __init__(self, name: str, subparser: _SubParsersAction) -> None:
         self.__argument_parser: ArgumentParser = subparser.add_parser(name)
         self.__name: str = name
         self.__tasks: Tasks = {}
@@ -31,13 +30,15 @@ class TaskManager:
     def add_task(self, task: Task):
         self.__tasks[task.name] = task
 
-        names: Sequence[str] = f"--{task.name}", f"{task.shortname}"
+        names: Sequence[str] = f"-{task.shortname}", f"--{task.name}"
 
-        self.__argument_parser.add_argument(*names, help=task.description)
+        self.__argument_parser.add_argument(
+            *names, help=task.description, action="store_true"
+        )
 
     def execute(self, props: Sequence[str]) -> None:
         tasks: Sequence[ITask] = [
-            task for task_name, task in self.__tasks if task_name in props
+            task for task_name, task in self.__tasks.items() if task_name in props
         ]
 
         [task.execute() for task in tasks]

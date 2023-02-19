@@ -1,4 +1,4 @@
-from typing import Union, Mapping, TypeAlias, Sequence, Type, Callable
+from typing import Union, Mapping, TypeAlias, Sequence, Type, Callable, Tuple
 from argparse import ArgumentParser, Namespace, _SubParsersAction
 
 from patterns.command import ICommand
@@ -11,20 +11,33 @@ ITaskManager: TypeAlias = ICommand[Sequence[str], None]
 
 class ManagerController:
     def __init__(self, name: str, description: str, version: Union[str, int]) -> None:
-        self.__argparser: ArgumentParser = ArgumentParser(
-            prog=name.upper(), description=description.upper(), version=version
+        argument, subparser = self.__handle_parsers(name, description, version)
+
+        self.__argument: ArgumentParser = argument
+
+        self.__subparser: _SubParsersAction = subparser
+
+        self.__managers: Mapping[str, ITaskManager] = {}
+
+    def __handle_parsers(
+        self, name: str, description: str, version: Union[str, int]
+    ) -> Tuple[ArgumentParser, _SubParsersAction]:
+        argument: ArgumentParser = ArgumentParser(
+            prog=name.upper(), description=description.upper()
         )
 
-        self.__subparser: _SubParsersAction[
-            ArgumentParser
-        ] = self.__argparser.add_subparsers(
+        subparser: _SubParsersAction = argument.add_subparsers(
             dest="module",
             description="These modules are the task managers created in the system.",
             title="Task Managers",
             required=True,
         )
 
-        self.__managers: Mapping[str, ITaskManager] = {}
+        argument.add_argument(
+            "-v", "--version", action="version", version=f"{name.title()} {version}"
+        )
+
+        return argument, subparser
 
     def __get_task_manager(self, name: str) -> ITaskManager:
         task_manager: ITaskManager = [

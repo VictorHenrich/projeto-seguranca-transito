@@ -115,6 +115,9 @@ class AppFactory:
             name=data["name"], description=data["description"], version=data["version"]
         )
 
+        for manager_name in data["managers"]:
+            manager_controller.create_task_manager(manager_name)
+
         return manager_controller
 
     @classmethod

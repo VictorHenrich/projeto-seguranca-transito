@@ -4,6 +4,13 @@ from server.utils import UtilsEnv
 env_value = UtilsEnv.get_values()
 
 
+CLI = {
+    "name": "CLI PROJETO SEGURANÇA",
+    "description": "Sistema CLI resposável pela execução de linhas de comando para tarefas distintas",
+    "version": 1.0,
+    "managers": ["api", "websocket", "database"],
+}
+
 DATABASE = {
     "main": {
         "dialect": env_value["DB_DIALECT"],
