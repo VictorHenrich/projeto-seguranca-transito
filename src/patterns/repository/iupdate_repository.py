@@ -1,13 +1,10 @@
-from typing import (
-    Protocol, 
-    Generic,
-    TypeVar
-)
+from typing import Protocol, Generic, TypeVar, Union, Any
 
 
-T = TypeVar('T')
+T = TypeVar("T")
+TR = TypeVar("TR", bound=Union[None, Any])
 
 
 class IUpdateRepository(Protocol, Generic[T]):
-    def update(self, param: T) -> None:
+    def update(self, params: T) -> TR:
         pass

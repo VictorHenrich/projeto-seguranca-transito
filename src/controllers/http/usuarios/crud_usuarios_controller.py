@@ -13,9 +13,8 @@ from services.user import (
     UserCreationService,
     UserGettingService,
     UserExclusionService,
-    UserUpdateService
+    UserUpdateService,
 )
-
 
 
 @dataclass
@@ -24,23 +23,20 @@ class UserRegistrationRequestBody:
     email: str
     cpf: str
     senha: str
-    data_aniversario: Optional[None] = None
+    data_nascimento: Optional[None] = None
 
 
 class CrudUsuariosController(Controller):
     @BodyRequestValidationMiddleware.apply(UserRegistrationRequestBody)
-    def post(
-        self, 
-        body_request: UserRegistrationRequestBody
-    ) -> ResponseDefaultJSON:
+    def post(self, body_request: UserRegistrationRequestBody) -> ResponseDefaultJSON:
         service: IService[None] = UserCreationService()
 
         service.execute(
             name=body_request.nome,
             document=body_request.cpf,
-            birthday=body_request.data_aniversario,
+            birthday=body_request.data_nascimento,
             email=body_request.email,
-            password=body_request.senha
+            password=body_request.senha,
         )
 
         return ResponseSuccess()
@@ -48,28 +44,23 @@ class CrudUsuariosController(Controller):
     @UserAuthenticationMiddleware.apply()
     @BodyRequestValidationMiddleware.apply(UserRegistrationRequestBody)
     def put(
-        self, 
-        auth: Usuario, 
-        body_request: UserRegistrationRequestBody
+        self, auth: Usuario, body_request: UserRegistrationRequestBody
     ) -> ResponseDefaultJSON:
         service: IService[None] = UserUpdateService()
 
         service.execute(
             name=body_request.nome,
             document=body_request.cpf,
-            birthday=body_request.data_aniversario,
+            birthday=body_request.data_nascimento,
             email=body_request.email,
             password=body_request.senha,
-            uuid_user=auth.id_uuid
+            uuid_user=auth.id_uuid,
         )
 
         return ResponseSuccess()
 
     @UserAuthenticationMiddleware.apply()
-    def delete(
-        self, 
-        auth: Usuario
-    ) -> ResponseDefaultJSON:
+    def delete(self, auth: Usuario) -> ResponseDefaultJSON:
         service: IService[None] = UserExclusionService()
 
         service.execute(uuid_user=auth.id_uuid)
@@ -77,12 +68,9 @@ class CrudUsuariosController(Controller):
         return ResponseSuccess()
 
     @UserAuthenticationMiddleware.apply()
-    def get(
-        self,  
-        auth: Usuario
-    ) -> ResponseDefaultJSON:
+    def get(self, auth: Usuario) -> ResponseDefaultJSON:
         service: IService[Usuario] = UserGettingService()
-        
+
         user: Usuario = service.execute(uuid_user=auth.id_uuid)
 
         response: Mapping[str, Any] = {
@@ -90,7 +78,7 @@ class CrudUsuariosController(Controller):
             "email": user.email,
             "cpf": user.cpf,
             "uuid": user.id_uuid,
-            "data_nascimento": user.data_nascimento
+            "data_nascimento": user.data_nascimento,
         }
 
         return ResponseSuccess(data=response)

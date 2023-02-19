@@ -6,6 +6,6 @@ class Postgres(DialectDefaultBuilder):
         super().__init__(
             dialect="postgresql",
             port=5432,
-            driver_default="psycopg2", 
-            driver_async="asyncpg"
+            driver_default="psycopg2",
+            driver_async="asyncpg",
         )

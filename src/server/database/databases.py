@@ -1,10 +1,5 @@
 from __future__ import annotations
-from typing import (
-    Mapping, 
-    Sequence, 
-    Optional,
-    Union
-)
+from typing import Mapping, Sequence, Optional, Union
 from sqlalchemy.orm.session import Session
 from sqlalchemy.ext.asyncio import AsyncSession
 from .idatabase import IDatabase
@@ -31,17 +26,15 @@ class Databases:
             raise DatabaseNotFoundError()
 
         except IndexError:
-            raise Exception('Databases is Empty!')
+            raise Exception("Databases is Empty!")
 
-    def create_session(self, database_name: Optional[str] = None, **options) -> Union[Session, AsyncSession]:
-        return self\
-                .get_database(database_name)\
-                .create_session(**options)
+    def create_session(
+        self, database_name: Optional[str] = None, **options
+    ) -> Union[Session, AsyncSession]:
+        return self.get_database(database_name).create_session(**options)
 
     def migrate(self, drop_tables: bool, database_name: Optional[str] = None) -> None:
-        self\
-            .get_database(database_name)\
-            .migrate(drop_tables)
+        self.get_database(database_name).migrate(drop_tables)
 
     def migrate_all(self, drop_tables: bool) -> None:
         for base_name in self.__bases.keys():

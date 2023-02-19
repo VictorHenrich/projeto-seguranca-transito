@@ -1,8 +1,8 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional, Union
-from ..http import ServerHttp
-from .server import ServerSocket
+from ..http import HttpServer
+from .server import SocketServer
 
 
 @dataclass
@@ -10,8 +10,7 @@ class ServerSocketBuilder:
     host: Optional[str] = None
     port: Optional[Union[str, int]] = None
     debug: bool = False
-    app: Optional[ServerHttp] = None
-
+    app: Optional[HttpServer] = None
 
     def set_host(self, host: str) -> ServerSocketBuilder:
         self.host = host
@@ -28,13 +27,10 @@ class ServerSocketBuilder:
 
         return self
 
-    def set_app(self, app: ServerHttp) -> ServerSocketBuilder:
+    def set_app(self, app: HttpServer) -> ServerSocketBuilder:
         self.app = app
 
         return self
 
-    def build(self) -> ServerSocket:
-        return ServerSocket(
-            self.app,
-            self
-        )
+    def build(self) -> SocketServer:
+        return SocketServer(self.app, self)

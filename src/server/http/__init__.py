@@ -6,5 +6,5 @@ from .responses_default import (
     ResponseFailure,
     ResponseInauthorized,
     ResponseNotFound,
-    ResponseSuccess
+    ResponseSuccess,
 )

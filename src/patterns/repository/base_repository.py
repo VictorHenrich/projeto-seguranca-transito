@@ -4,8 +4,6 @@ from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-
-
 SessionArg: TypeAlias = Union[Session, AsyncSession]
 
 

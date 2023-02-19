@@ -1,23 +1,19 @@
 from typing import (
-    Optional, 
-    Callable, 
-    Coroutine, 
-    Union, 
-    Any, 
+    Callable,
+    Any,
     Mapping,
-    Sequence
+    Sequence,
+    TypeAlias,
 )
-import asyncio
-from server.http import HttpServer, HttpServerConfig
-from server.sockets import SocketServer, SocketServerConfig
-from server.database import Databases
-from server.database.dialects import (
-    MySQL,
-    Postgres,
-    DialectDefaultBuilder
-)
+from .http import HttpServer, HttpServerConfig
+from .websocket import SocketServer, SocketServerConfig
+from .database import Databases
+from .database.dialects import MySQL, Postgres, DialectDefaultBuilder
+from .cli import ManagerController
 
 
+Target: TypeAlias = Callable[[None], None]
+ParamDict: TypeAlias = Mapping[str, Any]
 
 
 class App:
@@ -25,13 +21,13 @@ class App:
         self,
         http: HttpServer,
         databases: Databases,
-        websocket: Optional[SocketServer] = None
+        websocket: SocketServer,
+        cli: ManagerController,
     ) -> None:
         self.__http: HttpServer = http
         self.__databases: Databases = databases
-        self.__websocket: Optional[SocketServer] = websocket
-
-        self.__listeners: list[Callable[[None], None]] = []
+        self.__websocket: SocketServer = websocket
+        self.__cli: ManagerController = cli
 
     @property
     def http(self) -> HttpServer:
@@ -42,44 +38,34 @@ class App:
         return self.__databases
 
     @property
-    def websocket(self) -> Optional[SocketServer]:
+    def websocket(self) -> SocketServer:
         return self.__websocket
 
-    def initialize(self, target: Callable[[None], None]) -> Callable[[None], None]:
-        self.__listeners.append(target)
-
-        return target
+    @property
+    def cli(self) -> ManagerController:
+        return self.__cli
 
     def start(self) -> None:
-        for target in self.__listeners:
-            result: Union[Coroutine, Any] = target()
-
-            if isinstance(result, Coroutine):
-                asyncio.run(result)
-
-
+        self.__cli.run()
 
 
 class AppFactory:
 
-    __bases: Sequence[DialectDefaultBuilder] = [
-        MySQL(),
-        Postgres()
-    ]
+    __bases: Sequence[DialectDefaultBuilder] = [MySQL(), Postgres()]
 
     @classmethod
-    def __handle_http(cls, data: Mapping[str, Any]) -> HttpServer:
+    def __handle_http(cls, data: ParamDict) -> HttpServer:
         config: HttpServerConfig = HttpServerConfig(
-            host=data['host'],
-            port=data['port'],
-            debug=data['debug'],
-            secret_key=data['secret_key']
+            host=data["host"],
+            port=data["port"],
+            debug=data["debug"],
+            secret_key=data["secret_key"],
         )
 
         return HttpServer(config)
 
     @classmethod
-    def __handle_databases(cls, data: Mapping[str, Mapping]) -> Databases:
+    def __handle_databases(cls, data: Mapping[str, ParamDict]) -> Databases:
         databases: Databases = Databases()
 
         for base_name, base_props in data.items():
@@ -88,58 +74,64 @@ class AppFactory:
             localized_base: list[DialectDefaultBuilder] = [
                 b
                 for b in cls.__bases
-                if b.dialect.upper() == base_props['dialect'].upper()
+                if b.dialect.upper() == base_props["dialect"].upper()
             ]
 
             if localized_base:
                 base = localized_base[0]
 
-            base\
-                .set_name(base_name)\
-                .set_host(base_props['host'])\
-                .set_port(base_props['port'])\
-                .set_dbname(base_props['dbname'])\
-                .set_credentials(base_props['username'], base_props['password'])
+            base.set_name(base_name).set_host(base_props["host"]).set_port(
+                base_props["port"]
+            ).set_dbname(base_props["dbname"]).set_credentials(
+                base_props["username"], base_props["password"]
+            )
 
-            if base_props.get('debug'):
-                base.set_debug(base_props['debug'])
+            if base_props.get("debug"):
+                base.set_debug(base_props["debug"])
 
-            if base_props.get('async'):
-                base.set_async(base_props['async'])
+            if base_props.get("async"):
+                base.set_async(base_props["async"])
 
             databases.append_databases(base.build())
 
         return databases
 
     @classmethod
-    def __handle_websocket(cls, http: SocketServer, data: Optional[Mapping]) -> Optional[SocketServer]:
-        if not data:
-            return None
-
+    def __handle_websocket(cls, data: ParamDict) -> SocketServer:
         config: SocketServerConfig = SocketServerConfig(
-            host=data['host'],
-            port=data['port'],
-            debug=data['debug']
+            host=data["host"],
+            port=data["port"],
+            secret_key=data["secret_key"],
+            debug=data["debug"],
         )
 
-        app_socket: SocketServer = SocketServer(http, config)
+        app_socket: SocketServer = SocketServer(config)
 
         return app_socket
 
     @classmethod
+    def __handle_cli(cls, data: ParamDict) -> ManagerController:
+        manager_controller: ManagerController = ManagerController(
+            name=data["name"], description=data["description"], version=data["version"]
+        )
+
+        for manager_name in data["managers"]:
+            manager_controller.create_task_manager(manager_name)
+
+        return manager_controller
+
+    @classmethod
     def create(
-        cls,
-        http: Mapping[str, Any],
-        databases: Mapping[str, Any],
-        websocket: Optional[Mapping[str, Any]] = None
+        cls, http: ParamDict, databases: ParamDict, websocket: ParamDict, cli: ParamDict
     ) -> App:
         instance_http: HttpServer = cls.__handle_http(http)
         instance_databases: Databases = cls.__handle_databases(databases)
-        instance_websocket: Optional[SocketServer] = cls.__handle_websocket(instance_http, websocket)
+        instance_websocket: SocketServer = cls.__handle_websocket(websocket)
+        instance_manager_controller: ManagerController = cls.__handle_cli(cli)
 
         return App(
             http=instance_http,
             databases=instance_databases,
-            websocket=instance_websocket
+            websocket=instance_websocket,
+            cli=instance_manager_controller,
         )
-

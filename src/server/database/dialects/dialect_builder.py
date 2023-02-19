@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Optional, Union
 from ..database import Database
 
+
 @dataclass
 class Parameters:
     name: Optional[str]
