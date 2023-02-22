@@ -1,4 +1,4 @@
-from typing import Any, Mapping, Union
+from typing import Any, Mapping, Union, Type, Callable
 from dataclasses import dataclass
 from flask import Flask, Request, request
 from flask_cors import CORS
@@ -52,7 +52,11 @@ class HttpServer(Api):
             debug=self.__configs.debug,
         )
 
-    def add_route(
-        self, controller: Controller, *urls: str, **kwargs: Mapping[str, Any]
-    ):
-        return self.add_resource(controller, *urls, **kwargs)
+    def add_controller(
+        self, *urls: str, **kwargs: Mapping[str, Any]
+    ) -> Callable[[Type[Controller]], Type[Controller]]:
+    
+        def wrapper(cls: Type[Controller]) -> Type[Controller]:
+            self.add_resource(cls, *urls, **kwargs)
+
+        return wrapper

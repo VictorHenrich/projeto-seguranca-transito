@@ -2,6 +2,7 @@ from typing import List, Mapping, Any
 from dataclasses import dataclass
 from uuid import UUID
 
+from start import app
 from patterns.service import IService
 from server.http import Controller, ResponseDefaultJSON, ResponseSuccess
 from middlewares import BodyRequestValidationMiddleware, UserAuthenticationMiddleware
@@ -27,6 +28,11 @@ class OccurrenceUpdateBodyRequest:
     obs: str
 
 
+
+@app.http.add_controller(
+    "/ocorrencia/crud",
+    "/ocorrencia/crud/<uuid:occurrence_hash>",
+)
 class CrudOcorrenciasController(Controller):
     @UserAuthenticationMiddleware.apply()
     @BodyRequestValidationMiddleware.apply(OccurrenceCreationBodyRequest)
