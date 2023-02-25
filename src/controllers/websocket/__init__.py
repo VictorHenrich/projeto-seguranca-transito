@@ -1,1 +1,2 @@
-from .user_connnect_controller import UserConnectController
+from .departament_user_controller import DepartamentUserController
+from .user_controller import UserController

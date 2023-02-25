@@ -1,6 +1,8 @@
-from flask import Flask
+from typing import Protocol, Type, Union, Any, TypeAlias, Callable, Dict, List
+
+from flask import Flask, request, Request
 from flask_socketio import SocketIO
-from typing import Protocol, Type, Union, List, TypeAlias, Callable, Dict
+from socketio import Client
 from dataclasses import dataclass
 
 from .controller import Controller
@@ -32,17 +34,19 @@ class SocketServer(SocketIO):
 
         self.__config: SocketServerConfig = config
 
-        self.__clients: List[ISocketClient] = []
+        self.__global_request: Request = request
 
-        super().__init__(self.__app)
+        self.__controllers: Dict[str, Controller] = {}
+
+        super().__init__(self.__app, cors_allowed_origins="*")
+
+    @property
+    def global_request(self) -> Request:
+        return self.__global_request
 
     @property
     def config(self) -> SocketServerConfig:
         return self.__config
-
-    @property
-    def clients(self) -> List[ISocketClient]:
-        return self.__clients
 
     def run(self) -> None:
         super().run(
@@ -52,18 +56,30 @@ class SocketServer(SocketIO):
             debug=self.__config.debug,
         )
 
-    def add_client(self, client: ISocketClient) -> None:
-        self.__clients.append(client)
-
-    def get_client(self, id: StringOrNumber) -> ISocketClient:
-        for client in self.__clients:
-            if client.id == id:
-                return client
-
     def add_controller(self, controller_name: str) -> DecoratorAddController:
         def wrapper(cls: TypeSocketController) -> TypeSocketController:
-            self.on_namespace(cls(controller_name))
+            controller: Controller = cls(controller_name)
+
+            self.on_namespace(controller)
+
+            self.__controllers[controller_name] = controller
 
             return cls
 
         return wrapper
+
+    def emit_controller(self, namespace: str, event: str, data: Any) -> None:
+            controllers_names: List[str] = [
+                controller_name
+                for controller_name in self.__controllers.keys()
+            ]
+
+            url: str = f'http://{self.__config.host}:{self.__config.port}'
+
+            client: Client = Client(logger=True)
+
+            client.connect(url, namespaces=controllers_names)
+
+            client.emit(event, data, namespace=namespace)
+
+            client.disconnect()
