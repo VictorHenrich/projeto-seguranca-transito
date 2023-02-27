@@ -1,0 +1,2 @@
+from .user_authentication import UserAuthenticationMiddleware
+from .departament_user_authentication import DepartamentUserAuthenticationMiddleware

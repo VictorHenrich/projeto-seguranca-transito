@@ -2,8 +2,8 @@ from flask import request
 from typing import Optional
 from datetime import datetime
 
-from server.http import Middleware, ResponseInauthorized
-from server.utils import UtilsJWT, UtilsExcept
+from server.websocket import Middleware
+from server.utils import UtilsJWT
 from patterns.service import IService
 from models import Usuario
 from services.user import UserGettingService
@@ -11,7 +11,6 @@ from exceptions import (
     AuthorizationNotFoundHeader,
     TokenTypeNotBearerError,
     ExpiredTokenError,
-    UserNotFoundError,
 )
 from utils.entities import PayloadUserJWT
 from start import app
@@ -20,7 +19,7 @@ from start import app
 class UserAuthenticationMiddleware(Middleware):
     @classmethod
     def handle(cls):
-        token: Optional[str] = request.headers.get("Authorization")
+        token: Optional[str] = app.websocket.global_request.headers.get("Authorization")
 
         if not token:
             raise AuthorizationNotFoundHeader()
@@ -31,7 +30,7 @@ class UserAuthenticationMiddleware(Middleware):
         token = token.replace("Bearer ", "")
 
         payload: PayloadUserJWT = UtilsJWT.decode(
-            token, app.http.configs.secret_key, class_=PayloadUserJWT
+            token, app.http.configs.secret_key, PayloadUserJWT
         )
 
         if payload.expired <= datetime.now().timestamp():
@@ -42,18 +41,3 @@ class UserAuthenticationMiddleware(Middleware):
         user: Usuario = service.execute(uuid_user=payload.uuid_user)
 
         return {"auth": user}
-
-    @classmethod
-    def catch(cls, exception: Exception):
-        validation: bool = UtilsExcept.fired(
-            exception,
-            ExpiredTokenError,
-            UserNotFoundError,
-            TokenTypeNotBearerError,
-            AuthorizationNotFoundHeader,
-        )
-
-        if validation:
-            return ResponseInauthorized(data=str(exception))
-
-        raise exception

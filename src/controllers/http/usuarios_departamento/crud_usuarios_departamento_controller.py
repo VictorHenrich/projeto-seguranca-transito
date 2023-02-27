@@ -48,7 +48,7 @@ class CrudUsuariosDepartamentosController(Controller):
 
         return ResponseSuccess(data=response)
 
-    @DepartamentUserAuthenticationMiddleware.apply()
+    #@DepartamentUserAuthenticationMiddleware.apply()
     @BodyRequestValidationMiddleware.apply(DepartamentUserRegistrationRequestBody)
     def post(
         self,
