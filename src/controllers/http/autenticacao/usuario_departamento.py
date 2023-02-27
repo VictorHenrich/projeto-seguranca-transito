@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+from start import app
 from middlewares import BodyRequestValidationMiddleware
 from exceptions import DepartamentNotFoundError, UserNotFoundError
 from services.departament_user import DepartamentUserAuthorizationService
@@ -19,6 +20,7 @@ class DepartamentUserAuthRequestBody:
     senha: str
 
 
+@app.http.add_controller("/autenticacao/departamento")
 class AutenticaoUsuarioDepartamentoController(Controller):
     @BodyRequestValidationMiddleware.apply(DepartamentUserAuthRequestBody)
     def post(self, body_request: DepartamentUserAuthRequestBody) -> ResponseDefaultJSON:

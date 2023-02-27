@@ -2,6 +2,7 @@ from typing import Mapping, Any, List
 from uuid import UUID
 from dataclasses import dataclass
 
+from start import app
 from patterns.service import IService
 from models import UsuarioDepartamento, Departamento
 from server.http import Controller, ResponseDefaultJSON, ResponseSuccess
@@ -25,6 +26,10 @@ class DepartamentUserRegistrationRequestBody:
     cargo: str
 
 
+@app.http.add_controller(
+    "/departamento/usuario/crud",
+    "/departamento/usuario/crud/<uuid:user_hash>",
+)
 class CrudUsuariosDepartamentosController(Controller):
     @DepartamentUserAuthenticationMiddleware.apply()
     def get(

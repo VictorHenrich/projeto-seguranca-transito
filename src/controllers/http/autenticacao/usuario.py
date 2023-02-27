@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+from start import app
 from middlewares import BodyRequestValidationMiddleware
 from patterns.service import IService
 from exceptions import UserNotFoundError
@@ -18,6 +19,7 @@ class AuthUserRequestBody:
     senha: str
 
 
+@app.http.add_controller("/autenticacao/usuario")
 class AutenticacaoUsuarioController(Controller):
     @BodyRequestValidationMiddleware.apply(AuthUserRequestBody)
     def post(self, body_request: AuthUserRequestBody) -> ResponseDefaultJSON:
