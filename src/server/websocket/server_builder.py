@@ -27,10 +27,5 @@ class ServerSocketBuilder:
 
         return self
 
-    def set_app(self, app: HttpServer) -> ServerSocketBuilder:
-        self.app = app
-
-        return self
-
     def build(self) -> SocketServer:
-        return SocketServer(self.app, self)
+        return SocketServer(self)

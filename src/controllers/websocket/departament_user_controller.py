@@ -37,7 +37,8 @@ class DepartamentUserController(Controller):
         print('USUÁRIO DEPARTAMENTO RECEBEU A SEGUINTE MENSAGEM:  ', data)
 
     def on_send_message(self, data: JSON) -> None:
-        app.websocket.emit_controller('/user', 'receive_message', data)
+        app.websocket.emit('receive_message', 'OI', namespace="/user")
+        print(help(app.websocket.emit))
 
     def on_get_users(self, data: None) -> None:
         self.emit('get_users', UserController.get)
