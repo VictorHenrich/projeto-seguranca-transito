@@ -4,7 +4,7 @@ from server.cli import Task
 
 @app.cli.add_task("database", "migrate", "m", "Inicializa a migração do banco de dados")
 class RunMigrate(Task):
-    def execute(self) -> None:
+    def execute(self, props) -> None:
         import models
 
         app.databases.migrate(False)

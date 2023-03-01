@@ -4,7 +4,7 @@ from server.cli import Task
 
 @app.cli.add_task("api", "run", "r", "Inicializa a aplicação HTTP")
 class RunApi(Task):
-    def execute(self) -> None:
+    def execute(self, props) -> None:
         import controllers.http.autenticacao
         import controllers.http.departamento
         import controllers.http.ocorrencias
