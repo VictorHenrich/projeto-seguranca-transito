@@ -19,7 +19,9 @@ class UtilsJWT:
         **options: DictMapping
     ) -> Union[T, DictMapping]:
 
-        payload: DictMapping = PyJWT().decode(token, key, list(cls.algorithm), **options)
+        payload: DictMapping = PyJWT().decode(
+            token, key, list(cls.algorithm), **options
+        )
 
         if class_:
             return class_(**payload)

@@ -5,7 +5,7 @@ from .task import Task
 from patterns.command import ICommand
 
 
-ITask: TypeAlias = ICommand[None, None]
+ITask: TypeAlias = ICommand[None]
 Tasks: TypeAlias = Dict[str, ITask]
 
 
@@ -41,4 +41,4 @@ class TaskManager:
             task for task_name, task in self.__tasks.items() if task_name in props
         ]
 
-        [task.execute() for task in tasks]
+        [task.execute(None) for task in tasks]

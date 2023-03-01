@@ -32,9 +32,7 @@ class Database:
     def name(self) -> str:
         return self.__name
 
-    def create_session(
-        self, **options: Dict[str, Any]
-    ) -> Union[Session, AsyncSession]:
+    def create_session(self, **options: Dict[str, Any]) -> Union[Session, AsyncSession]:
         return sessionmaker(
             self.__engine,
             Session if type(self.__engine) is Engine else AsyncSession,

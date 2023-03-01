@@ -3,20 +3,20 @@ from typing import (
     Generic,
     TypeVar,
     TypeAlias,
-    Sequence,
+    Tuple,
     Dict,
     Union,
     Any,
 )
 
 
-Args: TypeAlias = Sequence[Any]
+Args: TypeAlias = Tuple[Any, ...]
 
 Kwargs: TypeAlias = Dict[str, Any]
 
-T = TypeVar("T", bound=Union[None, Any])
+T = TypeVar("T", bound=Union[None, Any], covariant=True)
 
 
 class IService(Protocol, Generic[T]):
     def execute(self, *args: Args, **kwargs: Kwargs) -> T:
-        pass
+        ...

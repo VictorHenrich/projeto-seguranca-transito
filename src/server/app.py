@@ -51,11 +51,11 @@ class AppFactory:
     def __handle_http(cls, data: ParamDict) -> HttpServer:
         return (
             HttpServerBuilder()
-                .set_host(data['host'])
-                .set_port(data['port'])
-                .set_debug(data['debug'])
-                .set_secret_key(data['secret_key'])
-                .build()
+            .set_host(data["host"])
+            .set_port(data["port"])
+            .set_debug(data["debug"])
+            .set_secret_key(data["secret_key"])
+            .build()
         )
 
     @classmethod
@@ -94,11 +94,11 @@ class AppFactory:
     def __handle_websocket(cls, data: ParamDict) -> SocketServer:
         return (
             SocketServerBuilder()
-                .set_host(data['host'])
-                .set_port(data['port'])
-                .set_debug(data['debug'])
-                .set_secret_key(data['secret_key'])
-                .build()
+            .set_host(data["host"])
+            .set_port(data["port"])
+            .set_debug(data["debug"])
+            .set_secret_key(data["secret_key"])
+            .build()
         )
 
     @classmethod

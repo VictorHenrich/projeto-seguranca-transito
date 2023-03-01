@@ -1,8 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import  Union, TypeAlias
+from typing import Union, TypeAlias
 from .server import SocketServer
-
 
 
 StringOrNumber: TypeAlias = Union[str, int]
@@ -29,7 +28,7 @@ class SocketServerBuilder:
         self.debug = debug
 
         return self
-    
+
     def set_secret_key(self, secret_key: str) -> SocketServerBuilder:
         self.secret_key = secret_key
 

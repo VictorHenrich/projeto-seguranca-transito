@@ -1,12 +1,15 @@
-from typing import Protocol, Generic, TypeVar, Union, Any
+from typing import Protocol, Generic, TypeVar, TypeAlias, Tuple, Dict, Any
 
 
-T = TypeVar("T", bound=Union[None, Any])
-TR = TypeVar("TR", bound=Union[None, Any])
+T = TypeVar("T", contravariant=True)
+Args: TypeAlias = Tuple[Any, ...]
+Kwargs: TypeAlias = Dict[str, Any]
 
 
-class ICommand(Protocol, Generic[T, TR]):
-    name: str
+class ICommand(Protocol, Generic[T]):
+    @property
+    def name(self) -> str:
+        ...
 
-    def execute(self, props: T) -> TR:
-        pass
+    def execute(self, props: T) -> None:
+        ...

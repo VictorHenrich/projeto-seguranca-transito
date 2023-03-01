@@ -14,7 +14,6 @@ DecoratorAddController: TypeAlias = Callable[
 StringOrNumber: TypeAlias = Union[str, int]
 
 
-
 class SocketServerConfig(Protocol):
     host: str
     port: StringOrNumber
@@ -67,17 +66,16 @@ class SocketServer(SocketIO):
         return wrapper
 
     def emit_controller(self, namespace: str, event: str, data: Any) -> None:
-            controllers_names: List[str] = [
-                controller_name
-                for controller_name in self.__controllers.keys()
-            ]
+        controllers_names: List[str] = [
+            controller_name for controller_name in self.__controllers.keys()
+        ]
 
-            url: str = f'http://{self.__config.host}:{self.__config.port}'
+        url: str = f"http://{self.__config.host}:{self.__config.port}"
 
-            client: Client = Client(logger=True)
+        client: Client = Client(logger=True)
 
-            client.connect(url, namespaces=controllers_names)
+        client.connect(url, namespaces=controllers_names)
 
-            client.emit(event, data, namespace=namespace)
+        client.emit(event, data, namespace=namespace)
 
-            client.disconnect()
+        client.disconnect()

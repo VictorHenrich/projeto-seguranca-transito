@@ -27,9 +27,7 @@ class UserRegistrationRequestBody:
     data_nascimento: Optional[None] = None
 
 
-@app.http.add_controller(
-    "/usuario/crud", "/usuario/crud/<uuid:user_hash>"
-)
+@app.http.add_controller("/usuario/crud", "/usuario/crud/<uuid:user_hash>")
 class CrudUsuariosController(Controller):
     @BodyRequestValidationMiddleware.apply(UserRegistrationRequestBody)
     def post(self, body_request: UserRegistrationRequestBody) -> ResponseDefaultJSON:

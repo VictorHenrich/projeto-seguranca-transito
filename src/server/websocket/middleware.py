@@ -9,13 +9,9 @@ Target: TypeAlias = Callable[[Any], None]
 Decorator: TypeAlias = Callable[[Callable[[Any], Any]], Wrapper]
 
 
-
-
 class Middleware(ABC):
     @abstractclassmethod
-    def handle(
-        cls, *args: Args, **kwargs: Kwargs
-    ) -> Optional[Kwargs]:
+    def handle(cls, *args: Args, **kwargs: Kwargs) -> Optional[Kwargs]:
         ...
 
     @classmethod
@@ -29,9 +25,7 @@ class Middleware(ABC):
         ) -> Wrapper:
             def wrapper(*args_w: Args, **kwargs_w: Kwargs) -> None:
                 try:
-                    handler_return: Optional[Kwargs] = cls.handle(
-                        *args, **kwargs
-                    )
+                    handler_return: Optional[Kwargs] = cls.handle(*args, **kwargs)
 
                 except Exception as error:
                     cls.catch(error)

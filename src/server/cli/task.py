@@ -20,5 +20,5 @@ class Task:
         return self.__description
 
     @abstractmethod
-    def execute(self) -> None:
-        pass
+    def execute(self, props: None) -> None:
+        ...

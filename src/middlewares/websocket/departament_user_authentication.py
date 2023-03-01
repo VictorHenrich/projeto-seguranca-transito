@@ -11,7 +11,7 @@ from services.departament import DepartamentGettingUUIDService
 from exceptions import (
     AuthorizationNotFoundHeader,
     TokenTypeNotBearerError,
-    ExpiredTokenError
+    ExpiredTokenError,
 )
 from utils.entities import PayloadDepartamentUserJWT
 from start import app

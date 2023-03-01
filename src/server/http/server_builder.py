@@ -15,26 +15,25 @@ class HttpServerBuilder:
     secret_key: str = ""
     debug: bool = True
 
-
     def set_host(self, host: str) -> HttpServerBuilder:
         self.host = host
 
         return self
-    
+
     def set_port(self, port: StringOrNumber) -> HttpServerBuilder:
         self.port = port
 
         return self
-    
+
     def set_secret_key(self, secret_key: str) -> HttpServerBuilder:
         self.secret_key = secret_key
 
         return self
-    
+
     def set_debug(self, debug: bool) -> HttpServerBuilder:
         self.debug = debug
 
         return self
-    
+
     def build(self) -> HttpServer:
         return HttpServer(self)

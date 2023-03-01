@@ -1,13 +1,6 @@
 from abc import ABC, abstractclassmethod
 from flask import Response
-from typing import (
-    Any,
-    Dict,
-    Optional,
-    Callable,
-    TypeAlias,
-    Tuple
-)
+from typing import Any, Dict, Optional, Callable, TypeAlias, Tuple
 
 
 Args: TypeAlias = Tuple[Any, ...]
@@ -20,9 +13,7 @@ Decorator: TypeAlias = Callable[[Target], Wrapper]
 
 class Middleware(ABC):
     @abstractclassmethod
-    def handle(
-        cls, *args: Args, **kwargs: Kwargs
-    ) -> Handler:
+    def handle(cls, *args: Args, **kwargs: Kwargs) -> Handler:
         pass
 
     @classmethod

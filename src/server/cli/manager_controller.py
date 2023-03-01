@@ -5,8 +5,9 @@ from patterns.command import ICommand
 from .task_manager import TaskManager
 from .task import Task
 
-ITask: TypeAlias = ICommand[None, None]
-ITaskManager: TypeAlias = ICommand[Sequence[str], None]
+
+ITaskManager: TypeAlias = ICommand[Sequence[str]]
+DecoratorAddTask: TypeAlias = Callable[[Type[Task]], Type[Task]]
 
 
 class ManagerController:
@@ -39,12 +40,12 @@ class ManagerController:
 
         return argument, subparser
 
-    def __get_task_manager(self, name: str) -> ITaskManager:
-        task_manager: ITaskManager = [
-            manager for key, manager in self.__managers.items() if key == name
-        ][0]
+    def __get_task_manager(self, name: str) -> TaskManager:
+        for key, manager in self.__managers.items():
+            if key == name and type(manager) is TaskManager:
+                return manager
 
-        return task_manager
+        raise Exception("Task Manager not found!")
 
     def create_task_manager(self, name: str) -> None:
         task_manager: ITaskManager = TaskManager(name, self.__subparser)
@@ -53,17 +54,17 @@ class ManagerController:
 
     def add_task(
         self, manager_name: str, name: str, shortname: str, description: str
-    ) -> Callable[[Type[ITask]], Type[ITask]]:
-        def wrapper(cls: Type[Task]) -> Type[Task]:
+    ) -> DecoratorAddTask:
+        def decorator(cls: Type[Task]) -> Type[Task]:
             manager: TaskManager = self.__get_task_manager(manager_name)
 
-            task: ITask = cls(name, shortname, description)
+            task: Task = cls(name, shortname, description)
 
             manager.add_task(task)
 
             return cls
 
-        return wrapper
+        return decorator
 
     def run(self) -> None:
         namespaces: Namespace = self.__argument.parse_args()
