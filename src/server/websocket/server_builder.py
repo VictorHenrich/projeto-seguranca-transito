@@ -1,29 +1,37 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Optional, Union
-from ..http import HttpServer
+from typing import  Union, TypeAlias
 from .server import SocketServer
 
 
-@dataclass
-class ServerSocketBuilder:
-    host: Optional[str] = None
-    port: Optional[Union[str, int]] = None
-    debug: bool = False
-    app: Optional[HttpServer] = None
 
-    def set_host(self, host: str) -> ServerSocketBuilder:
+StringOrNumber: TypeAlias = Union[str, int]
+
+
+@dataclass
+class SocketServerBuilder:
+    host: str = ""
+    port: StringOrNumber = 0
+    secret_key: str = ""
+    debug: bool = False
+
+    def set_host(self, host: str) -> SocketServerBuilder:
         self.host = host
 
         return self
 
-    def set_port(self, port: Union[str, int]) -> ServerSocketBuilder:
+    def set_port(self, port: StringOrNumber) -> SocketServerBuilder:
         self.port = port
 
         return self
 
-    def set_debug(self, debug: bool) -> ServerSocketBuilder:
+    def set_debug(self, debug: bool) -> SocketServerBuilder:
         self.debug = debug
+
+        return self
+    
+    def set_secret_key(self, secret_key: str) -> SocketServerBuilder:
+        self.secret_key = secret_key
 
         return self
 

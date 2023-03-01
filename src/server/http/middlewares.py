@@ -2,48 +2,39 @@ from abc import ABC, abstractclassmethod
 from flask import Response
 from typing import (
     Any,
-    Mapping,
+    Dict,
     Optional,
-    Sequence,
     Callable,
     TypeAlias,
-    TypeVar,
-    Generic,
+    Tuple
 )
 
 
-MiddlewareArgs: TypeAlias = Sequence[Any]
-
-MiddlewareKwargs: TypeAlias = Mapping[str, Any]
-
-MiddlewareHandled: TypeAlias = Optional[Mapping[str, Any]]
-
-MiddlewareTarget: TypeAlias = Callable[[Any], Response]
+Args: TypeAlias = Tuple[Any, ...]
+Kwargs: TypeAlias = Dict[str, Any]
+Handler: TypeAlias = Optional[Dict[str, Any]]
+Target: TypeAlias = Callable[[Any], Response]
+Wrapper: TypeAlias = Callable[[Any], Response]
+Decorator: TypeAlias = Callable[[Target], Wrapper]
 
 
 class Middleware(ABC):
     @abstractclassmethod
     def handle(
-        cls, *args: MiddlewareArgs, **kwargs: MiddlewareKwargs
-    ) -> MiddlewareHandled:
+        cls, *args: Args, **kwargs: Kwargs
+    ) -> Handler:
         pass
 
     @classmethod
-    def catch(cls, exception: Exception) -> Optional[Response]:
+    def catch(cls, exception: Exception) -> Response:
         raise exception
 
     @classmethod
-    def apply(cls, *args: MiddlewareArgs, **kwargs: MiddlewareKwargs) -> Callable:
-
-        """
-        Isto é um decorator responsável por aplicar alguma funcionalidade intermediaria ao metodo
-        http criada a partir da classe Middleware
-        """
-
-        def wrapper(target: MiddlewareTarget) -> MiddlewareTarget:
-            def w(*args_w: MiddlewareArgs, **kwargs_w: MiddlewareKwargs) -> Response:
+    def apply(cls, *args: Args, **kwargs: Kwargs) -> Decorator:
+        def decorator(target: Target) -> Wrapper:
+            def wrapper(*args_w: Args, **kwargs_w: Kwargs) -> Response:
                 try:
-                    handler_return: MiddlewareHandled = cls.handle(*args, **kwargs)
+                    handler_return: Handler = cls.handle(*args, **kwargs)
 
                 except Exception as error:
                     return cls.catch(error)
@@ -51,6 +42,6 @@ class Middleware(ABC):
                 else:
                     return target(*args_w, **{**kwargs_w, **(handler_return or {})})
 
-            return w
+            return wrapper
 
-        return wrapper
+        return decorator

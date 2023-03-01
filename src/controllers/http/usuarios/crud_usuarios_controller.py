@@ -1,4 +1,4 @@
-from typing import Mapping, Any, Optional
+from typing import Dict, Any, Optional
 from dataclasses import dataclass
 
 from start import app
@@ -77,7 +77,7 @@ class CrudUsuariosController(Controller):
 
         user: Usuario = service.execute(uuid_user=auth.id_uuid)
 
-        response: Mapping[str, Any] = {
+        response: Dict[str, Any] = {
             "nome": user.nome,
             "email": user.email,
             "cpf": user.cpf,

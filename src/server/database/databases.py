@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Mapping, Sequence, Optional, Union
+from typing import Dict, Sequence, Optional, Union
 from sqlalchemy.orm.session import Session
 from sqlalchemy.ext.asyncio import AsyncSession
 from .idatabase import IDatabase
@@ -8,10 +8,10 @@ from .exceptions import DatabaseNotFoundError
 
 class Databases:
     def __init__(self) -> None:
-        self.__bases: Mapping[str, IDatabase] = {}
+        self.__bases: Dict[str, IDatabase] = {}
 
     @property
-    def bases(self) -> Mapping[str, IDatabase]:
+    def bases(self) -> Dict[str, IDatabase]:
         return self.__bases
 
     def get_database(self, database_name: Optional[str] = None) -> IDatabase:

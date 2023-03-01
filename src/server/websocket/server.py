@@ -3,7 +3,6 @@ from typing import Protocol, Type, Union, Any, TypeAlias, Callable, Dict, List
 from flask import Flask, request, Request
 from flask_socketio import SocketIO
 from socketio import Client
-from dataclasses import dataclass
 
 from .controller import Controller
 
@@ -15,22 +14,21 @@ DecoratorAddController: TypeAlias = Callable[
 StringOrNumber: TypeAlias = Union[str, int]
 
 
-@dataclass
-class SocketServerConfig:
+
+class SocketServerConfig(Protocol):
     host: str
     port: StringOrNumber
     secret_key: str
-    debug: bool = True
-
-
-class ISocketClient(Protocol):
-    id: StringOrNumber
-    info: Dict
+    debug: bool
 
 
 class SocketServer(SocketIO):
     def __init__(self, config: SocketServerConfig):
-        self.__app: Flask = Flask(__name__)
+        app: Flask = Flask(__name__)
+
+        app.secret_key = config.secret_key
+
+        self.__app: Flask = app
 
         self.__config: SocketServerConfig = config
 

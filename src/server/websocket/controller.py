@@ -7,7 +7,7 @@ class Controller(Namespace, ABC):
         super().__init__(name)
 
     def on_connect(self) -> None:
-        pass
+        ...
 
     def on_disconnect(self) -> None:
-        pass
+        ...

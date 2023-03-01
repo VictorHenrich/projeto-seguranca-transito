@@ -1,4 +1,4 @@
-from typing import Any, Mapping, Optional, Union, Protocol
+from typing import Any, Dict, Optional, Union, Protocol
 from sqlalchemy.engine import create_engine, Engine
 from sqlalchemy.orm.session import Session, sessionmaker
 from sqlalchemy.orm.decl_api import declarative_base
@@ -33,7 +33,7 @@ class Database:
         return self.__name
 
     def create_session(
-        self, **options: Mapping[str, Any]
+        self, **options: Dict[str, Any]
     ) -> Union[Session, AsyncSession]:
         return sessionmaker(
             self.__engine,

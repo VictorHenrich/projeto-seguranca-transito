@@ -1,4 +1,4 @@
-from typing import TypeAlias, Mapping, Sequence
+from typing import TypeAlias, Dict, Sequence
 from argparse import ArgumentParser, _SubParsersAction
 
 from .task import Task
@@ -6,7 +6,7 @@ from patterns.command import ICommand
 
 
 ITask: TypeAlias = ICommand[None, None]
-Tasks: TypeAlias = Mapping[str, ITask]
+Tasks: TypeAlias = Dict[str, ITask]
 
 
 class TaskManager:

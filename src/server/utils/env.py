@@ -1,12 +1,12 @@
 from dotenv import dotenv_values, get_key
 from pathlib import Path
-from typing import Mapping, Optional, Union, Any
+from typing import Dict, Optional, Union, Any
 from .execeptions import FileEnvNotFoundError
 
 
 EnvPathParameter = Optional[Union[str, Path]]
-EnvReturn = Mapping[str, Optional[str]]
-EnvOptions = Mapping[str, Any]
+EnvReturn = Dict[str, Optional[str]]
+EnvOptions = Dict[str, Any]
 
 
 class UtilsEnv:

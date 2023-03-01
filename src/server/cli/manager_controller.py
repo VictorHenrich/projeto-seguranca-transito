@@ -1,4 +1,4 @@
-from typing import Union, Mapping, TypeAlias, Sequence, Type, Callable, Tuple
+from typing import Union, Dict, TypeAlias, Sequence, Type, Callable, Tuple
 from argparse import ArgumentParser, Namespace, _SubParsersAction
 
 from patterns.command import ICommand
@@ -17,7 +17,7 @@ class ManagerController:
 
         self.__subparser: _SubParsersAction = subparser
 
-        self.__managers: Mapping[str, ITaskManager] = {}
+        self.__managers: Dict[str, ITaskManager] = {}
 
     def __handle_parsers(
         self, name: str, description: str, version: Union[str, int]

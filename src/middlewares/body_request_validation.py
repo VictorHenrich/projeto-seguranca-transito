@@ -1,12 +1,12 @@
-from typing import Type, TypeAlias, TypeVar, Mapping, Any
+from typing import Type, TypeAlias, TypeVar, Dict, Any
 from flask import request
 from server.http import Middleware, ResponseDefaultJSON, ResponseFailure
 
 
 T = TypeVar("T")
 
-JsonData: TypeAlias = Mapping[str, Any]
-ParamsData: TypeAlias = Mapping[str, T]
+JsonData: TypeAlias = Dict[str, Any]
+ParamsData: TypeAlias = Dict[str, T]
 
 
 class BodyRequestValidationMiddleware(Middleware):

@@ -1,4 +1,4 @@
-from typing import Mapping, Any, List
+from typing import Dict, Any, List
 from uuid import UUID
 from dataclasses import dataclass
 
@@ -41,7 +41,7 @@ class CrudUsuariosDepartamentosController(Controller):
 
         users: List[UsuarioDepartamento] = service.execute(departament=auth_departament)
 
-        response: List[Mapping[str, Any]] = [
+        response: List[Dict[str, Any]] = [
             {
                 "uuid": user.id_uuid,
                 "nome": user.nome,

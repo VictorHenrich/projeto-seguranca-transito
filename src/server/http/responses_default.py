@@ -1,20 +1,20 @@
-from typing import Any, Mapping, Optional
+from typing import Any, Dict, Optional
 from flask import Response
 from abc import ABC
 import json
 
 
 class ResponseDefaultJSON(ABC, Response):
-    __header_default: Mapping[str, str] = {"Content-Type": "application/json"}
+    __header_default: Dict[str, str] = {"Content-Type": "application/json"}
 
     def __init__(
         self,
         status_code: int,
         message: str,
         data: Optional[Any],
-        header: Optional[Mapping[str, str]] = None,
+        header: Optional[Dict[str, str]] = None,
     ) -> None:
-        response_data: Mapping[str, Any] = {
+        response_data: Dict[str, Any] = {
             "status": status_code,
             "message": message,
         }
@@ -22,7 +22,7 @@ class ResponseDefaultJSON(ABC, Response):
         if data is not None:
             response_data["data"] = data
 
-        header_: Mapping[str, str] = {
+        header_: Dict[str, str] = {
             **ResponseDefaultJSON.__header_default,
             **(header or {}),
         }
@@ -36,7 +36,7 @@ class ResponseSuccess(ResponseDefaultJSON):
         status_code: int = 200,
         message: str = "OK",
         data: Optional[Any] = None,
-        header: Optional[Mapping[str, str]] = None,
+        header: Optional[Dict[str, str]] = None,
     ) -> None:
         super().__init__(status_code, message, data, header)
 
@@ -47,7 +47,7 @@ class ResponseFailure(ResponseDefaultJSON):
         status_code: int = 500,
         message: str = "ERROR",
         data: Optional[Any] = None,
-        header: Optional[Mapping[str, str]] = None,
+        header: Optional[Dict[str, str]] = None,
     ) -> None:
         super().__init__(status_code, message, data, header)
 
@@ -58,7 +58,7 @@ class ResponseNotFound(ResponseDefaultJSON):
         status_code: int = 404,
         message: str = "NOT FOUND",
         data: Optional[Any] = None,
-        header: Optional[Mapping[str, str]] = None,
+        header: Optional[Dict[str, str]] = None,
     ) -> None:
         super().__init__(status_code, message, data, header)
 
@@ -69,6 +69,6 @@ class ResponseInauthorized(ResponseDefaultJSON):
         status_code: int = 401,
         message: str = "INAUTHORIZED",
         data: Optional[Any] = None,
-        header: Optional[Mapping[str, str]] = None,
+        header: Optional[Dict[str, str]] = None,
     ) -> None:
         super().__init__(status_code, message, data, header)

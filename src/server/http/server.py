@@ -1,5 +1,4 @@
-from typing import Any, Mapping, Union, Type, Callable
-from dataclasses import dataclass
+from typing import Any, Dict, Union, Type, Callable, TypeAlias, Protocol, Tuple
 from flask import Flask, Request, request
 from flask_cors import CORS
 from flask_restful import Api
@@ -7,12 +6,14 @@ from flask_restful import Api
 from .controller import Controller
 
 
-@dataclass
-class HttpServerConfig:
+Kwargs: TypeAlias = Dict[str, Any]
+
+
+class HttpServerConfig(Protocol):
     host: str
     port: Union[str, int]
     secret_key: str
-    debug: bool = True
+    debug: bool
 
 
 class HttpServer(Api):
@@ -48,15 +49,16 @@ class HttpServer(Api):
     def run(self) -> None:
         self.__application.run(
             host=self.__configs.host,
-            port=self.__configs.port,
+            port=int(self.__configs.port),
             debug=self.__configs.debug,
         )
 
     def add_controller(
-        self, *urls: str, **kwargs: Mapping[str, Any]
+        self, *urls: Tuple[str, ...], **kwargs: Kwargs
     ) -> Callable[[Type[Controller]], Type[Controller]]:
-    
         def wrapper(cls: Type[Controller]) -> Type[Controller]:
             self.add_resource(cls, *urls, **kwargs)
+
+            return cls
 
         return wrapper

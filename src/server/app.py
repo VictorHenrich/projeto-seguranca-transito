@@ -1,13 +1,13 @@
-from typing import Callable, Any, Mapping, Sequence, TypeAlias
-from .http import HttpServer, HttpServerConfig
-from .websocket import SocketServer, SocketServerConfig
+from typing import Callable, Any, Dict, Sequence, TypeAlias
+from .http import HttpServer, HttpServerBuilder
+from .websocket import SocketServer, SocketServerBuilder
 from .database import Databases
 from .database.dialects import MySQL, Postgres, DialectDefaultBuilder
 from .cli import ManagerController
 
 
 Target: TypeAlias = Callable[[None], None]
-ParamDict: TypeAlias = Mapping[str, Any]
+ParamDict: TypeAlias = Dict[str, Any]
 
 
 class App:
@@ -49,17 +49,17 @@ class AppFactory:
 
     @classmethod
     def __handle_http(cls, data: ParamDict) -> HttpServer:
-        config: HttpServerConfig = HttpServerConfig(
-            host=data["host"],
-            port=data["port"],
-            debug=data["debug"],
-            secret_key=data["secret_key"],
+        return (
+            HttpServerBuilder()
+                .set_host(data['host'])
+                .set_port(data['port'])
+                .set_debug(data['debug'])
+                .set_secret_key(data['secret_key'])
+                .build()
         )
 
-        return HttpServer(config)
-
     @classmethod
-    def __handle_databases(cls, data: Mapping[str, ParamDict]) -> Databases:
+    def __handle_databases(cls, data: Dict[str, ParamDict]) -> Databases:
         databases: Databases = Databases()
 
         for base_name, base_props in data.items():
@@ -92,16 +92,14 @@ class AppFactory:
 
     @classmethod
     def __handle_websocket(cls, data: ParamDict) -> SocketServer:
-        config: SocketServerConfig = SocketServerConfig(
-            host=data["host"],
-            port=data["port"],
-            secret_key=data["secret_key"],
-            debug=data["debug"],
+        return (
+            SocketServerBuilder()
+                .set_host(data['host'])
+                .set_port(data['port'])
+                .set_debug(data['debug'])
+                .set_secret_key(data['secret_key'])
+                .build()
         )
-
-        app_socket: SocketServer = SocketServer(config)
-
-        return app_socket
 
     @classmethod
     def __handle_cli(cls, data: ParamDict) -> ManagerController:

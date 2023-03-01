@@ -1,4 +1,4 @@
-from typing import List, Mapping, Any
+from typing import List, Dict, Any
 from dataclasses import dataclass
 from uuid import UUID
 
@@ -84,7 +84,7 @@ class CrudOcorrenciasController(Controller):
 
         occurrences: List[Ocorrencia] = occurrence_listing_service.execute(user=auth)
 
-        response: List[Mapping[str, Any]] = [
+        response: List[Dict[str, Any]] = [
             {
                 "description": occurrence.descricao,
                 "obs": occurrence.obs,

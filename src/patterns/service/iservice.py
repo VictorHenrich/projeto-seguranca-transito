@@ -4,7 +4,7 @@ from typing import (
     TypeVar,
     TypeAlias,
     Sequence,
-    Mapping,
+    Dict,
     Union,
     Any,
 )
@@ -12,7 +12,7 @@ from typing import (
 
 Args: TypeAlias = Sequence[Any]
 
-Kwargs: TypeAlias = Mapping[str, Any]
+Kwargs: TypeAlias = Dict[str, Any]
 
 T = TypeVar("T", bound=Union[None, Any])
 
