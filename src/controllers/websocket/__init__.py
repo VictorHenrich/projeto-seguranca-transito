@@ -1,1 +1,2 @@
 from .departament_user_controller import DepartamentUserController
+from .user_controller import UserController

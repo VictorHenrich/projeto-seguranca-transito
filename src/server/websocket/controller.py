@@ -1,6 +1,5 @@
 from typing import List, Generic, TypeVar
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 from flask import request
 from flask_socketio import Namespace
 
