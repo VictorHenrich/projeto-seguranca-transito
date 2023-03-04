@@ -6,7 +6,7 @@ from start import app
 from patterns.service import IService
 from models import UsuarioDepartamento, Departamento
 from server.http import Controller, ResponseDefaultJSON, ResponseSuccess
-from middlewares import (
+from middlewares.http import (
     BodyRequestValidationMiddleware,
     DepartamentUserAuthenticationMiddleware,
 )

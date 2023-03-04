@@ -7,7 +7,10 @@ from server.http import (
     ResponseDefaultJSON,
     ResponseSuccess,
 )
-from middlewares import BodyRequestValidationMiddleware, UserAuthenticationMiddleware
+from middlewares.http import (
+    BodyRequestValidationMiddleware,
+    UserAuthenticationMiddleware,
+)
 from models import Usuario
 from patterns.service import IService
 from services.user import (

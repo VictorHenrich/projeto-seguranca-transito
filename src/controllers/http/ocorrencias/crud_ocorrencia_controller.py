@@ -5,7 +5,10 @@ from uuid import UUID
 from start import app
 from patterns.service import IService
 from server.http import Controller, ResponseDefaultJSON, ResponseSuccess
-from middlewares import BodyRequestValidationMiddleware, UserAuthenticationMiddleware
+from middlewares.http import (
+    BodyRequestValidationMiddleware,
+    UserAuthenticationMiddleware,
+)
 from models import Usuario, Ocorrencia
 from services.occurrence import (
     OccurrenceCreationService,

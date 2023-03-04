@@ -1,47 +1,33 @@
-from typing import List, Dict, Any, TypeAlias
+from typing import Dict, TypeAlias, Any
 
 from start import app
-from server.websocket import Controller
+from server.websocket import Controller, ConnectionController
 from middlewares.websocket import DepartamentUserAuthenticationMiddleware
-from models import UsuarioDepartamento, Departamento
-from .user_controller import UserController
 
 
-JSON: TypeAlias = Dict[str, Any]
+JSONType: TypeAlias = Dict[str, Any]
+
+
+class ConnectionDepartamentUser(ConnectionController):
+    def __init__(self, id: str, name: str) -> None:
+        self.name = name
+
+        super().__init__(id)
 
 
 @app.websocket.add_controller("/departament_user")
-class DepartamentUserController(Controller):
-    __departament_users_ids: List[JSON] = []
+class DepartamentUserController(Controller[ConnectionDepartamentUser]):
 
-    @DepartamentUserAuthenticationMiddleware.apply()
-    def on_connect(
-        self, auth_user: UsuarioDepartamento, auth_departament: Departamento
-    ) -> None:
-        socket_id: str = app.websocket.global_request.sid
-
-        DepartamentUserController.__departament_users_ids.append(
-            {
-                "name": auth_user.nome,
-                "uuid": auth_user.id_uuid,
-                "departament_uuid": auth_departament.id_uuid,
-                "session_id": socket_id,
-            }
+    # @DepartamentUserAuthenticationMiddleware.apply()
+    def on_open(self, connection: ConnectionController) -> ConnectionDepartamentUser:
+        connection_departament_user: ConnectionDepartamentUser = (
+            ConnectionDepartamentUser(connection.id, "TESTE")
         )
 
-    def on_disconnect(self) -> None:
-        socket_id: str = app.websocket.global_request.sid
+        return connection_departament_user
 
-        for user in DepartamentUserController.__departament_users_ids:
-            if user["session_id"] == socket_id:
-                DepartamentUserController.__departament_users_ids.remove(user)
+    def on_send_message_user(self, data: JSONType):
+        pass
 
-    def on_receive_message(self, data: JSON) -> None:
-        print("USUÁRIO DEPARTAMENTO RECEBEU A SEGUINTE MENSAGEM:  ", data)
-
-    def on_send_message(self, data: JSON) -> None:
-        app.websocket.emit("receive_message", "OI", namespace="/user")
-        print(help(app.websocket.emit))
-
-    def on_get_users(self, data: None) -> None:
-        self.emit("get_users", UserController.get)
+    def on_send_message_departament_user(self, data: JSONType):
+        pass

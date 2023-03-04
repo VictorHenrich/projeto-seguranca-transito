@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from start import app
 from server.http import Controller, ResponseDefaultJSON, ResponseSuccess
-from middlewares import BodyRequestValidationMiddleware
+from middlewares.http import BodyRequestValidationMiddleware
 from patterns.service import IService
 from services.departament import DepartamentCreationService
 

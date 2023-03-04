@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from start import app
-from middlewares import BodyRequestValidationMiddleware
+from middlewares.http import BodyRequestValidationMiddleware
 from exceptions import DepartamentNotFoundError, UserNotFoundError
 from services.departament_user import DepartamentUserAuthorizationService
 from patterns.service import IService
