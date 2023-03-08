@@ -1,4 +1,14 @@
-from typing import Any, Dict, Union, Type, Callable, TypeAlias, Protocol, Tuple
+from typing import (
+    Any,
+    Dict,
+    Union,
+    Type,
+    Callable,
+    TypeAlias,
+    Protocol,
+    Sequence,
+    Optional,
+)
 from flask import Flask, Request, request
 from flask_cors import CORS
 from flask_restful import Api
@@ -54,7 +64,7 @@ class HttpServer(Api):
         )
 
     def add_controller(
-        self, *urls: Tuple[str, ...], **kwargs: Kwargs
+        self, *urls: Sequence[str], **kwargs: Kwargs
     ) -> Callable[[Type[Controller]], Type[Controller]]:
         def wrapper(cls: Type[Controller]) -> Type[Controller]:
             self.add_resource(cls, *urls, **kwargs)

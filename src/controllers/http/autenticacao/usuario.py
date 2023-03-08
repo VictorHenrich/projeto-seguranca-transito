@@ -19,7 +19,9 @@ class AuthUserRequestBody:
     senha: str
 
 
-@app.http.add_controller("/autenticacao/usuario")
+@app.http.add_controller(
+    "/autenticacao/usuario",
+)
 class AutenticacaoUsuarioController(Controller):
     @BodyRequestValidationMiddleware.apply(AuthUserRequestBody)
     def post(self, body_request: AuthUserRequestBody) -> ResponseDefaultJSON:

@@ -1,4 +1,4 @@
-from typing import List, Generic, TypeVar
+from typing import List, Generic, TypeVar, Optional
 from abc import ABC, abstractmethod
 from flask import request
 from flask_socketio import Namespace
@@ -29,9 +29,10 @@ class Controller(Namespace, ABC, Generic[T]):
     def on_connect(self) -> None:
         connection: ConnectionController = ConnectionController(request.sid)
 
-        connection_data: T = self.on_open(connection)
+        connection_data: Optional[T] = self.on_open(connection)
 
-        self.__connections.append(connection_data)
+        if connection_data:
+            self.__connections.append(connection_data)
 
     def on_disconnect(self) -> None:
         for connection in self.__connections:
@@ -41,7 +42,7 @@ class Controller(Namespace, ABC, Generic[T]):
                 self.__connections.remove(connection)
 
     @abstractmethod
-    def on_open(self, connection: ConnectionController) -> T:
+    def on_open(self, connection: ConnectionController) -> Optional[T]:
         ...
 
     def on_close(self, connection: T) -> None:
