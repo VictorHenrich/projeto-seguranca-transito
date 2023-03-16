@@ -22,7 +22,7 @@ class ConnectionDepartamentUser(ConnectionController):
         super().__init__(id_socket)
 
     def __repr__(self) -> str:
-        return f"<ConnectionDepartamentUser name={self.name} access={self.access} uuid={self.uuid} departament_uuid={self.departament_uuid}"
+        return f"<ConnectionDepartamentUser name={self.name} access={self.access} uuid={self.uuid} departament_uuid={self.departament_uuid} id={self.id}"
 
 
 @app.websocket.add_controller("/departament_user")
