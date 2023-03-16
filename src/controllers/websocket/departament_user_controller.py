@@ -123,7 +123,8 @@ class DepartamentUserController(Controller[ConnectionDepartamentUser]):
                 "departament_user_uuid": user.uuid,
                 "departament_uuid": user.departament_uuid,
             }
-            for user in self.connections
+            for user in self.connections 
+            if user.id != socket_id
         ]
 
         self.emit("get_departament_users", departament_users, room=socket_id)
