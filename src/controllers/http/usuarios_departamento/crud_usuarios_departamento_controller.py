@@ -10,11 +10,11 @@ from middlewares.http import (
     BodyRequestValidationMiddleware,
     DepartamentUserAuthenticationMiddleware,
 )
-from services.departament_user import (
-    DepartamentUserCriationService,
-    DepartamentUserExclusionService,
-    DepartamentUserListingService,
-    DepartamentUserUpgradeService,
+from services.agent import (
+    AgentCriationService,
+    AgentExclusionService,
+    AgentListingService,
+    AgentUpgradeService,
 )
 
 
@@ -37,7 +37,7 @@ class CrudUsuariosDepartamentosController(Controller):
         auth_user: UsuarioDepartamento,
         auth_departament: Departamento,
     ) -> ResponseDefaultJSON:
-        service: IService[List[UsuarioDepartamento]] = DepartamentUserListingService()
+        service: IService[List[UsuarioDepartamento]] = AgentListingService()
 
         users: List[UsuarioDepartamento] = service.execute(departament=auth_departament)
 
@@ -61,7 +61,7 @@ class CrudUsuariosDepartamentosController(Controller):
         auth_departament: Departamento,
         body_request: DepartamentUserRegistrationRequestBody,
     ) -> ResponseDefaultJSON:
-        service: IService[None] = DepartamentUserCriationService()
+        service: IService[None] = AgentCriationService()
 
         service.execute(
             departament=auth_departament,
@@ -82,7 +82,7 @@ class CrudUsuariosDepartamentosController(Controller):
         auth_departament: Departamento,
         body_request: DepartamentUserRegistrationRequestBody,
     ) -> ResponseDefaultJSON:
-        service: IService[None] = DepartamentUserUpgradeService()
+        service: IService[None] = AgentUpgradeService()
 
         service.execute(
             departament=auth_departament,
@@ -102,7 +102,7 @@ class CrudUsuariosDepartamentosController(Controller):
         auth_user: UsuarioDepartamento,
         auth_departament: Departamento,
     ) -> ResponseDefaultJSON:
-        service: IService[None] = DepartamentUserExclusionService()
+        service: IService[None] = AgentExclusionService()
 
         service.execute(
             departament=auth_departament, uuid_departament_user=str(user_hash)

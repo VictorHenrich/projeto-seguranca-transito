@@ -5,26 +5,26 @@ from server.utils import UtilsJWT, Constants
 from patterns.service import IService
 from patterns.repository import IAuthRepository
 from models import Departamento, UsuarioDepartamento
-from repositories.departament_user import (
-    DepartamentUserAuthRepositoryParam,
-    DepartamentUserAuthRepository,
+from repositories.agent import (
+    AgentAuthRepositoryParam,
+    AgentAuthRepository,
 )
 from services.departament import DepartamentGettingService
 from utils.entities import PayloadDepartamentUserJWT
 
 
-class DepartamentUserAuthorizationService:
+class AgentAuthorizationService:
     def execute(self, departament_access: str, user: str, password: str) -> str:
         with app.databases.create_session() as session:
-            dep_user_auth_repository_param: DepartamentUserAuthRepositoryParam = (
-                DepartamentUserAuthRepositoryParam(
+            dep_user_auth_repository_param: AgentAuthRepositoryParam = (
+                AgentAuthRepositoryParam(
                     departament_access=departament_access, user=user, password=password
                 )
             )
 
             dep_user_auth_repository: IAuthRepository[
-                DepartamentUserAuthRepositoryParam, UsuarioDepartamento
-            ] = DepartamentUserAuthRepository(session)
+                AgentAuthRepositoryParam, UsuarioDepartamento
+            ] = AgentAuthRepository(session)
 
             departament_user: UsuarioDepartamento = dep_user_auth_repository.auth(
                 dep_user_auth_repository_param

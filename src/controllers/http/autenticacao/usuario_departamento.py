@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from start import app
 from middlewares.http import BodyRequestValidationMiddleware
 from exceptions import DepartamentNotFoundError, UserNotFoundError
-from services.departament_user import DepartamentUserAuthorizationService
+from services.agent import AgentAuthorizationService
 from patterns.service import IService
 from server.http import (
     Controller,
@@ -26,7 +26,7 @@ class AutenticaoUsuarioDepartamentoController(Controller):
     def post(self, body_request: DepartamentUserAuthRequestBody) -> ResponseDefaultJSON:
 
         try:
-            service: IService[str] = DepartamentUserAuthorizationService()
+            service: IService[str] = AgentAuthorizationService()
 
             token: str = service.execute(
                 departament_access=body_request.departamento,

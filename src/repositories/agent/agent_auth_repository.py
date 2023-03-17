@@ -5,14 +5,14 @@ from exceptions import UserNotFoundError
 
 
 @dataclass
-class DepartamentUserAuthRepositoryParam:
+class AgentAuthRepositoryParam:
     user: str
     password: str
     departament_access: str
 
 
-class DepartamentUserAuthRepository(BaseRepository):
-    def auth(self, params: DepartamentUserAuthRepositoryParam) -> UsuarioDepartamento:
+class AgentAuthRepository(BaseRepository):
+    def auth(self, params: AgentAuthRepositoryParam) -> UsuarioDepartamento:
         departament_user: UsuarioDepartamento = (
             self.session.query(UsuarioDepartamento)
             .join(Departamento, UsuarioDepartamento.id_departamento == Departamento.id)

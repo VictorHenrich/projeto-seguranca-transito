@@ -4,13 +4,13 @@ from patterns.repository import BaseRepository
 from models import Departamento, UsuarioDepartamento
 
 
-class DepartamentUserFindManyRepositoryParams(Protocol):
+class AgentFindManyRepositoryParams(Protocol):
     departament: Departamento
 
 
-class DepartamentUserFindManyRepository(BaseRepository):
+class AgentFindManyRepository(BaseRepository):
     def list(
-        self, params: DepartamentUserFindManyRepositoryParams
+        self, params: AgentFindManyRepositoryParams
     ) -> List[UsuarioDepartamento]:
         departament_users: List[UsuarioDepartamento] = (
             self.session.query(UsuarioDepartamento)

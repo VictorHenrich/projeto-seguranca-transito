@@ -1,13 +1,13 @@
 from start import app
 from patterns.repository import IUpdateRepository
-from repositories.departament_user import (
-    DepartamentUserUpdateRepository,
-    DepartamentUserUpdateRepositoryParam,
+from repositories.agent import (
+    AgentUpdateRepository,
+    AgentUpdateRepositoryParam,
 )
 from models import UsuarioDepartamento, Departamento
 
 
-class DepartamentUserUpgradeService:
+class AgentUpgradeService:
     def execute(
         self,
         departament: Departamento,
@@ -19,8 +19,8 @@ class DepartamentUserUpgradeService:
     ) -> None:
 
         with app.databases.create_session() as session:
-            update_repository_param: DepartamentUserUpdateRepositoryParam = (
-                DepartamentUserUpdateRepositoryParam(
+            update_repository_param: AgentUpdateRepositoryParam = (
+                AgentUpdateRepositoryParam(
                     uuid_departament_user=uuid_departament_user,
                     departament=departament,
                     name=name,
@@ -31,8 +31,8 @@ class DepartamentUserUpgradeService:
             )
 
             update_repository: IUpdateRepository[
-                DepartamentUserUpdateRepositoryParam
-            ] = DepartamentUserUpdateRepository(session)
+                AgentUpdateRepositoryParam
+            ] = AgentUpdateRepository(session)
 
             update_repository.update(update_repository_param)
 

@@ -6,7 +6,7 @@ from server.websocket import Middleware
 from server.utils import UtilsJWT
 from models import UsuarioDepartamento, Departamento
 from patterns.service import IService
-from services.departament_user import DepartamentUserGettingService
+from services.agent import AgentGettingService
 from services.departament import DepartamentGettingUUIDService
 from exceptions import (
     AuthorizationNotFoundHeader,
@@ -41,7 +41,7 @@ class DepartamentUserAuthenticationMiddleware(Middleware):
 
         departament_user_service: IService[
             UsuarioDepartamento
-        ] = DepartamentUserGettingService()
+        ] = AgentGettingService()
 
         departament: Departamento = departament_service.execute(
             uuid_departament=payload.uuid_departament

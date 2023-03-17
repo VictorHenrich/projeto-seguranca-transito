@@ -5,13 +5,13 @@ from models import Departamento, UsuarioDepartamento
 from exceptions import UserNotFoundError
 
 
-class DepartamentUserFindRepositoryParams(Protocol):
+class AgentFindRepositoryParams(Protocol):
     uuid_departament_user: str
     departament: Departamento
 
 
-class DepartamentUserFindRepository(BaseRepository):
-    def get(self, params: DepartamentUserFindRepositoryParams) -> UsuarioDepartamento:
+class AgentFindRepository(BaseRepository):
+    def get(self, params: AgentFindRepositoryParams) -> UsuarioDepartamento:
         departament_user: UsuarioDepartamento = (
             self.session.query(UsuarioDepartamento)
             .join(Departamento, UsuarioDepartamento.id_departamento == Departamento.id)
