@@ -6,24 +6,17 @@ from repositories.user import UserDeleteRepository, UserDeleteRepositoryParams
 
 
 @dataclass
-class UserDeleteProps:
+class UserExclusionServiceProps:
     uuid_ser: str
 
 
 class UserExclusionService:
-    def __handle_repository_param(self, uuid_user: str) -> UserDeleteRepositoryParams:
-        return UserDeleteRepositoryParams(uuid_ser=uuid_user)
-
-    def execute(self, uuid_user: str) -> None:
+    def execute(self, props: UserExclusionServiceProps) -> None:
         with app.databases.create_session() as session:
             repository: IDeleteRepository[
-                UserDeleteRepositoryParams
+                UserDeleteRepositoryParams, None
             ] = UserDeleteRepository(session)
 
-            repository_param: UserDeleteRepositoryParams = (
-                self.__handle_repository_param(uuid_user)
-            )
-
-            repository.delete(repository_param)
+            repository.delete(props)
 
             session.commit()

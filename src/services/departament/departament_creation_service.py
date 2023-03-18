@@ -9,7 +9,7 @@ from repositories.departament import (
 
 
 @dataclass
-class DepartamentCreateProps:
+class DepartamentCreationServiceProps:
     name: str
     unit: str
     access: str
@@ -22,30 +22,12 @@ class DepartamentCreateProps:
 
 
 class DepartamentCreationService:
-    def execute(
-        self,
-        name: str,
-        unit: str,
-        access: str,
-        cep: str,
-        uf: str,
-        city: str,
-        district: str,
-        street: str,
-        complement: str,
-    ) -> None:
-
+    def execute(self, props: DepartamentCreationServiceProps) -> None:
         with app.databases.create_session() as session:
-            departament_create_props: DepartamentCreateRepositoryParams = (
-                DepartamentCreateProps(
-                    name, unit, access, cep, uf, city, district, street, complement
-                )
-            )
-
             departament_create_repository: ICreateRepository[
-                DepartamentCreateRepositoryParams
+                DepartamentCreateRepositoryParams, None
             ] = DepartamentCreateRepository(session)
 
-            departament_create_repository.create(departament_create_props)
+            departament_create_repository.create(props)
 
             session.commit()

@@ -10,21 +10,17 @@ from repositories.departament import (
 
 
 @dataclass
-class DepartamentFindUUIDProps:
+class DepartamentGettingUUIDServiceProps:
     uuid_departament: str
 
 
 class DepartamentGettingUUIDService:
-    def execute(self, uuid_departament: str) -> Departament:
+    def execute(self, props: DepartamentGettingUUIDServiceProps) -> Departament:
         with app.databases.create_session() as session:
-            getting_repository_param: DepartamentFindUUIDRepositoryParams = (
-                DepartamentFindUUIDProps(uuid_departament=uuid_departament)
-            )
-
             getting_repository: IFindRepository[
                 DepartamentFindUUIDRepositoryParams, Departament
             ] = DepartamentFindUUIDRepository(session)
 
-            departament: Departament = getting_repository.get(getting_repository_param)
+            departament: Departament = getting_repository.get(props)
 
             return departament

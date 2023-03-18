@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+
 from start import app
 from patterns.repository import IUpdateRepository
 from repositories.agent import (
@@ -7,33 +9,23 @@ from repositories.agent import (
 from models import Agent, Departament
 
 
+@dataclass
+class AgentUpgradeServiceProps:
+    departament_user: Agent
+    departament: Departament
+    name: str
+    access: str
+    password: str
+    position: str
+
+
 class AgentUpgradeService:
-    def execute(
-        self,
-        departament: Departament,
-        uuid_departament_user: Agent,
-        name: str,
-        user: str,
-        password: str,
-        position: str,
-    ) -> None:
-
+    def execute(self, props: AgentUpgradeServiceProps) -> None:
         with app.databases.create_session() as session:
-            update_repository_param: AgentUpdateRepositoryParam = (
-                AgentUpdateRepositoryParam(
-                    uuid_departament_user=uuid_departament_user,
-                    departament=departament,
-                    name=name,
-                    access=user,
-                    password=password,
-                    position=position,
-                )
-            )
-
             update_repository: IUpdateRepository[
-                AgentUpdateRepositoryParam
+                AgentUpdateRepositoryParam, None
             ] = AgentUpdateRepository(session)
 
-            update_repository.update(update_repository_param)
+            update_repository.update(props)
 
             session.commit()

@@ -6,8 +6,11 @@ from server.http import Middleware, ResponseInauthorized
 from server.utils import UtilsJWT, UtilsExcept
 from models import Agent, Departament
 from patterns.service import IService
-from services.agent import AgentGettingService
-from services.departament import DepartamentGettingUUIDService
+from services.agent import AgentGettingService, AgentGettingServiceProps
+from services.departament import (
+    DepartamentGettingUUIDService,
+    DepartamentGettingUUIDServiceProps,
+)
 from exceptions import (
     AuthorizationNotFoundHeader,
     TokenTypeNotBearerError,
@@ -39,16 +42,32 @@ class DepartamentUserAuthenticationMiddleware(Middleware):
         if payload.expired <= datetime.now().timestamp():
             raise ExpiredTokenError()
 
-        departament_service: IService[Departament] = DepartamentGettingUUIDService()
+        departament_service: IService[
+            DepartamentGettingUUIDServiceProps, Departament
+        ] = DepartamentGettingUUIDService()
 
-        departament_user_service: IService[Agent] = AgentGettingService()
+        departament_user_service: IService[
+            AgentGettingServiceProps, Agent
+        ] = AgentGettingService()
+
+        departament_service_props: DepartamentGettingUUIDServiceProps = (
+            DepartamentGettingUUIDServiceProps(
+                uuid_departament=payload.uuid_departament
+            )
+        )
 
         departament: Departament = departament_service.execute(
-            uuid_departament=payload.uuid_departament
+            departament_service_props
+        )
+
+        departament_user_service_props: AgentGettingServiceProps = (
+            AgentGettingServiceProps(
+                uuid_departament_user=payload.uuid_user, departament=departament
+            )
         )
 
         departament_user: Agent = departament_user_service.execute(
-            uuid_departament_user=payload.uuid_user, departament=departament
+            departament_user_service_props
         )
 
         return {"auth_user": departament_user, "auth_departament": departament}

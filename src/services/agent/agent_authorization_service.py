@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 
 from start import app
@@ -9,33 +10,39 @@ from repositories.agent import (
     AgentAuthRepositoryParam,
     AgentAuthRepository,
 )
-from services.departament import DepartamentGettingService
+from services.departament import (
+    DepartamentGettingService,
+    DepartamentGettingServiceProps,
+)
 from utils.entities import PayloadDepartamentUserJWT
 
 
-class AgentAuthorizationService:
-    def execute(self, departament_access: str, user: str, password: str) -> str:
-        with app.databases.create_session() as session:
-            dep_user_auth_repository_param: AgentAuthRepositoryParam = (
-                AgentAuthRepositoryParam(
-                    departament_access=departament_access, user=user, password=password
-                )
-            )
+@dataclass
+class AgentAuthorizationServiceProps:
+    departament_access: str
+    user: str
+    password: str
 
+
+class AgentAuthorizationService:
+    def execute(self, props: AgentAuthorizationServiceProps) -> str:
+        with app.databases.create_session() as session:
             dep_user_auth_repository: IAuthRepository[
                 AgentAuthRepositoryParam, Agent
             ] = AgentAuthRepository(session)
 
-            departament_user: Agent = dep_user_auth_repository.auth(
-                dep_user_auth_repository_param
-            )
+            departament_user: Agent = dep_user_auth_repository.auth(props)
 
             departament_getting_service: IService[
-                Departament
+                DepartamentGettingServiceProps, Departament
             ] = DepartamentGettingService()
 
+            departament_getting_service_props: DepartamentGettingServiceProps = (
+                DepartamentGettingServiceProps(departament_user.id_departamento)
+            )
+
             departament: Departament = departament_getting_service.execute(
-                departament_user.id_departamento
+                departament_getting_service_props
             )
 
             expired: float = (

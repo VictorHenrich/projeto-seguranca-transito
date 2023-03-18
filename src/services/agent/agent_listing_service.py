@@ -11,22 +11,18 @@ from models import Agent, Departament
 
 
 @dataclass
-class AgentFindManyProps:
+class AgentListingServiceProps:
     departament: Departament
 
 
 class AgentListingService:
-    def execute(self, departament: Departament) -> List[Agent]:
+    def execute(self, props: AgentListingServiceProps) -> List[Agent]:
 
         with app.databases.create_session() as session:
-            listing_repository_param: AgentFindManyRepositoryParams = (
-                AgentFindManyProps(departament=departament)
-            )
-
             listing_repository: IFindManyRepository[
                 AgentFindManyRepositoryParams, Agent
             ] = AgentFindManyRepository(session)
 
-            users: List[Agent] = listing_repository.list(listing_repository_param)
+            users: List[Agent] = listing_repository.list(props)
 
             return users

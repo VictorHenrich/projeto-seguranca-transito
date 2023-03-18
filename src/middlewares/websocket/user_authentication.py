@@ -6,7 +6,7 @@ from server.websocket import Middleware
 from server.utils import UtilsJWT
 from patterns.service import IService
 from models import User
-from services.user import UserGettingService
+from services.user import UserGettingService, UserGettingServiceProps
 from exceptions import (
     AuthorizationNotFoundHeader,
     TokenTypeNotBearerError,
@@ -36,8 +36,12 @@ class UserAuthenticationMiddleware(Middleware):
         if payload.expired <= datetime.now().timestamp():
             raise ExpiredTokenError()
 
-        service: IService[User] = UserGettingService()
+        service: IService[UserGettingServiceProps, User] = UserGettingService()
 
-        user: User = service.execute(uuid_user=payload.uuid_user)
+        service_props: UserGettingServiceProps = UserGettingServiceProps(
+            uuid_user=payload.uuid_user
+        )
+
+        user: User = service.execute(service_props)
 
         return {"auth": user}

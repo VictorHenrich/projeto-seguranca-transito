@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Protocol
 from datetime import date
 
 from patterns.repository import IFindRepository, BaseRepository
@@ -6,8 +7,7 @@ from models import User
 from .user_find_repository import UserFindRepository, UserFindRepositoryParams
 
 
-@dataclass
-class UserUpdateRepositoryParam:
+class UserUpdateRepositoryParam(Protocol):
     uuid_user: str
     name: str
     email: str

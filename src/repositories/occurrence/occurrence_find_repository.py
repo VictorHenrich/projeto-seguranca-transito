@@ -10,10 +10,10 @@ class OccurrenceFindRepositoryParams(Protocol):
 
 
 class OccurrenceFindRepository(BaseRepository):
-    def get(self, param: OccurrenceFindRepositoryParams) -> Occurrence:
+    def get(self, params: OccurrenceFindRepositoryParams) -> Occurrence:
         occurrence: Occurrence = (
             self.session.query(Occurrence)
-            .filter(Occurrence.id_uuid == param.uuid_occurrence)
+            .filter(Occurrence.id_uuid == params.uuid_occurrence)
             .first()
         )
 

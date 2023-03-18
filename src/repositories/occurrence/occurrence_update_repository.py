@@ -1,3 +1,4 @@
+from typing import Protocol
 from dataclasses import dataclass
 
 from patterns.repository import BaseRepository, IFindRepository
@@ -8,8 +9,7 @@ from .occurrence_find_repository import (
 )
 
 
-@dataclass
-class OccurrenceUpdateRepositoryParam:
+class OccurrenceUpdateRepositoryParam(Protocol):
     uuid_occurrence: str
     description: str
     obs: str

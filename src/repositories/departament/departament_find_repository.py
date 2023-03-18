@@ -6,7 +6,7 @@ from exceptions import DepartamentNotFoundError
 
 
 class DepartamentFindRepositoryParams(Protocol):
-    departament_id: str
+    departament_id: int
 
 
 class DepartamentFindRepository(BaseRepository):

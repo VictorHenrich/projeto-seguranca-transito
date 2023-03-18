@@ -9,7 +9,7 @@ from repositories.user import UserCreateRepository, UserCreateRepositoryParams
 
 
 @dataclass
-class UserCreateProps:
+class UserCreationServiceProps:
     name: str
     email: str
     password: str
@@ -18,54 +18,12 @@ class UserCreateProps:
 
 
 class UserCreationService:
-    def __handle_params_repository(
-        self,
-        name: str,
-        email: str,
-        document: str,
-        password: str,
-        birthday: Optional[str],
-    ) -> UserCreateProps:
-
-        treaty_name: str = name.upper()
-
-        treaty_email: str = email.upper()
-
-        treaty_document: str = re.sub(r"[^0-9]", "", document)
-
-        traety_password: str = password.strip()
-
-        treaty_birthday: Optional[date] = None
-
-        if birthday and len(birthday):
-            treaty_birthday = date(*([int(d) for d in birthday.split("-")]))
-
-        return UserCreateProps(
-            name=treaty_name,
-            email=treaty_email,
-            document=treaty_document,
-            password=traety_password,
-            birthday=treaty_birthday,
-        )
-
-    def execute(
-        self, name: str, email: str, document: str, password: str, birthday: str
-    ) -> None:
+    def execute(self, props: UserCreationServiceProps) -> None:
         with app.databases.create_session() as session:
-            repository_param: UserCreateRepositoryParams = (
-                self.__handle_params_repository(
-                    name=name,
-                    email=email,
-                    document=document,
-                    password=password,
-                    birthday=birthday,
-                )
-            )
-
             repository: ICreateRepository[
-                UserCreateRepositoryParams
+                UserCreateRepositoryParams, None
             ] = UserCreateRepository(session)
 
-            repository.create(repository_param)
+            repository.create(props)
 
             session.commit()

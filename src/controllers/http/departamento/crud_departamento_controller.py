@@ -4,7 +4,10 @@ from start import app
 from server.http import Controller, ResponseDefaultJSON, ResponseSuccess
 from middlewares.http import BodyRequestValidationMiddleware
 from patterns.service import IService
-from services.departament import DepartamentCreationService
+from services.departament import (
+    DepartamentCreationService,
+    DepartamentCreationServiceProps,
+)
 
 
 @dataclass
@@ -24,18 +27,24 @@ class DepartamentCreationBodyRequest:
 class CrudDepartamentoController(Controller):
     @BodyRequestValidationMiddleware.apply(DepartamentCreationBodyRequest)
     def post(self, body_request: DepartamentCreationBodyRequest) -> ResponseDefaultJSON:
-        departament_creating_service: IService[None] = DepartamentCreationService()
+        departament_creating_service: IService[
+            DepartamentCreationServiceProps, None
+        ] = DepartamentCreationService()
 
-        departament_creating_service.execute(
-            name=body_request.nome,
-            unit=body_request.unidade,
-            access=body_request.acesso,
-            cep=body_request.cep,
-            uf=body_request.uf,
-            city=body_request.cidade,
-            district=body_request.bairro,
-            street=body_request.logradouro,
-            complement=body_request.complemento,
+        departament_creation_service_props: DepartamentCreationServiceProps = (
+            DepartamentCreationServiceProps(
+                name=body_request.nome,
+                unit=body_request.unidade,
+                access=body_request.acesso,
+                cep=body_request.cep,
+                uf=body_request.uf,
+                city=body_request.cidade,
+                district=body_request.bairro,
+                street=body_request.logradouro,
+                complement=body_request.complemento,
+            )
         )
+
+        departament_creating_service.execute(departament_creation_service_props)
 
         return ResponseSuccess()

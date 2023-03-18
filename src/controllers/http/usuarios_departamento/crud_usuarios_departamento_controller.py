@@ -12,9 +12,13 @@ from middlewares.http import (
 )
 from services.agent import (
     AgentCriationService,
+    AgentCriationServiceProps,
     AgentExclusionService,
+    AgentExclusionServiceProps,
     AgentListingService,
+    AgentListingServiceProps,
     AgentUpgradeService,
+    AgentUpgradeServiceProps,
 )
 
 
@@ -37,9 +41,13 @@ class CrudUsuariosDepartamentosController(Controller):
         auth_user: Agent,
         auth_departament: Departament,
     ) -> ResponseDefaultJSON:
-        service: IService[List[Agent]] = AgentListingService()
+        service: IService[AgentListingServiceProps, List[Agent]] = AgentListingService()
 
-        users: List[Agent] = service.execute(departament=auth_departament)
+        service_props: AgentListingServiceProps = AgentListingServiceProps(
+            departament=auth_departament
+        )
+
+        users: List[Agent] = service.execute(service_props)
 
         response: List[Dict[str, Any]] = [
             {
@@ -61,15 +69,17 @@ class CrudUsuariosDepartamentosController(Controller):
         auth_departament: Departament,
         body_request: DepartamentUserRegistrationRequestBody,
     ) -> ResponseDefaultJSON:
-        service: IService[None] = AgentCriationService()
+        service: IService[AgentCriationServiceProps, None] = AgentCriationService()
 
-        service.execute(
+        service_props: AgentCriationServiceProps = AgentCriationServiceProps(
             departament=auth_departament,
             name=body_request.nome,
-            user=body_request.usuario,
+            access=body_request.usuario,
             password=body_request.senha,
             position=body_request.cargo,
         )
+
+        service.execute(service_props)
 
         return ResponseSuccess()
 
@@ -82,16 +92,18 @@ class CrudUsuariosDepartamentosController(Controller):
         auth_departament: Departament,
         body_request: DepartamentUserRegistrationRequestBody,
     ) -> ResponseDefaultJSON:
-        service: IService[None] = AgentUpgradeService()
+        service: IService[AgentUpgradeServiceProps, None] = AgentUpgradeService()
 
-        service.execute(
+        service_props: AgentUpgradeServiceProps = AgentUpgradeServiceProps(
             departament=auth_departament,
             name=body_request.nome,
-            user=body_request.usuario,
+            access=body_request.usuario,
             password=body_request.senha,
             position=body_request.cargo,
-            uuid_departament_user=str(user_hash),
+            departament_user=auth_user,
         )
+
+        service.execute(service_props)
 
         return ResponseSuccess()
 
@@ -102,10 +114,12 @@ class CrudUsuariosDepartamentosController(Controller):
         auth_user: Agent,
         auth_departament: Departament,
     ) -> ResponseDefaultJSON:
-        service: IService[None] = AgentExclusionService()
+        service: IService[AgentExclusionServiceProps, None] = AgentExclusionService()
 
-        service.execute(
+        service_props: AgentExclusionServiceProps = AgentExclusionServiceProps(
             departament=auth_departament, uuid_departament_user=str(user_hash)
         )
+
+        service.execute(service_props)
 
         return ResponseSuccess()

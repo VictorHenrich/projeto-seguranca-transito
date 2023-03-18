@@ -10,21 +10,17 @@ from repositories.occurrence import (
 
 
 @dataclass
-class OccurrenceFindProps:
+class OccurrenceGettingServiceProps:
     uuid_occurrence: str
 
 
 class OccurrenceGettingService:
-    def execute(self, uuid_occurrence: str) -> Occurrence:
+    def execute(self, props: OccurrenceGettingServiceProps) -> Occurrence:
         with app.databases.create_session() as session:
-            getting_repository_param: OccurrenceFindRepositoryParams = (
-                OccurrenceFindProps(uuid_occurrence=uuid_occurrence)
-            )
-
             getting_repository: IFindRepository[
                 OccurrenceFindRepositoryParams, Occurrence
             ] = OccurrenceFindRepository(session)
 
-            occurrence: Occurrence = getting_repository.get(getting_repository_param)
+            occurrence: Occurrence = getting_repository.get(props)
 
             return occurrence

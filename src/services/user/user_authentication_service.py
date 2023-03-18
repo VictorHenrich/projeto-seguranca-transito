@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
+from dataclasses import dataclass
 
 from start import app
-from server.database import Database
 from patterns.repository import IAuthRepository
 from repositories.user import UserAuthRepository, UserAuthRepositoryParam
 from server.utils import UtilsJWT, Constants
@@ -9,23 +9,20 @@ from utils.entities import PayloadUserJWT
 from models import User
 
 
-class UserAuthenticationService:
-    def __handle_repository_param(
-        self, email: str, password: str
-    ) -> UserAuthRepositoryParam:
-        return UserAuthRepositoryParam(email=email.upper(), password=password)
+@dataclass
+class UserAuthenticationServiceProps:
+    email: str
+    password: str
 
-    def execute(self, email: str, password: str) -> str:
+
+class UserAuthenticationService:
+    def execute(self, props: UserAuthenticationServiceProps) -> str:
         with app.databases.create_session() as session:
             repository: IAuthRepository[
                 UserAuthRepositoryParam, User
             ] = UserAuthRepository(session)
 
-            repository_param: UserAuthRepositoryParam = self.__handle_repository_param(
-                email, password
-            )
-
-            user: User = repository.auth(repository_param)
+            user: User = repository.auth(props)
 
             max_time: float = Constants.Authentication.max_minute_authenticated
 

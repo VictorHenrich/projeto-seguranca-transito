@@ -10,22 +10,18 @@ from models import Agent, Departament
 
 
 @dataclass
-class AgentFindProps:
+class AgentGettingServiceProps:
     uuid_departament_user: str
     departament: Departament
 
 
 class AgentGettingService:
-    def execute(self, departament: Departament, uuid_departament_user: Agent) -> Agent:
+    def execute(self, props: AgentGettingServiceProps) -> Agent:
         with app.databases.create_session() as session:
-            getting_repository_param: AgentFindRepositoryParams = AgentFindProps(
-                departament=departament, uuid_departament_user=uuid_departament_user
-            )
-
             getting_repository: IFindRepository[
                 AgentFindRepositoryParams, Agent
             ] = AgentFindRepository(session)
 
-            user: Agent = getting_repository.get(getting_repository_param)
+            user: Agent = getting_repository.get(props)
 
             return user

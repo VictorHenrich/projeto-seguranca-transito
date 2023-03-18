@@ -12,9 +12,13 @@ from middlewares.http import (
 from models import User, Occurrence
 from services.occurrence import (
     OccurrenceCreationService,
+    OccurrenceCreationServiceProps,
     OccurrenceExclusionService,
+    OccurrenceExclusionServiceProps,
     OccurrenceUpdateService,
+    OccurrenceUpdateServiceProps,
     OccurrenceListingService,
+    OccurrenceListingServiceProps,
 )
 
 
@@ -41,14 +45,20 @@ class CrudOcorrenciasController(Controller):
     def post(
         self, auth: User, body_request: OccurrenceCreationBodyRequest
     ) -> ResponseDefaultJSON:
-        occurrence_creation_service: IService[None] = OccurrenceCreationService()
+        occurrence_creation_service: IService[
+            OccurrenceCreationServiceProps, None
+        ] = OccurrenceCreationService()
 
-        occurrence_creation_service.execute(
-            user=auth,
-            uuid_departament=body_request.uuid_departamento,
-            description=body_request.descricao,
-            obs=body_request.obs,
+        occurrence_creation_service_props: OccurrenceCreationServiceProps = (
+            OccurrenceCreationServiceProps(
+                user=auth,
+                uuid_departament=body_request.uuid_departamento,
+                description=body_request.descricao,
+                obs=body_request.obs,
+            )
         )
+
+        occurrence_creation_service.execute(occurrence_creation_service_props)
 
         return ResponseSuccess()
 
@@ -60,31 +70,49 @@ class CrudOcorrenciasController(Controller):
         auth: User,
         body_request: OccurrenceUpdateBodyRequest,
     ) -> ResponseDefaultJSON:
-        occurrence_update_service: IService[None] = OccurrenceUpdateService()
+        occurrence_update_service: IService[
+            OccurrenceUpdateServiceProps, None
+        ] = OccurrenceUpdateService()
 
-        occurrence_update_service.execute(
-            uuid_occurrence=str(occurrence_hash),
-            description=body_request.descricao,
-            obs=body_request.obs,
+        occurrence_update_service_props: OccurrenceUpdateServiceProps = (
+            OccurrenceUpdateServiceProps(
+                uuid_occurrence=str(occurrence_hash),
+                description=body_request.descricao,
+                obs=body_request.obs,
+            )
         )
+
+        occurrence_update_service.execute(occurrence_update_service_props)
 
         return ResponseSuccess()
 
     @UserAuthenticationMiddleware.apply()
     def delete(self, occurrence_hash: UUID, auth: User) -> ResponseDefaultJSON:
-        occurrence_exclusion_service: IService[None] = OccurrenceExclusionService()
+        occurrence_exclusion_service: IService[
+            OccurrenceExclusionServiceProps, None
+        ] = OccurrenceExclusionService()
 
-        occurrence_exclusion_service.execute(uuid_occurrence=str(occurrence_hash))
+        occurrence_exclusion_service_props: OccurrenceExclusionServiceProps = (
+            OccurrenceExclusionServiceProps(uuid_occurrence=str(occurrence_hash))
+        )
+
+        occurrence_exclusion_service.execute(occurrence_exclusion_service_props)
 
         return ResponseSuccess()
 
     @UserAuthenticationMiddleware.apply()
     def get(self, auth: User) -> ResponseDefaultJSON:
         occurrence_listing_service: IService[
-            List[Occurrence]
+            OccurrenceListingServiceProps, List[Occurrence]
         ] = OccurrenceListingService()
 
-        occurrences: List[Occurrence] = occurrence_listing_service.execute(user=auth)
+        occurrence_listing_service_props: OccurrenceListingServiceProps = (
+            OccurrenceListingServiceProps(user=auth)
+        )
+
+        occurrences: List[Occurrence] = occurrence_listing_service.execute(
+            occurrence_listing_service_props
+        )
 
         response: List[Dict[str, Any]] = [
             {

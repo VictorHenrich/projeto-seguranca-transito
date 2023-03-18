@@ -1,11 +1,11 @@
 from dataclasses import dataclass
+from typing import Protocol
 from patterns.repository import BaseRepository
 from models import Departament, Agent
 from exceptions import UserNotFoundError
 
 
-@dataclass
-class AgentAuthRepositoryParam:
+class AgentAuthRepositoryParam(Protocol):
     user: str
     password: str
     departament_access: str

@@ -7,22 +7,17 @@ from models import User
 
 
 @dataclass
-class UserFindProps:
+class UserGettingServiceProps:
     uuid_user: str
 
 
 class UserGettingService:
-    def __handle_repository_param(self, uuid_user: str) -> UserFindRepositoryParams:
-        return UserFindRepositoryParams(uuid_user)
-
-    def execute(self, uuid_user: str) -> User:
+    def execute(self, props: UserGettingServiceProps) -> User:
         with app.databases.create_session() as session:
-            repository_param: UserFindRepositoryParams = UserFindProps(uuid_user)
-
             repository: IFindRepository[
                 UserFindRepositoryParams, User
             ] = UserFindRepository(session)
 
-            user: User = repository.get(repository_param)
+            user: User = repository.get(props)
 
             return user

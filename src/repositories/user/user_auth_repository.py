@@ -1,12 +1,11 @@
-from dataclasses import dataclass
+from typing import Protocol
 
-from patterns.repository import BaseRepository, IAuthRepository
+from patterns.repository import BaseRepository
 from models import User
 from exceptions import UserNotFoundError
 
 
-@dataclass
-class UserAuthRepositoryParam:
+class UserAuthRepositoryParam(Protocol):
     email: str
     password: str
 

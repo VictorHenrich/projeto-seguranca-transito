@@ -1,22 +1,10 @@
-from typing import (
-    Protocol,
-    Generic,
-    TypeVar,
-    TypeAlias,
-    Tuple,
-    Dict,
-    Union,
-    Any,
-)
+from typing import Protocol, Generic, TypeVar, Union, Any, Optional
 
 
-Args: TypeAlias = Tuple[Any, ...]
-
-Kwargs: TypeAlias = Dict[str, Any]
-
-T = TypeVar("T", bound=Union[None, Any], covariant=True)
+T = TypeVar("T", contravariant=True)
+TR = TypeVar("TR", covariant=True)
 
 
-class IService(Protocol, Generic[T]):
-    def execute(self, *args: Args, **kwargs: Kwargs) -> T:
+class IService(Protocol, Generic[T, TR]):
+    def execute(self, props: T) -> TR:
         ...

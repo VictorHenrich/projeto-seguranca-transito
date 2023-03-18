@@ -1,13 +1,11 @@
-from typing import Optional
-from dataclasses import dataclass
+from typing import Optional, Protocol
 from datetime import date
 
 from patterns.repository import BaseRepository
 from models import User
 
 
-@dataclass
-class UserCreateRepositoryParams:
+class UserCreateRepositoryParams(Protocol):
     name: str
     email: str
     password: str

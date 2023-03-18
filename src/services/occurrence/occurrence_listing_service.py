@@ -11,23 +11,17 @@ from repositories.occurrence import (
 
 
 @dataclass
-class OccurrenceFindManyProps:
+class OccurrenceListingServiceProps:
     user: User
 
 
 class OccurrenceListingService:
-    def execute(self, user: User) -> List[Occurrence]:
+    def execute(self, props: OccurrenceListingServiceProps) -> List[Occurrence]:
         with app.databases.create_session() as session:
-            listing_repository_param: OccurrenceFindManyRepositoryParams = (
-                OccurrenceFindManyProps(user=user)
-            )
-
             listing_repository: IFindManyRepository[
                 OccurrenceFindManyRepositoryParams, Occurrence
             ] = OccurrenceFindManyRepository(session)
 
-            occurrences: List[Occurrence] = listing_repository.list(
-                listing_repository_param
-            )
+            occurrences: List[Occurrence] = listing_repository.list(props)
 
             return occurrences
