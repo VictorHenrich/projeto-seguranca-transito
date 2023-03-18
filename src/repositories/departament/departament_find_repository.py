@@ -1,7 +1,7 @@
 from typing import Protocol
 
 from patterns.repository import BaseRepository
-from models import Departamento
+from models import Departament
 from exceptions import DepartamentNotFoundError
 
 
@@ -10,10 +10,10 @@ class DepartamentFindRepositoryParams(Protocol):
 
 
 class DepartamentFindRepository(BaseRepository):
-    def get(self, params: DepartamentFindRepositoryParams) -> Departamento:
-        departament: Departamento = (
-            self.session.query(Departamento)
-            .filter(Departamento.id == params.departament_id)
+    def get(self, params: DepartamentFindRepositoryParams) -> Departament:
+        departament: Departament = (
+            self.session.query(Departament)
+            .filter(Departament.id == params.departament_id)
             .first()
         )
 

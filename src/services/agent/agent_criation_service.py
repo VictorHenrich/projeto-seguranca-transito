@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from start import app
 from patterns.repository import ICreateRepository
-from models import Departamento
+from models import Departament
 from repositories.agent import (
     AgentCreateRepository,
     AgentCreateRepositoryParam,
@@ -11,7 +11,7 @@ from repositories.agent import (
 
 @dataclass
 class AgentCreateProps:
-    departament: Departamento
+    departament: Departament
     name: str
     access: str
     password: str
@@ -21,21 +21,19 @@ class AgentCreateProps:
 class AgentCriationService:
     def execute(
         self,
-        departament: Departamento,
+        departament: Departament,
         name: str,
         user: str,
         password: str,
         position: str,
     ) -> None:
         with app.databases.create_session() as session:
-            creating_repository_param: AgentCreateRepositoryParam = (
-                AgentCreateProps(
-                    departament=departament,
-                    name=name,
-                    access=user,
-                    password=password,
-                    position=position,
-                )
+            creating_repository_param: AgentCreateRepositoryParam = AgentCreateProps(
+                departament=departament,
+                name=name,
+                access=user,
+                password=password,
+                position=position,
             )
 
             creating_repository: ICreateRepository[

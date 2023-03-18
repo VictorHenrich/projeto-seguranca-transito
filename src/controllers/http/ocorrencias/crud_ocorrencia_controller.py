@@ -9,7 +9,7 @@ from middlewares.http import (
     BodyRequestValidationMiddleware,
     UserAuthenticationMiddleware,
 )
-from models import Usuario, Ocorrencia
+from models import User, Occurrence
 from services.occurrence import (
     OccurrenceCreationService,
     OccurrenceExclusionService,
@@ -39,7 +39,7 @@ class CrudOcorrenciasController(Controller):
     @UserAuthenticationMiddleware.apply()
     @BodyRequestValidationMiddleware.apply(OccurrenceCreationBodyRequest)
     def post(
-        self, auth: Usuario, body_request: OccurrenceCreationBodyRequest
+        self, auth: User, body_request: OccurrenceCreationBodyRequest
     ) -> ResponseDefaultJSON:
         occurrence_creation_service: IService[None] = OccurrenceCreationService()
 
@@ -57,7 +57,7 @@ class CrudOcorrenciasController(Controller):
     def put(
         self,
         occurrence_hash: UUID,
-        auth: Usuario,
+        auth: User,
         body_request: OccurrenceUpdateBodyRequest,
     ) -> ResponseDefaultJSON:
         occurrence_update_service: IService[None] = OccurrenceUpdateService()
@@ -71,7 +71,7 @@ class CrudOcorrenciasController(Controller):
         return ResponseSuccess()
 
     @UserAuthenticationMiddleware.apply()
-    def delete(self, occurrence_hash: UUID, auth: Usuario) -> ResponseDefaultJSON:
+    def delete(self, occurrence_hash: UUID, auth: User) -> ResponseDefaultJSON:
         occurrence_exclusion_service: IService[None] = OccurrenceExclusionService()
 
         occurrence_exclusion_service.execute(uuid_occurrence=str(occurrence_hash))
@@ -79,12 +79,12 @@ class CrudOcorrenciasController(Controller):
         return ResponseSuccess()
 
     @UserAuthenticationMiddleware.apply()
-    def get(self, auth: Usuario) -> ResponseDefaultJSON:
+    def get(self, auth: User) -> ResponseDefaultJSON:
         occurrence_listing_service: IService[
-            List[Ocorrencia]
+            List[Occurrence]
         ] = OccurrenceListingService()
 
-        occurrences: List[Ocorrencia] = occurrence_listing_service.execute(user=auth)
+        occurrences: List[Occurrence] = occurrence_listing_service.execute(user=auth)
 
         response: List[Dict[str, Any]] = [
             {

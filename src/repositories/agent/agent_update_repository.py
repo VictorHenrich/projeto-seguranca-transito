@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from patterns.repository import BaseRepository, IFindRepository
-from models import UsuarioDepartamento, Departamento
+from models import Agent, Departament
 from .agent_find_repository import (
     AgentFindRepository,
     AgentFindRepositoryParams,
@@ -11,7 +11,7 @@ from .agent_find_repository import (
 @dataclass
 class AgentUpdateRepositoryParam:
     uuid_departament_user: str
-    departament: Departamento
+    departament: Departament
     name: str
     access: str
     password: str
@@ -21,25 +21,21 @@ class AgentUpdateRepositoryParam:
 @dataclass
 class AgentFindProps:
     uuid_departament_user: str
-    departament: Departamento
+    departament: Departament
 
 
 class AgentUpdateRepository(BaseRepository):
     def update(self, params: AgentUpdateRepositoryParam) -> None:
         getting_repository: IFindRepository[
-            AgentFindRepositoryParams, UsuarioDepartamento
+            AgentFindRepositoryParams, Agent
         ] = AgentFindRepository(self.session)
 
-        getting_repository_param: AgentFindRepositoryParams = (
-            AgentFindProps(
-                uuid_departament_user=params.uuid_departament_user,
-                departament=params.departament,
-            )
+        getting_repository_param: AgentFindRepositoryParams = AgentFindProps(
+            uuid_departament_user=params.uuid_departament_user,
+            departament=params.departament,
         )
 
-        user_departament: UsuarioDepartamento = getting_repository.get(
-            getting_repository_param
-        )
+        user_departament: Agent = getting_repository.get(getting_repository_param)
 
         user_departament.nome = params.name
         user_departament.acesso = params.access

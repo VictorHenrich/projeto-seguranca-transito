@@ -4,7 +4,7 @@ from start import app
 from server.utils import UtilsJWT, Constants
 from patterns.service import IService
 from patterns.repository import IAuthRepository
-from models import Departamento, UsuarioDepartamento
+from models import Departament, Agent
 from repositories.agent import (
     AgentAuthRepositoryParam,
     AgentAuthRepository,
@@ -23,18 +23,18 @@ class AgentAuthorizationService:
             )
 
             dep_user_auth_repository: IAuthRepository[
-                AgentAuthRepositoryParam, UsuarioDepartamento
+                AgentAuthRepositoryParam, Agent
             ] = AgentAuthRepository(session)
 
-            departament_user: UsuarioDepartamento = dep_user_auth_repository.auth(
+            departament_user: Agent = dep_user_auth_repository.auth(
                 dep_user_auth_repository_param
             )
 
             departament_getting_service: IService[
-                Departamento
+                Departament
             ] = DepartamentGettingService()
 
-            departament: Departamento = departament_getting_service.execute(
+            departament: Departament = departament_getting_service.execute(
                 departament_user.id_departamento
             )
 

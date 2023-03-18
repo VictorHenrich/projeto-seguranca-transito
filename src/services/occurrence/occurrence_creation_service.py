@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from start import app
 from patterns.repository import ICreateRepository
 from patterns.service import IService
-from models import Usuario, Departamento
+from models import User, Departament
 from services.departament import DepartamentGettingUUIDService
 from repositories.occurrence import (
     OccurrenceCreateRepository,
@@ -14,23 +14,23 @@ from repositories.occurrence import (
 
 @dataclass
 class DepartamentCreateProps:
-    user: Usuario
-    departament: Departamento
+    user: User
+    departament: Departament
     description: str
     obs: str
 
 
 class OccurrenceCreationService:
     def execute(
-        self, user: Usuario, uuid_departament: str, description: str, obs: str
+        self, user: User, uuid_departament: str, description: str, obs: str
     ) -> None:
 
         with app.databases.create_session() as session:
             departament_getting_service: IService[
-                Departamento
+                Departament
             ] = DepartamentGettingUUIDService()
 
-            departament: Departamento = departament_getting_service.execute(
+            departament: Departament = departament_getting_service.execute(
                 uuid_departament=uuid_departament
             )
 

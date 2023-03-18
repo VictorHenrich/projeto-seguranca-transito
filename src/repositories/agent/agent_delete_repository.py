@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Protocol
 
 from patterns.repository import BaseRepository, IFindRepository
-from models import UsuarioDepartamento, Departamento
+from models import Agent, Departament
 from .agent_find_repository import (
     AgentFindRepository,
     AgentFindRepositoryParams,
@@ -10,31 +10,27 @@ from .agent_find_repository import (
 
 
 class AgentDeleteRepositoryParams(Protocol):
-    departament: Departamento
+    departament: Departament
     uuid_departament_user: str
 
 
 @dataclass
 class AgentFindProps:
     uuid_departament_user: str
-    departament: Departamento
+    departament: Departament
 
 
 class AgentDeleteRepository(BaseRepository):
     def delete(self, params: AgentDeleteRepositoryParams) -> None:
         getting_repository: IFindRepository[
-            AgentFindRepositoryParams, UsuarioDepartamento
+            AgentFindRepositoryParams, Agent
         ] = AgentFindRepository(self.session)
 
-        getting_repository_param: AgentFindRepositoryParams = (
-            AgentFindProps(
-                uuid_departament_user=params.uuid_departament_user,
-                departament=params.departament,
-            )
+        getting_repository_param: AgentFindRepositoryParams = AgentFindProps(
+            uuid_departament_user=params.uuid_departament_user,
+            departament=params.departament,
         )
 
-        user_departament: UsuarioDepartamento = getting_repository.get(
-            getting_repository_param
-        )
+        user_departament: Agent = getting_repository.get(getting_repository_param)
 
         self.session.delete(user_departament)

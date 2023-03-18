@@ -7,16 +7,16 @@ from repositories.agent import (
     AgentFindManyRepository,
     AgentFindManyRepositoryParams,
 )
-from models import UsuarioDepartamento, Departamento
+from models import Agent, Departament
 
 
 @dataclass
 class AgentFindManyProps:
-    departament: Departamento
+    departament: Departament
 
 
 class AgentListingService:
-    def execute(self, departament: Departamento) -> List[UsuarioDepartamento]:
+    def execute(self, departament: Departament) -> List[Agent]:
 
         with app.databases.create_session() as session:
             listing_repository_param: AgentFindManyRepositoryParams = (
@@ -24,11 +24,9 @@ class AgentListingService:
             )
 
             listing_repository: IFindManyRepository[
-                AgentFindManyRepositoryParams, UsuarioDepartamento
+                AgentFindManyRepositoryParams, Agent
             ] = AgentFindManyRepository(session)
 
-            users: List[UsuarioDepartamento] = listing_repository.list(
-                listing_repository_param
-            )
+            users: List[Agent] = listing_repository.list(listing_repository_param)
 
             return users

@@ -4,14 +4,14 @@ from repositories.agent import (
     AgentUpdateRepository,
     AgentUpdateRepositoryParam,
 )
-from models import UsuarioDepartamento, Departamento
+from models import Agent, Departament
 
 
 class AgentUpgradeService:
     def execute(
         self,
-        departament: Departamento,
-        uuid_departament_user: UsuarioDepartamento,
+        departament: Departament,
+        uuid_departament_user: Agent,
         name: str,
         user: str,
         password: str,

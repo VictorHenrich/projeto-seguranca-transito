@@ -6,7 +6,7 @@ from repositories.agent import (
     AgentDeleteRepository,
     AgentDeleteRepositoryParams,
 )
-from models import UsuarioDepartamento, Departamento
+from models import Agent, Departament
 
 
 @dataclass
@@ -16,14 +16,10 @@ class AgentDeleteProps:
 
 
 class AgentExclusionService:
-    def execute(
-        self, departament: Departamento, uuid_departament_user: UsuarioDepartamento
-    ) -> None:
+    def execute(self, departament: Departament, uuid_departament_user: Agent) -> None:
         with app.databases.create_session() as session:
-            exclusion_repository_param: AgentDeleteRepositoryParams = (
-                AgentDeleteProps(
-                    departament=departament, uuid_departament_user=uuid_departament_user
-                )
+            exclusion_repository_param: AgentDeleteRepositoryParams = AgentDeleteProps(
+                departament=departament, uuid_departament_user=uuid_departament_user
             )
 
             exclusion_repository: IDeleteRepository[

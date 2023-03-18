@@ -1,7 +1,7 @@
 from typing import Protocol
 
 from patterns.repository import BaseRepository
-from models import Ocorrencia
+from models import Occurrence
 from exceptions import OccurrenceNotFoundError
 
 
@@ -10,10 +10,10 @@ class OccurrenceFindRepositoryParams(Protocol):
 
 
 class OccurrenceFindRepository(BaseRepository):
-    def get(self, param: OccurrenceFindRepositoryParams) -> Ocorrencia:
-        occurrence: Ocorrencia = (
-            self.session.query(Ocorrencia)
-            .filter(Ocorrencia.id_uuid == param.uuid_occurrence)
+    def get(self, param: OccurrenceFindRepositoryParams) -> Occurrence:
+        occurrence: Occurrence = (
+            self.session.query(Occurrence)
+            .filter(Occurrence.id_uuid == param.uuid_occurrence)
             .first()
         )
 

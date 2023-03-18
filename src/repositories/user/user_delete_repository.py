@@ -2,7 +2,7 @@ from typing import Protocol
 from dataclasses import dataclass
 
 from patterns.repository import BaseRepository, IFindRepository
-from models import Usuario
+from models import User
 from .user_find_repository import UserFindRepository, UserFindRepositoryParams
 
 
@@ -22,9 +22,9 @@ class UserDeleteRepository(BaseRepository):
         )
 
         getting_repository: IFindRepository[
-            UserFindRepositoryParams, Usuario
+            UserFindRepositoryParams, User
         ] = UserFindRepository(self.session)
 
-        user: Usuario = getting_repository.get(getting_repostiory_param)
+        user: User = getting_repository.get(getting_repostiory_param)
 
         self.session.delete(user)

@@ -1,7 +1,7 @@
 from typing import Protocol
 
 from patterns.repository import BaseRepository
-from models import Departamento
+from models import Departament
 
 
 class DepartamentCreateRepositoryParams(Protocol):
@@ -18,7 +18,7 @@ class DepartamentCreateRepositoryParams(Protocol):
 
 class DepartamentCreateRepository(BaseRepository):
     def create(self, params: DepartamentCreateRepositoryParams) -> None:
-        departament: Departamento = Departamento()
+        departament: Departament = Departament()
 
         departament.nome = params.name
         departament.acesso = params.access

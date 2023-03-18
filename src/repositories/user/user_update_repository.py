@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import date
 
 from patterns.repository import IFindRepository, BaseRepository
-from models import Usuario
+from models import User
 from .user_find_repository import UserFindRepository, UserFindRepositoryParams
 
 
@@ -29,10 +29,10 @@ class UserUpdateRepository(BaseRepository):
         )
 
         getting_repository: IFindRepository[
-            UserFindRepositoryParams, Usuario
+            UserFindRepositoryParams, User
         ] = UserFindRepository(self.session)
 
-        user: Usuario = getting_repository.get(getting_repository_param)
+        user: User = getting_repository.get(getting_repository_param)
 
         user.cpf = params.document
         user.data_nascimento = params.birthday

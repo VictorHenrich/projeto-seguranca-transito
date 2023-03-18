@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from patterns.repository import BaseRepository, IAuthRepository
-from models import Usuario
+from models import User
 from exceptions import UserNotFoundError
 
 
@@ -12,12 +12,10 @@ class UserAuthRepositoryParam:
 
 
 class UserAuthRepository(BaseRepository):
-    def auth(self, params: UserAuthRepositoryParam) -> Usuario:
-        user: Usuario = (
-            self.session.query(Usuario)
-            .filter(
-                Usuario.email == params.email.upper(), Usuario.senha == params.password
-            )
+    def auth(self, params: UserAuthRepositoryParam) -> User:
+        user: User = (
+            self.session.query(User)
+            .filter(User.email == params.email.upper(), User.senha == params.password)
             .first()
         )
 

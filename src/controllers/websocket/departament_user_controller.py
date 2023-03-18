@@ -3,7 +3,7 @@ from typing import Dict, TypeAlias, Any, List, Optional
 from start import app
 from server.websocket import Controller, ConnectionController
 from middlewares.websocket import DepartamentUserAuthenticationMiddleware
-from models import UsuarioDepartamento, Departamento
+from models import Agent, Departament
 from .user_controller import ConnectionUser
 
 
@@ -31,8 +31,8 @@ class DepartamentUserController(Controller[ConnectionDepartamentUser]):
     def on_open(
         self,
         connection: ConnectionController,
-        auth_user: UsuarioDepartamento,
-        auth_departament: Departamento,
+        auth_user: Agent,
+        auth_departament: Departament,
     ) -> Optional[ConnectionDepartamentUser]:
         users_connections_found: List[ConnectionDepartamentUser] = [
             connection
@@ -123,7 +123,7 @@ class DepartamentUserController(Controller[ConnectionDepartamentUser]):
                 "departament_user_uuid": user.uuid,
                 "departament_uuid": user.departament_uuid,
             }
-            for user in self.connections 
+            for user in self.connections
             if user.id != socket_id
         ]
 

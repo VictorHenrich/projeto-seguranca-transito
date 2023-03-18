@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 from start import app
 from patterns.service import IService
-from models import UsuarioDepartamento, Departamento
+from models import Agent, Departament
 from server.http import Controller, ResponseDefaultJSON, ResponseSuccess
 from middlewares.http import (
     BodyRequestValidationMiddleware,
@@ -34,12 +34,12 @@ class CrudUsuariosDepartamentosController(Controller):
     @DepartamentUserAuthenticationMiddleware.apply()
     def get(
         self,
-        auth_user: UsuarioDepartamento,
-        auth_departament: Departamento,
+        auth_user: Agent,
+        auth_departament: Departament,
     ) -> ResponseDefaultJSON:
-        service: IService[List[UsuarioDepartamento]] = AgentListingService()
+        service: IService[List[Agent]] = AgentListingService()
 
-        users: List[UsuarioDepartamento] = service.execute(departament=auth_departament)
+        users: List[Agent] = service.execute(departament=auth_departament)
 
         response: List[Dict[str, Any]] = [
             {
@@ -57,8 +57,8 @@ class CrudUsuariosDepartamentosController(Controller):
     @BodyRequestValidationMiddleware.apply(DepartamentUserRegistrationRequestBody)
     def post(
         self,
-        auth_user: UsuarioDepartamento,
-        auth_departament: Departamento,
+        auth_user: Agent,
+        auth_departament: Departament,
         body_request: DepartamentUserRegistrationRequestBody,
     ) -> ResponseDefaultJSON:
         service: IService[None] = AgentCriationService()
@@ -78,8 +78,8 @@ class CrudUsuariosDepartamentosController(Controller):
     def put(
         self,
         user_hash: UUID,
-        auth_user: UsuarioDepartamento,
-        auth_departament: Departamento,
+        auth_user: Agent,
+        auth_departament: Departament,
         body_request: DepartamentUserRegistrationRequestBody,
     ) -> ResponseDefaultJSON:
         service: IService[None] = AgentUpgradeService()
@@ -99,8 +99,8 @@ class CrudUsuariosDepartamentosController(Controller):
     def delete(
         self,
         user_hash: UUID,
-        auth_user: UsuarioDepartamento,
-        auth_departament: Departamento,
+        auth_user: Agent,
+        auth_departament: Departament,
     ) -> ResponseDefaultJSON:
         service: IService[None] = AgentExclusionService()
 

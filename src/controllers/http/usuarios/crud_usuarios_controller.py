@@ -11,7 +11,7 @@ from middlewares.http import (
     BodyRequestValidationMiddleware,
     UserAuthenticationMiddleware,
 )
-from models import Usuario
+from models import User
 from patterns.service import IService
 from services.user import (
     UserCreationService,
@@ -49,7 +49,7 @@ class CrudUsuariosController(Controller):
     @UserAuthenticationMiddleware.apply()
     @BodyRequestValidationMiddleware.apply(UserRegistrationRequestBody)
     def put(
-        self, auth: Usuario, body_request: UserRegistrationRequestBody
+        self, auth: User, body_request: UserRegistrationRequestBody
     ) -> ResponseDefaultJSON:
         service: IService[None] = UserUpdateService()
 
@@ -65,7 +65,7 @@ class CrudUsuariosController(Controller):
         return ResponseSuccess()
 
     @UserAuthenticationMiddleware.apply()
-    def delete(self, auth: Usuario) -> ResponseDefaultJSON:
+    def delete(self, auth: User) -> ResponseDefaultJSON:
         service: IService[None] = UserExclusionService()
 
         service.execute(uuid_user=auth.id_uuid)
@@ -73,10 +73,10 @@ class CrudUsuariosController(Controller):
         return ResponseSuccess()
 
     @UserAuthenticationMiddleware.apply()
-    def get(self, auth: Usuario) -> ResponseDefaultJSON:
-        service: IService[Usuario] = UserGettingService()
+    def get(self, auth: User) -> ResponseDefaultJSON:
+        service: IService[User] = UserGettingService()
 
-        user: Usuario = service.execute(uuid_user=auth.id_uuid)
+        user: User = service.execute(uuid_user=auth.id_uuid)
 
         response: Dict[str, Any] = {
             "nome": user.nome,

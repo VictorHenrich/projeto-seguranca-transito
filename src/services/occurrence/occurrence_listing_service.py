@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from start import app
 from patterns.repository import IFindManyRepository
-from models import Usuario, Ocorrencia
+from models import User, Occurrence
 from repositories.occurrence import (
     OccurrenceFindManyRepository,
     OccurrenceFindManyRepositoryParams,
@@ -12,21 +12,21 @@ from repositories.occurrence import (
 
 @dataclass
 class OccurrenceFindManyProps:
-    user: Usuario
+    user: User
 
 
 class OccurrenceListingService:
-    def execute(self, user: Usuario) -> List[Ocorrencia]:
+    def execute(self, user: User) -> List[Occurrence]:
         with app.databases.create_session() as session:
             listing_repository_param: OccurrenceFindManyRepositoryParams = (
                 OccurrenceFindManyProps(user=user)
             )
 
             listing_repository: IFindManyRepository[
-                OccurrenceFindManyRepositoryParams, Ocorrencia
+                OccurrenceFindManyRepositoryParams, Occurrence
             ] = OccurrenceFindManyRepository(session)
 
-            occurrences: List[Ocorrencia] = listing_repository.list(
+            occurrences: List[Occurrence] = listing_repository.list(
                 listing_repository_param
             )
 

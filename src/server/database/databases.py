@@ -1,20 +1,20 @@
 from __future__ import annotations
-from typing import Dict, Sequence, Optional, Union
+from typing import Dict, Any, Optional, Union
 from sqlalchemy.orm.session import Session
 from sqlalchemy.ext.asyncio import AsyncSession
-from .idatabase import IDatabase
+from .database import Database
 from .exceptions import DatabaseNotFoundError
 
 
 class Databases:
     def __init__(self) -> None:
-        self.__bases: Dict[str, IDatabase] = {}
+        self.__bases: Dict[str, Database] = {}
 
     @property
-    def bases(self) -> Dict[str, IDatabase]:
+    def bases(self) -> Dict[str, Database]:
         return self.__bases
 
-    def get_database(self, database_name: Optional[str] = None) -> IDatabase:
+    def get_database(self, database_name: Optional[str] = None) -> Database:
         try:
             if not database_name:
                 return list(self.__bases.values())[0]
@@ -29,7 +29,7 @@ class Databases:
             raise Exception("Databases is Empty!")
 
     def create_session(
-        self, database_name: Optional[str] = None, **options
+        self, database_name: Optional[str] = None, **options: Any
     ) -> Union[Session, AsyncSession]:
         return self.get_database(database_name).create_session(**options)
 
@@ -40,6 +40,6 @@ class Databases:
         for base_name in self.__bases.keys():
             self.migrate(drop_tables, base_name)
 
-    def append_databases(self, *databases: Sequence[IDatabase]) -> None:
+    def append_databases(self, *databases: Database) -> None:
         for database in databases:
             self.__bases[database.name] = database

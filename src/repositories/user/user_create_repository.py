@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from datetime import date
 
 from patterns.repository import BaseRepository
-from models import Usuario
+from models import User
 
 
 @dataclass
@@ -17,7 +17,7 @@ class UserCreateRepositoryParams:
 
 class UserCreateRepository(BaseRepository):
     def create(self, params: UserCreateRepositoryParams) -> None:
-        user: Usuario = Usuario()
+        user: User = User()
 
         user.cpf = params.document
         user.data_nascimento = params.birthday

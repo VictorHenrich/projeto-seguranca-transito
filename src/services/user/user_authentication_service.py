@@ -6,7 +6,7 @@ from patterns.repository import IAuthRepository
 from repositories.user import UserAuthRepository, UserAuthRepositoryParam
 from server.utils import UtilsJWT, Constants
 from utils.entities import PayloadUserJWT
-from models import Usuario
+from models import User
 
 
 class UserAuthenticationService:
@@ -18,14 +18,14 @@ class UserAuthenticationService:
     def execute(self, email: str, password: str) -> str:
         with app.databases.create_session() as session:
             repository: IAuthRepository[
-                UserAuthRepositoryParam, Usuario
+                UserAuthRepositoryParam, User
             ] = UserAuthRepository(session)
 
             repository_param: UserAuthRepositoryParam = self.__handle_repository_param(
                 email, password
             )
 
-            user: Usuario = repository.auth(repository_param)
+            user: User = repository.auth(repository_param)
 
             max_time: float = Constants.Authentication.max_minute_authenticated
 

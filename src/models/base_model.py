@@ -1,6 +1,7 @@
 from uuid import uuid4
-from sqlalchemy import Column, Integer
+from sqlalchemy import Integer
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import Mapped, mapped_column
 
 from start import app
 from server.database import Database
@@ -9,10 +10,12 @@ from server.database import Database
 database: Database = app.databases.get_database()
 
 
-class BaseModel(database.Model):
+class BaseModel(database.Base):
     __abstract__: bool = True
 
-    id: int = Column(Integer, primary_key=True, nullable=False, unique=True)
-    id_uuid: str = Column(
+    id: Mapped[int] = mapped_column(
+        Integer, primary_key=True, unique=True, nullable=False
+    )
+    id_uuid: Mapped[str] = mapped_column(
         UUID(False), unique=True, nullable=False, default=lambda _: str(uuid4())
     )

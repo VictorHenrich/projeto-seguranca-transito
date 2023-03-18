@@ -4,7 +4,7 @@ from datetime import datetime
 
 from server.http import Middleware, ResponseInauthorized
 from server.utils import UtilsJWT, UtilsExcept
-from models import UsuarioDepartamento, Departamento
+from models import Agent, Departament
 from patterns.service import IService
 from services.agent import AgentGettingService
 from services.departament import DepartamentGettingUUIDService
@@ -39,17 +39,15 @@ class DepartamentUserAuthenticationMiddleware(Middleware):
         if payload.expired <= datetime.now().timestamp():
             raise ExpiredTokenError()
 
-        departament_service: IService[Departamento] = DepartamentGettingUUIDService()
+        departament_service: IService[Departament] = DepartamentGettingUUIDService()
 
-        departament_user_service: IService[
-            UsuarioDepartamento
-        ] = AgentGettingService()
+        departament_user_service: IService[Agent] = AgentGettingService()
 
-        departament: Departamento = departament_service.execute(
+        departament: Departament = departament_service.execute(
             uuid_departament=payload.uuid_departament
         )
 
-        departament_user: UsuarioDepartamento = departament_user_service.execute(
+        departament_user: Agent = departament_user_service.execute(
             uuid_departament_user=payload.uuid_user, departament=departament
         )
 
