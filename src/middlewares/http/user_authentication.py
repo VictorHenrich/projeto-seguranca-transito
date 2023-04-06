@@ -14,7 +14,7 @@ from exceptions import (
     UserNotFoundError,
 )
 from utils.entities import PayloadUserJWT
-from start import app
+from server import App
 
 
 class UserAuthenticationMiddleware(Middleware):
@@ -31,7 +31,7 @@ class UserAuthenticationMiddleware(Middleware):
         token = token.replace("Bearer ", "")
 
         payload: PayloadUserJWT = UtilsJWT.decode(
-            token, app.http.configs.secret_key, class_=PayloadUserJWT
+            token, App.http.configs.secret_key, class_=PayloadUserJWT
         )
 
         if payload.expired <= datetime.now().timestamp():

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from start import app
+from server import App
 from patterns.repository import IFindRepository
 from repositories.agent import (
     AgentFindRepository,
@@ -17,7 +17,7 @@ class AgentGettingServiceProps:
 
 class AgentGettingService:
     def execute(self, props: AgentGettingServiceProps) -> Agent:
-        with app.databases.create_session() as session:
+        with App.databases().create_session() as session:
             getting_repository: IFindRepository[
                 AgentFindRepositoryParams, Agent
             ] = AgentFindRepository(session)

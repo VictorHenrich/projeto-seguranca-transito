@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from start import app
+from server import App
 from patterns.repository import ICreateRepository
 from repositories.departament import (
     DepartamentCreateRepository,
@@ -23,7 +23,7 @@ class DepartamentCreationServiceProps:
 
 class DepartamentCreationService:
     def execute(self, props: DepartamentCreationServiceProps) -> None:
-        with app.databases.create_session() as session:
+        with App.databases().create_session() as session:
             departament_create_repository: ICreateRepository[
                 DepartamentCreateRepositoryParams, None
             ] = DepartamentCreateRepository(session)

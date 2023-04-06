@@ -19,7 +19,7 @@ from exceptions import (
     DepartamentNotFoundError,
 )
 from utils.entities import PayloadDepartamentUserJWT
-from start import app
+from server import App
 
 
 class DepartamentUserAuthenticationMiddleware(Middleware):
@@ -36,7 +36,7 @@ class DepartamentUserAuthenticationMiddleware(Middleware):
         token = token.replace("Bearer ", "")
 
         payload: PayloadDepartamentUserJWT = UtilsJWT.decode(
-            token, app.http.configs.secret_key, PayloadDepartamentUserJWT
+            token, App.http().configs.secret_key, PayloadDepartamentUserJWT
         )
 
         if payload.expired <= datetime.now().timestamp():

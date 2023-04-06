@@ -1,8 +1,7 @@
-from typing import Callable, Any, Dict, Sequence, TypeAlias
+from typing import Callable, Any, Dict, TypeAlias
 from .http import HttpServer, HttpServerBuilder
 from .websocket import SocketServer, SocketServerBuilder
-from .database import Databases
-from .database.dialects import MySQL, Postgres, DialectDefaultBuilder
+from .database import Databases, DatabaseBuilder
 from .cli import ManagerController
 
 
@@ -11,45 +10,30 @@ ParamDict: TypeAlias = Dict[str, Any]
 
 
 class App:
-    def __init__(
-        self,
-        http: HttpServer,
-        databases: Databases,
-        websocket: SocketServer,
-        cli: ManagerController,
-    ) -> None:
-        self.__http: HttpServer = http
-        self.__databases: Databases = databases
-        self.__websocket: SocketServer = websocket
-        self.__cli: ManagerController = cli
-
-    @property
-    def http(self) -> HttpServer:
-        return self.__http
-
-    @property
-    def databases(self) -> Databases:
-        return self.__databases
-
-    @property
-    def websocket(self) -> SocketServer:
-        return self.__websocket
-
-    @property
-    def cli(self) -> ManagerController:
-        return self.__cli
-
-    def start(self) -> None:
-        self.__cli.run()
-
-
-class AppFactory:
-
-    __bases: Sequence[DialectDefaultBuilder] = [MySQL(), Postgres()]
+    __http: HttpServer
+    __databases: Databases
+    __websocket: SocketServer
+    __cli: ManagerController
 
     @classmethod
-    def __handle_http(cls, data: ParamDict) -> HttpServer:
-        return (
+    def http(cls) -> HttpServer:
+        return cls.__http
+
+    @classmethod
+    def databases(cls) -> Databases:
+        return cls.__databases
+
+    @classmethod
+    def websocket(cls) -> SocketServer:
+        return cls.__websocket
+
+    @classmethod
+    def cli(cls) -> ManagerController:
+        return cls.__cli
+
+    @classmethod
+    def __create_http(cls, data: ParamDict) -> None:
+        cls.__http = (
             HttpServerBuilder()
             .set_host(data["host"])
             .set_port(data["port"])
@@ -59,40 +43,28 @@ class AppFactory:
         )
 
     @classmethod
-    def __handle_databases(cls, data: Dict[str, ParamDict]) -> Databases:
+    def __create_databases(cls, data: Dict[str, ParamDict]) -> None:
         databases: Databases = Databases()
 
         for base_name, base_props in data.items():
-            base: DialectDefaultBuilder = DialectDefaultBuilder()
-
-            localized_base: list[DialectDefaultBuilder] = [
-                b
-                for b in cls.__bases
-                if b.dialect.upper() == base_props["dialect"].upper()
-            ]
-
-            if localized_base:
-                base = localized_base[0]
-
-            base.set_name(base_name).set_host(base_props["host"]).set_port(
-                base_props["port"]
-            ).set_dbname(base_props["dbname"]).set_credentials(
-                base_props["username"], base_props["password"]
+            databases.append_databases(
+                DatabaseBuilder()
+                .set_name(base_name)
+                .set_dialect(base_props["dialect"])
+                .set_host(base_props["host"])
+                .set_port(base_props["port"])
+                .set_dbname(base_props["dbname"])
+                .set_driver(base_props["driver"])
+                .set_credentials(base_props["username"], base_props["password"])
+                .set_debug(base_props.get("debug") or False)
+                .build()
             )
 
-            if base_props.get("debug"):
-                base.set_debug(base_props["debug"])
-
-            if base_props.get("async"):
-                base.set_async(base_props["async"])
-
-            databases.append_databases(base.build())
-
-        return databases
+        cls.__databases = databases
 
     @classmethod
-    def __handle_websocket(cls, data: ParamDict) -> SocketServer:
-        return (
+    def __create_websocket(cls, data: ParamDict) -> None:
+        cls.__websocket = (
             SocketServerBuilder()
             .set_host(data["host"])
             .set_port(data["port"])
@@ -102,7 +74,7 @@ class AppFactory:
         )
 
     @classmethod
-    def __handle_cli(cls, data: ParamDict) -> ManagerController:
+    def __create_cli(cls, data: ParamDict) -> None:
         manager_controller: ManagerController = ManagerController(
             name=data["name"], description=data["description"], version=data["version"]
         )
@@ -110,20 +82,17 @@ class AppFactory:
         for manager_name in data["managers"]:
             manager_controller.create_task_manager(manager_name)
 
-        return manager_controller
+        cls.__cli = manager_controller
 
     @classmethod
-    def create(
+    def init_server(
         cls, http: ParamDict, databases: ParamDict, websocket: ParamDict, cli: ParamDict
-    ) -> App:
-        instance_http: HttpServer = cls.__handle_http(http)
-        instance_databases: Databases = cls.__handle_databases(databases)
-        instance_websocket: SocketServer = cls.__handle_websocket(websocket)
-        instance_manager_controller: ManagerController = cls.__handle_cli(cli)
+    ) -> None:
+        cls.__create_http(http)
+        cls.__create_databases(databases)
+        cls.__create_websocket(websocket)
+        cls.__create_cli(cli)
 
-        return App(
-            http=instance_http,
-            databases=instance_databases,
-            websocket=instance_websocket,
-            cli=instance_manager_controller,
-        )
+    @classmethod
+    def start(cls) -> None:
+        cls.__cli.run()

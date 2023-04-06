@@ -1,11 +1,6 @@
-from .dialect_builder import DialectDefaultBuilder
+from ..database_builder import DatabaseBuilder
 
 
-class Postgres(DialectDefaultBuilder):
+class Postgres(DatabaseBuilder):
     def __init__(self):
-        super().__init__(
-            dialect="postgresql",
-            port=5432,
-            driver_default="psycopg2",
-            driver_async="asyncpg",
-        )
+        super().__init__(dialect="postgresql", port=5432, driver="psycopg2")

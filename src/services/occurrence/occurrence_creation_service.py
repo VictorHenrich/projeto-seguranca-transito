@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 
-from start import app
+from server import App
 from patterns.repository import ICreateRepository
 from patterns.service import IService
 from models import User, Departament
@@ -33,7 +33,7 @@ class OccurrenceCreationServiceProps:
 
 class OccurrenceCreationService:
     def execute(self, props: OccurrenceCreationServiceProps) -> None:
-        with app.databases.create_session() as session:
+        with App.databases().create_session() as session:
             departament_getting_service: IService[
                 DepartamentGettingUUIDServiceProps, Departament
             ] = DepartamentGettingUUIDService()

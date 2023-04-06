@@ -2,7 +2,7 @@ from typing import List, Dict, Any
 from dataclasses import dataclass
 from uuid import UUID
 
-from start import app
+from server import App
 from patterns.service import IService
 from server.http import Controller, ResponseDefaultJSON, ResponseSuccess
 from middlewares.http import (
@@ -35,7 +35,7 @@ class OccurrenceUpdateBodyRequest:
     obs: str
 
 
-@app.http.add_controller(
+@App.http().add_controller(
     "/ocorrencia/crud",
     "/ocorrencia/crud/<uuid:occurrence_hash>",
 )

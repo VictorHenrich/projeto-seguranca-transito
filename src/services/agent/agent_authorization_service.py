@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
-from start import app
+from server import App
 from server.utils import UtilsJWT, Constants
 from patterns.service import IService
 from patterns.repository import IAuthRepository
@@ -26,7 +26,7 @@ class AgentAuthorizationServiceProps:
 
 class AgentAuthorizationService:
     def execute(self, props: AgentAuthorizationServiceProps) -> str:
-        with app.databases.create_session() as session:
+        with App.databases().create_session() as session:
             dep_user_auth_repository: IAuthRepository[
                 AgentAuthRepositoryParam, Agent
             ] = AgentAuthRepository(session)
@@ -55,7 +55,7 @@ class AgentAuthorizationService:
             )
 
             token: str = UtilsJWT.encode(
-                payload.__dict__, app.http.application.secret_key
+                payload.__dict__, App.http().application.secret_key
             )
 
             return f"Bearer {token}"

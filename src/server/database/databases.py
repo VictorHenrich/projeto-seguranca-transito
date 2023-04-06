@@ -1,7 +1,6 @@
 from __future__ import annotations
-from typing import Dict, Any, Optional, Union
+from typing import Dict, Any, Optional
 from sqlalchemy.orm.session import Session
-from sqlalchemy.ext.asyncio import AsyncSession
 from .database import Database
 from .exceptions import DatabaseNotFoundError
 
@@ -30,7 +29,7 @@ class Databases:
 
     def create_session(
         self, database_name: Optional[str] = None, **options: Any
-    ) -> Union[Session, AsyncSession]:
+    ) -> Session:
         return self.get_database(database_name).create_session(**options)
 
     def migrate(self, drop_tables: bool, database_name: Optional[str] = None) -> None:

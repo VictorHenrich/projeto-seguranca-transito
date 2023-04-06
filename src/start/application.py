@@ -1,7 +1,5 @@
 from .configs import DATABASE, HTTP, WEBSOCKET, CLI
-from server import App, AppFactory
+from server import App
 
 
-app: App = AppFactory.create(
-    http=HTTP, databases=DATABASE, websocket=WEBSOCKET, cli=CLI
-)
+App.init_server(http=HTTP, databases=DATABASE, websocket=WEBSOCKET, cli=CLI)

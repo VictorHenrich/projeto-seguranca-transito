@@ -2,7 +2,7 @@ from typing import Dict, Any, List
 from uuid import UUID
 from dataclasses import dataclass
 
-from start import app
+from server import App
 from patterns.service import IService
 from models import Agent, Departament
 from server.http import Controller, ResponseDefaultJSON, ResponseSuccess
@@ -30,7 +30,7 @@ class DepartamentUserRegistrationRequestBody:
     cargo: str
 
 
-@app.http.add_controller(
+@App.http().add_controller(
     "/departamento/usuario/crud",
     "/departamento/usuario/crud/<uuid:user_hash>",
 )

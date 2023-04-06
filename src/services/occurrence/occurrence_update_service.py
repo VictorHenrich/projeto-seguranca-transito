@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from start import app
+from server import App
 from patterns.repository import IUpdateRepository
 from repositories.occurrence import (
     OccurrenceUpdateRepository,
@@ -17,7 +17,7 @@ class OccurrenceUpdateServiceProps:
 
 class OccurrenceUpdateService:
     def execute(self, props: OccurrenceUpdateServiceProps) -> None:
-        with app.databases.create_session() as session:
+        with App.databases().create_session() as session:
             update_repository: IUpdateRepository[
                 OccurrenceUpdateRepositoryParam, None
             ] = OccurrenceUpdateRepository(session)

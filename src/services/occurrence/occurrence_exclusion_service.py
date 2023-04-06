@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from start import app
+from server import App
 from patterns.repository import IDeleteRepository
 from repositories.occurrence import (
     OccurrenceDeleteRepository,
@@ -15,7 +15,7 @@ class OccurrenceExclusionServiceProps:
 
 class OccurrenceExclusionService:
     def execute(self, props: OccurrenceExclusionServiceProps) -> None:
-        with app.databases.create_session() as session:
+        with App.databases().create_session() as session:
             exclusion_repository: IDeleteRepository[
                 OccurrenceDeleteRepositoryParams, None
             ] = OccurrenceDeleteRepository(session)

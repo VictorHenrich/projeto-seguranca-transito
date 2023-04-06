@@ -1,1 +1,1 @@
-from .app import App, AppFactory
+from .app import App

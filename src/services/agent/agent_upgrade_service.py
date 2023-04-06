@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from start import app
+from server import App
 from patterns.repository import IUpdateRepository
 from repositories.agent import (
     AgentUpdateRepository,
@@ -21,7 +21,7 @@ class AgentUpgradeServiceProps:
 
 class AgentUpgradeService:
     def execute(self, props: AgentUpgradeServiceProps) -> None:
-        with app.databases.create_session() as session:
+        with App.databases.create_session() as session:
             update_repository: IUpdateRepository[
                 AgentUpdateRepositoryParam, None
             ] = AgentUpdateRepository(session)

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from start import app
+from server import App
 from middlewares.http import BodyRequestValidationMiddleware
 from patterns.service import IService
 from exceptions import UserNotFoundError
@@ -19,7 +19,7 @@ class AuthUserRequestBody:
     senha: str
 
 
-@app.http.add_controller(
+@App.http().add_controller(
     "/autenticacao/usuario",
 )
 class AutenticacaoUsuarioController(Controller):

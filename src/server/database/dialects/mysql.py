@@ -1,8 +1,6 @@
-from .dialect_builder import DialectDefaultBuilder
+from ..database_builder import DatabaseBuilder
 
 
-class MySQL(DialectDefaultBuilder):
+class MySQL(DatabaseBuilder):
     def __init__(self):
-        super().__init__(
-            dialect="mysql", port=3306, driver_default="pymysql", driver_async="asyncmy"
-        )
+        super().__init__(dialect="mysql", port=3306, driver="pymysql")

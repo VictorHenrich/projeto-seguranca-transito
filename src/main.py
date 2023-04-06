@@ -1,6 +1,7 @@
-from start import app
+from server import App
+import start.application
 import tasks
 
 
 if __name__ == "__main__":
-    app.start()
+    App.start()

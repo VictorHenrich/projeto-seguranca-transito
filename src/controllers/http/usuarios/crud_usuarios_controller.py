@@ -1,7 +1,7 @@
 from typing import Dict, Any, Optional
 from dataclasses import dataclass
 
-from start import app
+from server import App
 from server.http import (
     Controller,
     ResponseDefaultJSON,
@@ -34,7 +34,7 @@ class UserRegistrationRequestBody:
     data_nascimento: Optional[None] = None
 
 
-@app.http.add_controller("/usuario/crud", "/usuario/crud/<uuid:user_hash>")
+@App.http().add_controller("/usuario/crud", "/usuario/crud/<uuid:user_hash>")
 class CrudUsuariosController(Controller):
     @BodyRequestValidationMiddleware.apply(UserRegistrationRequestBody)
     def post(self, body_request: UserRegistrationRequestBody) -> ResponseDefaultJSON:

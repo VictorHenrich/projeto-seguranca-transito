@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import date
 
-from start import app
+from server import App
 from patterns.repository import IUpdateRepository
 from repositories.user import UserUpdateRepository, UserUpdateRepositoryParam
 
@@ -24,7 +24,7 @@ class UserUpdateParams(UserUpdateServiceProps):
 
 class UserUpdateService:
     def execute(self, props: UserUpdateServiceProps) -> None:
-        with app.databases.create_session() as session:
+        with App.databases().create_session() as session:
             repository: IUpdateRepository[
                 UserUpdateRepositoryParam, None
             ] = UserUpdateRepository(session)

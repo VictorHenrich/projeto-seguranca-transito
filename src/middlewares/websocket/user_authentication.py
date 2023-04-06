@@ -13,13 +13,15 @@ from exceptions import (
     ExpiredTokenError,
 )
 from utils.entities import PayloadUserJWT
-from start import app
+from server import App
 
 
 class UserAuthenticationMiddleware(Middleware):
     @classmethod
     def handle(cls):
-        token: Optional[str] = app.websocket.global_request.headers.get("Authorization")
+        token: Optional[str] = App.websocket().global_request.headers.get(
+            "Authorization"
+        )
 
         if not token:
             raise AuthorizationNotFoundHeader()
@@ -30,7 +32,7 @@ class UserAuthenticationMiddleware(Middleware):
         token = token.replace("Bearer ", "")
 
         payload: PayloadUserJWT = UtilsJWT.decode(
-            token, app.http.configs.secret_key, PayloadUserJWT
+            token, App.http().configs.secret_key, PayloadUserJWT
         )
 
         if payload.expired <= datetime.now().timestamp():

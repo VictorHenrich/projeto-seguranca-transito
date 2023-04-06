@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from start import app
+from server import App
 from server.http import Controller, ResponseDefaultJSON, ResponseSuccess
 from middlewares.http import BodyRequestValidationMiddleware
 from patterns.service import IService
@@ -23,7 +23,7 @@ class DepartamentCreationBodyRequest:
     complemento: str
 
 
-@app.http.add_controller("/departamento/crud")
+@App.http().add_controller("/departamento/crud")
 class CrudDepartamentoController(Controller):
     @BodyRequestValidationMiddleware.apply(DepartamentCreationBodyRequest)
     def post(self, body_request: DepartamentCreationBodyRequest) -> ResponseDefaultJSON:

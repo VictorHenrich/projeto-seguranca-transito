@@ -3,11 +3,11 @@ from sqlalchemy import Integer
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
-from start import app
+from server import App
 from server.database import Database
 
 
-database: Database = app.databases.get_database()
+database: Database = App.databases().get_database()
 
 
 class BaseModel(database.Base):

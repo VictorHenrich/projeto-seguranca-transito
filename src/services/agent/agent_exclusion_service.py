@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from start import app
+from server import App
 from patterns.repository import IDeleteRepository
 from repositories.agent import (
     AgentDeleteRepository,
@@ -17,7 +17,7 @@ class AgentExclusionServiceProps:
 
 class AgentExclusionService:
     def execute(self, props: AgentExclusionServiceProps) -> None:
-        with app.databases.create_session() as session:
+        with App.databases().create_session() as session:
             exclusion_repository: IDeleteRepository[
                 AgentDeleteRepositoryParams, None
             ] = AgentDeleteRepository(session)

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from start import app
+from server import App
 from patterns.repository import IFindRepository
 from models import Occurrence
 from repositories.occurrence import (
@@ -16,7 +16,7 @@ class OccurrenceGettingServiceProps:
 
 class OccurrenceGettingService:
     def execute(self, props: OccurrenceGettingServiceProps) -> Occurrence:
-        with app.databases.create_session() as session:
+        with App.databases().create_session() as session:
             getting_repository: IFindRepository[
                 OccurrenceFindRepositoryParams, Occurrence
             ] = OccurrenceFindRepository(session)

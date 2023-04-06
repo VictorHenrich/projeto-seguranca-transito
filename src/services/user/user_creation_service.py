@@ -1,9 +1,8 @@
 from typing import Optional
 from datetime import date
-import re
 from dataclasses import dataclass
 
-from start import app
+from server import App
 from patterns.repository import ICreateRepository
 from repositories.user import UserCreateRepository, UserCreateRepositoryParams
 
@@ -19,7 +18,7 @@ class UserCreationServiceProps:
 
 class UserCreationService:
     def execute(self, props: UserCreationServiceProps) -> None:
-        with app.databases.create_session() as session:
+        with App.databases().create_session() as session:
             repository: ICreateRepository[
                 UserCreateRepositoryParams, None
             ] = UserCreateRepository(session)
