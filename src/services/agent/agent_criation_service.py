@@ -20,7 +20,7 @@ class AgentCriationServiceProps:
 
 class AgentCriationService:
     def execute(self, props: AgentCriationServiceProps) -> None:
-        with App.databases().create_session() as session:
+        with App.databases.create_session() as session:
             creating_repository: ICreateRepository[
                 AgentCreateRepositoryParam, None
             ] = AgentCreateRepository(session)

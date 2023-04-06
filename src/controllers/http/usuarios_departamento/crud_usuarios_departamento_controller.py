@@ -30,7 +30,7 @@ class DepartamentUserRegistrationRequestBody:
     cargo: str
 
 
-@App.http().add_controller(
+@App.http.add_controller(
     "/departamento/usuario/crud",
     "/departamento/usuario/crud/<uuid:user_hash>",
 )

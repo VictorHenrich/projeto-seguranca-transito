@@ -17,7 +17,7 @@ class OccurrenceUpdateServiceProps:
 
 class OccurrenceUpdateService:
     def execute(self, props: OccurrenceUpdateServiceProps) -> None:
-        with App.databases().create_session() as session:
+        with App.databases.create_session() as session:
             update_repository: IUpdateRepository[
                 OccurrenceUpdateRepositoryParam, None
             ] = OccurrenceUpdateRepository(session)

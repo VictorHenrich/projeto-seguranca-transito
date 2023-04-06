@@ -16,7 +16,7 @@ class DepartamentGettingUUIDServiceProps:
 
 class DepartamentGettingUUIDService:
     def execute(self, props: DepartamentGettingUUIDServiceProps) -> Departament:
-        with App.databases().create_session() as session:
+        with App.databases.create_session() as session:
             getting_repository: IFindRepository[
                 DepartamentFindUUIDRepositoryParams, Departament
             ] = DepartamentFindUUIDRepository(session)

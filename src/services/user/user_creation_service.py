@@ -18,7 +18,7 @@ class UserCreationServiceProps:
 
 class UserCreationService:
     def execute(self, props: UserCreationServiceProps) -> None:
-        with App.databases().create_session() as session:
+        with App.databases.create_session() as session:
             repository: ICreateRepository[
                 UserCreateRepositoryParams, None
             ] = UserCreateRepository(session)

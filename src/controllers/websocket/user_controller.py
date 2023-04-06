@@ -7,7 +7,7 @@ class ConnectionUser(ConnectionController):
         super().__init__(id)
 
 
-@App.websocket().add_controller("/user")
+@App.websocket.add_controller("/user")
 class UserController(Controller[ConnectionUser]):
     def on_open(self, connection: ConnectionController) -> ConnectionUser:
         return ConnectionUser(connection.id)

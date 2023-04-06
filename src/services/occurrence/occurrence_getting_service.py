@@ -16,7 +16,7 @@ class OccurrenceGettingServiceProps:
 
 class OccurrenceGettingService:
     def execute(self, props: OccurrenceGettingServiceProps) -> Occurrence:
-        with App.databases().create_session() as session:
+        with App.databases.create_session() as session:
             getting_repository: IFindRepository[
                 OccurrenceFindRepositoryParams, Occurrence
             ] = OccurrenceFindRepository(session)

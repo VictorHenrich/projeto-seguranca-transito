@@ -25,7 +25,7 @@ class ConnectionDepartamentUser(ConnectionController):
         return f"<ConnectionDepartamentUser name={self.name} access={self.access} uuid={self.uuid} departament_uuid={self.departament_uuid} id={self.id}"
 
 
-@App.websocket().add_controller("/departament_user")
+@App.websocket.add_controller("/departament_user")
 class DepartamentUserController(Controller[ConnectionDepartamentUser]):
     @DepartamentUserAuthenticationMiddleware.apply()
     def on_open(
@@ -68,7 +68,7 @@ class DepartamentUserController(Controller[ConnectionDepartamentUser]):
             (departament_user_connection,) = (
                 connection
                 for connection in self.connections
-                if connection.id == App.websocket().global_request.sid
+                if connection.id == App.websocket.global_request.sid
             )
 
             (departament_user_message_connection,) = (
@@ -95,9 +95,9 @@ class DepartamentUserController(Controller[ConnectionDepartamentUser]):
             )
 
     def on_get_users(self, data: JSONType) -> None:
-        socket_id: str = App.websocket().global_request.sid
+        socket_id: str = App.websocket.global_request.sid
 
-        user_controller: Controller[ConnectionUser] = App.websocket().get_controller(
+        user_controller: Controller[ConnectionUser] = App.websocket.get_controller(
             "/user"
         )
 
@@ -113,7 +113,7 @@ class DepartamentUserController(Controller[ConnectionDepartamentUser]):
         self.emit("get_users", users, room=socket_id)
 
     def on_get_departament_users(self) -> None:
-        socket_id: str = App.websocket().global_request.sid
+        socket_id: str = App.websocket.global_request.sid
 
         departament_users: List[JSONType] = [
             {

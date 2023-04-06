@@ -13,7 +13,7 @@ class UserGettingServiceProps:
 
 class UserGettingService:
     def execute(self, props: UserGettingServiceProps) -> User:
-        with App.databases().create_session() as session:
+        with App.databases.create_session() as session:
             repository: IFindRepository[
                 UserFindRepositoryParams, User
             ] = UserFindRepository(session)

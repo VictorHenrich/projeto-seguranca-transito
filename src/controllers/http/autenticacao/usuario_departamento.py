@@ -20,7 +20,7 @@ class DepartamentUserAuthRequestBody:
     senha: str
 
 
-@App.http().add_controller("/autenticacao/departamento")
+@App.http.add_controller("/autenticacao/departamento")
 class AutenticaoUsuarioDepartamentoController(Controller):
     @BodyRequestValidationMiddleware.apply(DepartamentUserAuthRequestBody)
     def post(self, body_request: DepartamentUserAuthRequestBody) -> ResponseDefaultJSON:

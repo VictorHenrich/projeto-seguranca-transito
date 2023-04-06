@@ -17,7 +17,7 @@ class AgentExclusionServiceProps:
 
 class AgentExclusionService:
     def execute(self, props: AgentExclusionServiceProps) -> None:
-        with App.databases().create_session() as session:
+        with App.databases.create_session() as session:
             exclusion_repository: IDeleteRepository[
                 AgentDeleteRepositoryParams, None
             ] = AgentDeleteRepository(session)

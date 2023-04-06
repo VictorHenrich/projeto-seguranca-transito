@@ -17,7 +17,7 @@ class UserAuthenticationServiceProps:
 
 class UserAuthenticationService:
     def execute(self, props: UserAuthenticationServiceProps) -> str:
-        with App.databases().create_session() as session:
+        with App.databases.create_session() as session:
             repository: IAuthRepository[
                 UserAuthRepositoryParam, User
             ] = UserAuthRepository(session)
@@ -31,7 +31,7 @@ class UserAuthenticationService:
             payload: PayloadUserJWT = PayloadUserJWT(user.id_uuid, expired)
 
             token: str = UtilsJWT.encode(
-                payload.__dict__, App.http().configs.secret_key
+                payload.__dict__, App.http.configs.secret_key
             )
 
             return f"Bearer {token}"

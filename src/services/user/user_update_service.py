@@ -24,7 +24,7 @@ class UserUpdateParams(UserUpdateServiceProps):
 
 class UserUpdateService:
     def execute(self, props: UserUpdateServiceProps) -> None:
-        with App.databases().create_session() as session:
+        with App.databases.create_session() as session:
             repository: IUpdateRepository[
                 UserUpdateRepositoryParam, None
             ] = UserUpdateRepository(session)

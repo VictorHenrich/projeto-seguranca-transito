@@ -35,7 +35,7 @@ class OccurrenceUpdateBodyRequest:
     obs: str
 
 
-@App.http().add_controller(
+@App.http.add_controller(
     "/ocorrencia/crud",
     "/ocorrencia/crud/<uuid:occurrence_hash>",
 )

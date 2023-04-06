@@ -42,7 +42,7 @@ class TestUserRepository(TestCase):
             datetime.now().date(),
         )
 
-        with App.databases().create_session() as session:
+        with App.databases.create_session() as session:
             user_create_repository: UserCreateRepository = UserCreateRepository(session)
 
             user_create_repository.create(user_create_params)
@@ -55,7 +55,7 @@ class TestUserRepository(TestCase):
         user_auth_params.email.return_value = "victorhenrich993@gmail.com"
         user_auth_params.password.return_value = "1234"
 
-        with App.databases().create_session() as session:
+        with App.databases.create_session() as session:
             user_auth_repository: IAuthRepository[
                 UserAuthRepositoryParam, User
             ] = UserAuthRepository(session)
@@ -75,7 +75,7 @@ class TestUserRepository(TestCase):
             True,
         )
 
-        with App.databases().create_session() as session:
+        with App.databases.create_session() as session:
             user_update_repository: UserUpdateRepository = UserUpdateRepository(session)
 
             user_update_repository.update(user_update_params)

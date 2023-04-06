@@ -26,7 +26,7 @@ class AgentAuthorizationServiceProps:
 
 class AgentAuthorizationService:
     def execute(self, props: AgentAuthorizationServiceProps) -> str:
-        with App.databases().create_session() as session:
+        with App.databases.create_session() as session:
             dep_user_auth_repository: IAuthRepository[
                 AgentAuthRepositoryParam, Agent
             ] = AgentAuthRepository(session)
@@ -55,7 +55,7 @@ class AgentAuthorizationService:
             )
 
             token: str = UtilsJWT.encode(
-                payload.__dict__, App.http().application.secret_key
+                payload.__dict__, App.http.application.secret_key
             )
 
             return f"Bearer {token}"

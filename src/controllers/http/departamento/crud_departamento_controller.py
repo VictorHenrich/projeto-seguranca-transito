@@ -23,7 +23,7 @@ class DepartamentCreationBodyRequest:
     complemento: str
 
 
-@App.http().add_controller("/departamento/crud")
+@App.http.add_controller("/departamento/crud")
 class CrudDepartamentoController(Controller):
     @BodyRequestValidationMiddleware.apply(DepartamentCreationBodyRequest)
     def post(self, body_request: DepartamentCreationBodyRequest) -> ResponseDefaultJSON:

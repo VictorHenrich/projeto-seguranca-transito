@@ -12,7 +12,7 @@ class UserExclusionServiceProps:
 
 class UserExclusionService:
     def execute(self, props: UserExclusionServiceProps) -> None:
-        with App.databases().create_session() as session:
+        with App.databases.create_session() as session:
             repository: IDeleteRepository[
                 UserDeleteRepositoryParams, None
             ] = UserDeleteRepository(session)

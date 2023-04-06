@@ -16,18 +16,22 @@ class App:
     __cli: ManagerController
 
     @classmethod
+    @property
     def http(cls) -> HttpServer:
         return cls.__http
 
     @classmethod
+    @property
     def databases(cls) -> Databases:
         return cls.__databases
 
     @classmethod
+    @property
     def websocket(cls) -> SocketServer:
         return cls.__websocket
 
     @classmethod
+    @property
     def cli(cls) -> ManagerController:
         return cls.__cli
 

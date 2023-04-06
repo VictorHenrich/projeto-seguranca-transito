@@ -17,7 +17,7 @@ class AgentListingServiceProps:
 
 class AgentListingService:
     def execute(self, props: AgentListingServiceProps) -> List[Agent]:
-        with App.databases().create_session() as session:
+        with App.databases.create_session() as session:
             listing_repository: IFindManyRepository[
                 AgentFindManyRepositoryParams, Agent
             ] = AgentFindManyRepository(session)

@@ -7,7 +7,7 @@ from server import App
 from server.database import Database
 
 
-database: Database = App.databases().get_database()
+database: Database = App.databases.get_database()
 
 
 class BaseModel(database.Base):

@@ -23,7 +23,7 @@ class DepartamentCreationServiceProps:
 
 class DepartamentCreationService:
     def execute(self, props: DepartamentCreationServiceProps) -> None:
-        with App.databases().create_session() as session:
+        with App.databases.create_session() as session:
             departament_create_repository: ICreateRepository[
                 DepartamentCreateRepositoryParams, None
             ] = DepartamentCreateRepository(session)

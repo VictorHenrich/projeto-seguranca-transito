@@ -19,7 +19,7 @@ from server import App
 class UserAuthenticationMiddleware(Middleware):
     @classmethod
     def handle(cls):
-        token: Optional[str] = App.websocket().global_request.headers.get(
+        token: Optional[str] = App.websocket.global_request.headers.get(
             "Authorization"
         )
 
@@ -32,7 +32,7 @@ class UserAuthenticationMiddleware(Middleware):
         token = token.replace("Bearer ", "")
 
         payload: PayloadUserJWT = UtilsJWT.decode(
-            token, App.http().configs.secret_key, PayloadUserJWT
+            token, App.http.configs.secret_key, PayloadUserJWT
         )
 
         if payload.expired <= datetime.now().timestamp():

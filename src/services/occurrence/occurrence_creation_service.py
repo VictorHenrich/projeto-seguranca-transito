@@ -33,7 +33,7 @@ class OccurrenceCreationServiceProps:
 
 class OccurrenceCreationService:
     def execute(self, props: OccurrenceCreationServiceProps) -> None:
-        with App.databases().create_session() as session:
+        with App.databases.create_session() as session:
             departament_getting_service: IService[
                 DepartamentGettingUUIDServiceProps, Departament
             ] = DepartamentGettingUUIDService()

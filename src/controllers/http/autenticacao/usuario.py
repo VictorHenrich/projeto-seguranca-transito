@@ -19,7 +19,7 @@ class AuthUserRequestBody:
     senha: str
 
 
-@App.http().add_controller(
+@App.http.add_controller(
     "/autenticacao/usuario",
 )
 class AutenticacaoUsuarioController(Controller):

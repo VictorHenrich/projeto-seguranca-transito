@@ -15,7 +15,7 @@ class OccurrenceExclusionServiceProps:
 
 class OccurrenceExclusionService:
     def execute(self, props: OccurrenceExclusionServiceProps) -> None:
-        with App.databases().create_session() as session:
+        with App.databases.create_session() as session:
             exclusion_repository: IDeleteRepository[
                 OccurrenceDeleteRepositoryParams, None
             ] = OccurrenceDeleteRepository(session)

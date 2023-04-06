@@ -34,7 +34,7 @@ class DepartamentUserAuthenticationMiddleware(Middleware):
         token = token.replace("Bearer ", "")
 
         payload: PayloadDepartamentUserJWT = UtilsJWT.decode(
-            token, App.http().configs.secret_key, PayloadDepartamentUserJWT
+            token, App.http.configs.secret_key, PayloadDepartamentUserJWT
         )
 
         if payload.expired <= datetime.now().timestamp():
