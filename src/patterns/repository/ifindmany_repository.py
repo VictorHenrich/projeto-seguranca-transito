@@ -8,5 +8,5 @@ M = TypeVar("M", bound=BaseModel, covariant=True)
 
 
 class IFindManyRepository(Protocol, Generic[T, M]):
-    def list(self, params: T) -> Sequence[M]:
+    def find_many(self, params: T) -> Sequence[M]:
         ...

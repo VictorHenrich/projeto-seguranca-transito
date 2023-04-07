@@ -12,7 +12,7 @@ from models import Departament
 @dataclass
 class AgentExclusionServiceProps:
     departament: Departament
-    uuid_departament_user: str
+    agent_uuid: str
 
 
 class AgentExclusionService:

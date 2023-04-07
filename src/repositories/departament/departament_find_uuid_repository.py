@@ -10,7 +10,7 @@ class DepartamentFindUUIDRepositoryParams(Protocol):
 
 
 class DepartamentFindUUIDRepository(BaseRepository):
-    def get(self, params: DepartamentFindUUIDRepositoryParams) -> Departament:
+    def find_one(self, params: DepartamentFindUUIDRepositoryParams) -> Departament:
         departament: Departament = (
             self.session.query(Departament)
             .filter(Departament.id_uuid == params.uuid_departament)

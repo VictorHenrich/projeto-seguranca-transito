@@ -62,7 +62,7 @@ class DepartamentUserAuthenticationMiddleware(Middleware):
 
         departament_user_service_props: AgentGettingServiceProps = (
             AgentGettingServiceProps(
-                uuid_departament_user=payload.uuid_user, departament=departament
+                agent_uuid=payload.user_uuid, departament=departament
             )
         )
 

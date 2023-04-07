@@ -11,7 +11,7 @@ from models import Agent, Departament
 
 @dataclass
 class AgentGettingServiceProps:
-    uuid_departament_user: str
+    agent_uuid: str
     departament: Departament
 
 
@@ -22,6 +22,6 @@ class AgentGettingService:
                 AgentFindRepositoryParams, Agent
             ] = AgentFindRepository(session)
 
-            user: Agent = getting_repository.get(props)
+            user: Agent = getting_repository.find_one(props)
 
             return user

@@ -1,4 +1,4 @@
-from typing import Protocol
+from typing import Protocol, Optional
 
 from patterns.repository import BaseRepository
 from models import Departament, Agent
@@ -6,18 +6,18 @@ from exceptions import UserNotFoundError
 
 
 class AgentFindRepositoryParams(Protocol):
-    uuid_departament_user: str
+    agent_uuid: str
     departament: Departament
 
 
 class AgentFindRepository(BaseRepository):
-    def get(self, params: AgentFindRepositoryParams) -> Agent:
-        departament_user: Agent = (
+    def find_one(self, params: AgentFindRepositoryParams) -> Agent:
+        departament_user: Optional[Agent] = (
             self.session.query(Agent)
             .join(Departament, Agent.id_departamento == Departament.id)
             .filter(
                 Departament.id == params.departament.id,
-                Agent.id_uuid == params.uuid_departament_user,
+                Agent.id_uuid == params.agent_uuid,
             )
             .first()
         )

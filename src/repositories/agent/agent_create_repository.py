@@ -4,7 +4,7 @@ from patterns.repository import BaseRepository
 from models import Departament, Agent
 
 
-class AgentCreateRepositoryParam(Protocol):
+class AgentCreateRepositoryParams(Protocol):
     departament: Departament
     name: str
     access: str
@@ -13,7 +13,7 @@ class AgentCreateRepositoryParam(Protocol):
 
 
 class AgentCreateRepository(BaseRepository):
-    def create(self, params: AgentCreateRepositoryParam) -> None:
+    def create(self, params: AgentCreateRepositoryParams) -> None:
         departament_user: Agent = Agent()
 
         departament_user.id_departamento = params.departament.id

@@ -8,5 +8,5 @@ M = TypeVar("M", bound=BaseModel, covariant=True)
 
 
 class IFindRepository(Protocol, Generic[T, M]):
-    def get(self, params: T) -> M:
+    def find_one(self, params: T) -> M:
         ...

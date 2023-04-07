@@ -8,7 +8,7 @@ from repositories.user import UserUpdateRepository, UserUpdateRepositoryParams
 
 @dataclass
 class UserUpdateServiceProps:
-    uuid_user: str
+    user_uuid: str
     name: str
     email: str
     password: str
@@ -30,7 +30,7 @@ class UserUpdateService:
             ] = UserUpdateRepository(session)
 
             repository_params: UserUpdateParams = UserUpdateParams(
-                uuid_user=props.uuid_user,
+                user_uuid=props.user_uuid,
                 name=props.name,
                 email=props.email,
                 password=props.password,

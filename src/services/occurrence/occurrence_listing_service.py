@@ -22,6 +22,6 @@ class OccurrenceListingService:
                 OccurrenceFindManyRepositoryParams, Occurrence
             ] = OccurrenceFindManyRepository(session)
 
-            occurrences: List[Occurrence] = listing_repository.list(props)
+            occurrences: List[Occurrence] = listing_repository.find_many(props)
 
             return occurrences

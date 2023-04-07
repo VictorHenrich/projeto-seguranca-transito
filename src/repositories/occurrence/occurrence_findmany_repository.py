@@ -9,7 +9,7 @@ class OccurrenceFindManyRepositoryParams(Protocol):
 
 
 class OccurrenceFindManyRepository(BaseRepository):
-    def list(self, params: OccurrenceFindManyRepositoryParams) -> List[Occurrence]:
+    def find_many(self, params: OccurrenceFindManyRepositoryParams) -> List[Occurrence]:
         occurrences: List[Occurrence] = (
             self.session.query(Occurrence)
             .join(User, Occurrence.id_usuario == User.id)

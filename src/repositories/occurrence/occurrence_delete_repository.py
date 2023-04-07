@@ -18,6 +18,6 @@ class OccurrenceDeleteRepository(BaseRepository):
             OccurrenceFindRepositoryParams, Occurrence
         ] = OccurrenceFindRepository(self.session)
 
-        occurrence: Occurrence = getting_repository.get(params)
+        occurrence: Occurrence = getting_repository.find_one(params)
 
         self.session.delete(occurrence)

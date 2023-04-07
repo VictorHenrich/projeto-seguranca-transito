@@ -21,6 +21,6 @@ class OccurrenceGettingService:
                 OccurrenceFindRepositoryParams, Occurrence
             ] = OccurrenceFindRepository(session)
 
-            occurrence: Occurrence = getting_repository.get(props)
+            occurrence: Occurrence = getting_repository.find_one(props)
 
             return occurrence

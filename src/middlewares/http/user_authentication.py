@@ -40,7 +40,7 @@ class UserAuthenticationMiddleware(Middleware):
         service: IService[UserGettingServiceProps, User] = UserGettingService()
 
         service_props: UserGettingServiceProps = UserGettingServiceProps(
-            uuid_user=payload.uuid_user
+            user_uuid=payload.user_uuid
         )
 
         user: User = service.execute(service_props)

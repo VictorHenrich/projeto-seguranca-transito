@@ -65,7 +65,7 @@ class TestUserRepository(TestCase):
     def test_user_update(self) -> None:
         user_update_params: Mock = Mock()
 
-        user_update_params.uuid_user = "8a3f3346-d0c7-4b8a-ab8c-408999335872"
+        user_update_params.user_uuid = "8a3f3346-d0c7-4b8a-ab8c-408999335872"
         user_update_params.name = "Nome alterado"
         user_update_params.email = "victorhenrich@hotmail.com"
         user_update_params.password = "1234"
@@ -85,7 +85,7 @@ class TestUserRepository(TestCase):
     def test_user_delete(self) -> None:
         user_delete_params: Mock = Mock()
 
-        user_delete_params.uuid_ser = "8a3f3346-d0c7-4b8a-ab8c-408999335872"
+        user_delete_params.user_uuid = "8a3f3346-d0c7-4b8a-ab8c-408999335872"
 
         with App.databases.create_session() as session:
             user_delete_repository: IDeleteRepository[
@@ -99,13 +99,13 @@ class TestUserRepository(TestCase):
     def test_user_find(self) -> None:
         user_find_params: Mock = Mock()
 
-        user_find_params.uuid_user = "8520b889-c1ef-4ae7-9651-6d5bc9672748"
+        user_find_params.user_uuid = "8520b889-c1ef-4ae7-9651-6d5bc9672748"
 
         with App.databases.create_session() as session:
             user_find_repository: IFindRepository[
                 UserFindRepositoryParams, User
             ] = UserFindRepository(session)
 
-            user: User = user_find_repository.get(user_find_params)
+            user: User = user_find_repository.find_one(user_find_params)
 
             self.assertIsNotNone(user)

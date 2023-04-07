@@ -10,7 +10,7 @@ class DepartamentFindRepositoryParams(Protocol):
 
 
 class DepartamentFindRepository(BaseRepository):
-    def get(self, params: DepartamentFindRepositoryParams) -> Departament:
+    def find_one(self, params: DepartamentFindRepositoryParams) -> Departament:
         departament: Departament = (
             self.session.query(Departament)
             .filter(Departament.id == params.departament_id)

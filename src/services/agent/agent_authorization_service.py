@@ -7,7 +7,7 @@ from patterns.service import IService
 from patterns.repository import IAuthRepository
 from models import Departament, Agent
 from repositories.agent import (
-    AgentAuthRepositoryParam,
+    AgentAuthRepositoryParams,
     AgentAuthRepository,
 )
 from services.departament import (
@@ -28,7 +28,7 @@ class AgentAuthorizationService:
     def execute(self, props: AgentAuthorizationServiceProps) -> str:
         with App.databases.create_session() as session:
             dep_user_auth_repository: IAuthRepository[
-                AgentAuthRepositoryParam, Agent
+                AgentAuthRepositoryParams, Agent
             ] = AgentAuthRepository(session)
 
             departament_user: Agent = dep_user_auth_repository.auth(props)

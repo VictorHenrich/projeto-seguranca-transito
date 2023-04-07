@@ -1,6 +1,6 @@
 from .agent_create_repository import (
     AgentCreateRepository,
-    AgentCreateRepositoryParam,
+    AgentCreateRepositoryParams,
 )
 
 from .agent_delete_repository import (
@@ -15,7 +15,7 @@ from .agent_find_repository import (
 
 from .agent_update_repository import (
     AgentUpdateRepository,
-    AgentUpdateRepositoryParam,
+    AgentUpdateRepositoryParams,
 )
 
 from .agent_findmany_repository import (
@@ -25,5 +25,5 @@ from .agent_findmany_repository import (
 
 from .agent_auth_repository import (
     AgentAuthRepository,
-    AgentAuthRepositoryParam,
+    AgentAuthRepositoryParams,
 )

@@ -8,7 +8,7 @@ from models import User
 
 @dataclass
 class UserGettingServiceProps:
-    uuid_user: str
+    user_uuid: str
 
 
 class UserGettingService:
@@ -18,6 +18,6 @@ class UserGettingService:
                 UserFindRepositoryParams, User
             ] = UserFindRepository(session)
 
-            user: User = repository.get(props)
+            user: User = repository.find_one(props)
 
             return user

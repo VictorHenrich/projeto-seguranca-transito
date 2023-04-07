@@ -1,19 +1,18 @@
-from dataclasses import dataclass
-from typing import Protocol
+from typing import Protocol, Optional
 from patterns.repository import BaseRepository
 from models import Departament, Agent
 from exceptions import UserNotFoundError
 
 
-class AgentAuthRepositoryParam(Protocol):
+class AgentAuthRepositoryParams(Protocol):
     user: str
     password: str
     departament_access: str
 
 
 class AgentAuthRepository(BaseRepository):
-    def auth(self, params: AgentAuthRepositoryParam) -> Agent:
-        departament_user: Agent = (
+    def auth(self, params: AgentAuthRepositoryParams) -> Agent:
+        departament_user: Optional[Agent] = (
             self.session.query(Agent)
             .join(Departament, Agent.id_departamento == Departament.id)
             .filter(

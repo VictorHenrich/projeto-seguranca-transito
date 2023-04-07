@@ -5,7 +5,7 @@ from patterns.repository import ICreateRepository
 from models import Departament
 from repositories.agent import (
     AgentCreateRepository,
-    AgentCreateRepositoryParam,
+    AgentCreateRepositoryParams,
 )
 
 
@@ -22,7 +22,7 @@ class AgentCriationService:
     def execute(self, props: AgentCriationServiceProps) -> None:
         with App.databases.create_session() as session:
             creating_repository: ICreateRepository[
-                AgentCreateRepositoryParam, None
+                AgentCreateRepositoryParams, None
             ] = AgentCreateRepository(session)
 
             creating_repository.create(props)

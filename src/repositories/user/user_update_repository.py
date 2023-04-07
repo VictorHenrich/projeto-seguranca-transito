@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import Protocol
 from datetime import date
 
@@ -8,7 +7,7 @@ from .user_find_repository import UserFindRepository, UserFindRepositoryParams
 
 
 class UserUpdateRepositoryParams(Protocol):
-    uuid_user: str
+    user_uuid: str
     name: str
     email: str
     password: str
@@ -17,22 +16,13 @@ class UserUpdateRepositoryParams(Protocol):
     status: bool
 
 
-@dataclass
-class UserFindProps:
-    uuid_user: str
-
-
 class UserUpdateRepository(BaseRepository):
     def update(self, params: UserUpdateRepositoryParams) -> None:
-        getting_repository_param: UserFindRepositoryParams = UserFindProps(
-            uuid_user=params.uuid_user
-        )
-
         getting_repository: IFindRepository[
             UserFindRepositoryParams, User
         ] = UserFindRepository(self.session)
 
-        user: User = getting_repository.get(getting_repository_param)
+        user: User = getting_repository.find_one(params)
 
         user.cpf = params.document
         user.data_nascimento = params.birthday

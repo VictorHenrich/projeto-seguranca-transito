@@ -30,7 +30,7 @@ class OccurrenceUpdateRepository(BaseRepository):
             uuid_occurrence=params.uuid_occurrence
         )
 
-        occurrence: Occurrence = getting_repository.get(getting_repository_param)
+        occurrence: Occurrence = getting_repository.find_one(getting_repository_param)
 
         occurrence.descricao = params.description
         occurrence.obs = params.obs

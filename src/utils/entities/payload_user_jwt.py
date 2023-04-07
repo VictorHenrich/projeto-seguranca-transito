@@ -3,5 +3,5 @@ from dataclasses import dataclass
 
 @dataclass
 class PayloadUserJWT:
-    uuid_user: str
+    user_uuid: str
     expired: float

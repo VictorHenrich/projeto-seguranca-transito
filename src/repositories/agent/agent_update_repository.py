@@ -1,11 +1,12 @@
 from typing import Protocol
 
-from patterns.repository import BaseRepository
+from patterns.repository import BaseRepository, IFindRepository
+from .agent_find_repository import AgentFindRepository, AgentFindRepositoryParams
 from models import Agent, Departament
 
 
-class AgentUpdateRepositoryParam(Protocol):
-    departament_user: Agent
+class AgentUpdateRepositoryParams(Protocol):
+    agent_uuid: str
     departament: Departament
     name: str
     access: str
@@ -14,10 +15,16 @@ class AgentUpdateRepositoryParam(Protocol):
 
 
 class AgentUpdateRepository(BaseRepository):
-    def update(self, params: AgentUpdateRepositoryParam) -> None:
-        params.departament_user.nome = params.name
-        params.departament_user.acesso = params.access
-        params.departament_user.senha = params.password
-        params.departament_user.cargo = params.position
+    def update(self, params: AgentUpdateRepositoryParams) -> None:
+        agent_find_repository: IFindRepository[
+            AgentFindRepositoryParams, Agent
+        ] = AgentFindRepository(self.session)
 
-        self.session.add(params.departament_user)
+        agent: Agent = agent_find_repository.find_one(params)
+
+        agent.nome = params.name
+        agent.acesso = params.access
+        agent.senha = params.password
+        agent.cargo = params.position
+
+        self.session.add(agent)

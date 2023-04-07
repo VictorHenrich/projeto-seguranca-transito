@@ -7,7 +7,7 @@ from repositories.user import UserDeleteRepository, UserDeleteRepositoryParams
 
 @dataclass
 class UserExclusionServiceProps:
-    uuid_ser: str
+    user_uuid: str
 
 
 class UserExclusionService:

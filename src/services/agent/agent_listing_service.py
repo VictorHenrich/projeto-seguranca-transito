@@ -22,6 +22,6 @@ class AgentListingService:
                 AgentFindManyRepositoryParams, Agent
             ] = AgentFindManyRepository(session)
 
-            users: List[Agent] = listing_repository.list(props)
+            users: List[Agent] = listing_repository.find_many(props)
 
             return users

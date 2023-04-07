@@ -21,6 +21,6 @@ class DepartamentGettingUUIDService:
                 DepartamentFindUUIDRepositoryParams, Departament
             ] = DepartamentFindUUIDRepository(session)
 
-            departament: Departament = getting_repository.get(props)
+            departament: Departament = getting_repository.find_one(props)
 
             return departament

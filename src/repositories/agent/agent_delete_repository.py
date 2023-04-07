@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import Protocol
 
 from patterns.repository import BaseRepository, IFindRepository
@@ -11,13 +10,7 @@ from .agent_find_repository import (
 
 class AgentDeleteRepositoryParams(Protocol):
     departament: Departament
-    uuid_departament_user: str
-
-
-@dataclass
-class AgentFindProps:
-    uuid_departament_user: str
-    departament: Departament
+    agent_uuid: str
 
 
 class AgentDeleteRepository(BaseRepository):
@@ -26,11 +19,6 @@ class AgentDeleteRepository(BaseRepository):
             AgentFindRepositoryParams, Agent
         ] = AgentFindRepository(self.session)
 
-        getting_repository_param: AgentFindRepositoryParams = AgentFindProps(
-            uuid_departament_user=params.uuid_departament_user,
-            departament=params.departament,
-        )
-
-        user_departament: Agent = getting_repository.get(getting_repository_param)
+        user_departament: Agent = getting_repository.find_one(params)
 
         self.session.delete(user_departament)

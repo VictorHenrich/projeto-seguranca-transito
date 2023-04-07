@@ -117,7 +117,7 @@ class CrudUsuariosDepartamentosController(Controller):
         service: IService[AgentExclusionServiceProps, None] = AgentExclusionService()
 
         service_props: AgentExclusionServiceProps = AgentExclusionServiceProps(
-            departament=auth_departament, uuid_departament_user=str(user_hash)
+            departament=auth_departament, agent_uuid=str(user_hash)
         )
 
         service.execute(service_props)

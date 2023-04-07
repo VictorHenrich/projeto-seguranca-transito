@@ -65,7 +65,7 @@ class CrudUsuariosController(Controller):
             birthday=body_request.data_nascimento,
             email=body_request.email,
             password=body_request.senha,
-            uuid_user=auth.id_uuid,
+            user_uuid=auth.id_uuid,
         )
 
         service.execute(service_props)
@@ -77,7 +77,7 @@ class CrudUsuariosController(Controller):
         service: IService[UserExclusionServiceProps, None] = UserExclusionService()
 
         service_props: UserExclusionServiceProps = UserExclusionServiceProps(
-            uuid_ser=auth.id_uuid
+            user_uuid=auth.id_uuid
         )
 
         service.execute(service_props)
@@ -89,7 +89,7 @@ class CrudUsuariosController(Controller):
         service: IService[UserGettingServiceProps, User] = UserGettingService()
 
         service_props: UserGettingServiceProps = UserGettingServiceProps(
-            uuid_user=auth.id_uuid
+            user_uuid=auth.id_uuid
         )
 
         user: User = service.execute(service_props)

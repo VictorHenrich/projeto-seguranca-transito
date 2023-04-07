@@ -21,6 +21,6 @@ class DepartamentGettingService:
                 DepartamentFindRepositoryParams, Departament
             ] = DepartamentFindRepository(session)
 
-            departament: Departament = getting_repository.get(props)
+            departament: Departament = getting_repository.find_one(props)
 
             return departament

@@ -4,7 +4,7 @@ from server import App
 from patterns.repository import IUpdateRepository
 from repositories.agent import (
     AgentUpdateRepository,
-    AgentUpdateRepositoryParam,
+    AgentUpdateRepositoryParams,
 )
 from models import Agent, Departament
 
@@ -23,7 +23,7 @@ class AgentUpgradeService:
     def execute(self, props: AgentUpgradeServiceProps) -> None:
         with App.databases.create_session() as session:
             update_repository: IUpdateRepository[
-                AgentUpdateRepositoryParam, None
+                AgentUpdateRepositoryParams, None
             ] = AgentUpdateRepository(session)
 
             update_repository.update(props)

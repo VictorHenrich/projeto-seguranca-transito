@@ -6,13 +6,13 @@ from exceptions import UserNotFoundError
 
 
 class UserFindRepositoryParams(Protocol):
-    uuid_user: str
+    user_uuid: str
 
 
 class UserFindRepository(BaseRepository):
-    def get(self, params: UserFindRepositoryParams) -> User:
+    def find_one(self, params: UserFindRepositoryParams) -> User:
         user: Optional[User] = (
-            self.session.query(User).filter(User.id_uuid == params.uuid_user).first()
+            self.session.query(User).filter(User.id_uuid == params.user_uuid).first()
         )
 
         if not user:

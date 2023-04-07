@@ -9,7 +9,7 @@ class AgentFindManyRepositoryParams(Protocol):
 
 
 class AgentFindManyRepository(BaseRepository):
-    def list(self, params: AgentFindManyRepositoryParams) -> List[Agent]:
+    def find_many(self, params: AgentFindManyRepositoryParams) -> List[Agent]:
         departament_users: List[Agent] = (
             self.session.query(Agent)
             .join(Departament, Agent.id_departamento == Departament.id)

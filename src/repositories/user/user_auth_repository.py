@@ -1,4 +1,4 @@
-from typing import Protocol
+from typing import Protocol, Optional
 
 from patterns.repository import BaseRepository
 from models import User
@@ -12,7 +12,7 @@ class UserAuthRepositoryParams(Protocol):
 
 class UserAuthRepository(BaseRepository):
     def auth(self, params: UserAuthRepositoryParams) -> User:
-        user: User = (
+        user: Optional[User] = (
             self.session.query(User)
             .filter(User.email == params.email.upper(), User.senha == params.password)
             .first()
