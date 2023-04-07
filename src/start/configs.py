@@ -20,7 +20,7 @@ DATABASE = {
         "username": env_value["DB_USERNAME"],
         "password": env_value["DB_PASSWORD"],
         "debug": False,
-        "driver": env_value["DB_DRIVER"]
+        "driver": env_value["DB_DRIVER"],
     }
 }
 

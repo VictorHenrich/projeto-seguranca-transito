@@ -19,9 +19,7 @@ from server import App
 class UserAuthenticationMiddleware(Middleware):
     @classmethod
     def handle(cls):
-        token: Optional[str] = App.websocket.global_request.headers.get(
-            "Authorization"
-        )
+        token: Optional[str] = App.websocket.global_request.headers.get("Authorization")
 
         if not token:
             raise AuthorizationNotFoundHeader()

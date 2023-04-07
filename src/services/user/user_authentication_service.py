@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from server import App
 from patterns.repository import IAuthRepository
-from repositories.user import UserAuthRepository, UserAuthRepositoryParam
+from repositories.user import UserAuthRepository, UserAuthRepositoryParams
 from server.utils import UtilsJWT, Constants
 from utils.entities import PayloadUserJWT
 from models import User
@@ -19,7 +19,7 @@ class UserAuthenticationService:
     def execute(self, props: UserAuthenticationServiceProps) -> str:
         with App.databases.create_session() as session:
             repository: IAuthRepository[
-                UserAuthRepositoryParam, User
+                UserAuthRepositoryParams, User
             ] = UserAuthRepository(session)
 
             user: User = repository.auth(props)
@@ -30,8 +30,6 @@ class UserAuthenticationService:
 
             payload: PayloadUserJWT = PayloadUserJWT(user.id_uuid, expired)
 
-            token: str = UtilsJWT.encode(
-                payload.__dict__, App.http.configs.secret_key
-            )
+            token: str = UtilsJWT.encode(payload.__dict__, App.http.configs.secret_key)
 
             return f"Bearer {token}"

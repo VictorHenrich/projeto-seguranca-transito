@@ -5,13 +5,13 @@ from models import User
 from exceptions import UserNotFoundError
 
 
-class UserAuthRepositoryParam(Protocol):
+class UserAuthRepositoryParams(Protocol):
     email: str
     password: str
 
 
 class UserAuthRepository(BaseRepository):
-    def auth(self, params: UserAuthRepositoryParam) -> User:
+    def auth(self, params: UserAuthRepositoryParams) -> User:
         user: User = (
             self.session.query(User)
             .filter(User.email == params.email.upper(), User.senha == params.password)

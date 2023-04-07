@@ -7,7 +7,7 @@ from models import User
 from .user_find_repository import UserFindRepository, UserFindRepositoryParams
 
 
-class UserUpdateRepositoryParam(Protocol):
+class UserUpdateRepositoryParams(Protocol):
     uuid_user: str
     name: str
     email: str
@@ -23,7 +23,7 @@ class UserFindProps:
 
 
 class UserUpdateRepository(BaseRepository):
-    def update(self, params: UserUpdateRepositoryParam) -> None:
+    def update(self, params: UserUpdateRepositoryParams) -> None:
         getting_repository_param: UserFindRepositoryParams = UserFindProps(
             uuid_user=params.uuid_user
         )
