@@ -13,13 +13,8 @@ class UserUpdateServiceProps:
     email: str
     password: str
     document: str
-    birthday: str
-    status: bool = False
-
-
-@dataclass
-class UserUpdateParams(UserUpdateServiceProps):
     birthday: date
+    status: bool
 
 
 class UserUpdateService:
@@ -29,16 +24,6 @@ class UserUpdateService:
                 UserUpdateRepositoryParams, None
             ] = UserUpdateRepository(session)
 
-            repository_params: UserUpdateParams = UserUpdateParams(
-                user_uuid=props.user_uuid,
-                name=props.name,
-                email=props.email,
-                password=props.password,
-                document=props.document,
-                birthday=date(0, 0, 0),
-                status=props.status,
-            )
-
-            repository.update(repository_params)
+            repository.update(props)
 
             session.commit()
