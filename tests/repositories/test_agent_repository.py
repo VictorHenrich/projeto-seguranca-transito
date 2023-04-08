@@ -3,8 +3,7 @@ from unittest import TestCase
 from unittest.mock import Mock
 
 from ..util import TestUtil
-
-TestUtil.load_modules("C:\\projetos\\pessoais\\projeto-seguranca-transito-backend\\src")
+TestUtil.load_modules()
 
 
 from src.start.application import App
@@ -50,7 +49,7 @@ class TestAgentRepository(TestCase):
 
             self.assertIsNotNone(agent)
 
-    def test_agent_create(self) -> None:
+    def test_create_agent(self) -> None:
         departament: Mock = Mock()
 
         departament.id = 1
@@ -72,7 +71,7 @@ class TestAgentRepository(TestCase):
 
             session.commit()
 
-    def test_agent_update(self) -> None:
+    def test_update_agent(self) -> None:
         departament: Mock = Mock()
 
         departament.id = 1
@@ -95,7 +94,7 @@ class TestAgentRepository(TestCase):
 
             session.commit()
 
-    def test_agent_delete(self) -> None:
+    def test_delete_agent(self) -> None:
         departament: Mock = Mock()
 
         departament.id = 1
@@ -114,7 +113,7 @@ class TestAgentRepository(TestCase):
 
             session.commit()
 
-    def test_agent_find(self) -> None:
+    def test_find_agent(self) -> None:
         departament: Mock = Mock()
 
         departament.id = 1
@@ -133,7 +132,7 @@ class TestAgentRepository(TestCase):
 
             self.assertIsNotNone(agent)
 
-    def test_agent_find_many(self) -> None:
+    def test_find_many_agent(self) -> None:
         departament: Mock = Mock()
 
         departament.id = 1

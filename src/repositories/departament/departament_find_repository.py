@@ -1,4 +1,4 @@
-from typing import Protocol
+from typing import Protocol, Optional
 
 from patterns.repository import BaseRepository
 from models import Departament
@@ -11,7 +11,7 @@ class DepartamentFindRepositoryParams(Protocol):
 
 class DepartamentFindRepository(BaseRepository):
     def find_one(self, params: DepartamentFindRepositoryParams) -> Departament:
-        departament: Departament = (
+        departament: Optional[Departament] = (
             self.session.query(Departament)
             .filter(Departament.id == params.departament_id)
             .first()

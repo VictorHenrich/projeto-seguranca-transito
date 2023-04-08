@@ -2,8 +2,7 @@ from unittest import TestCase
 from unittest.mock import Mock
 
 from ..util import TestUtil
-
-TestUtil.load_modules("C:\\projetos\\pessoais\\projeto-seguranca-transito-backend\\src")
+TestUtil.load_modules()
 
 from src.start.application import App
 from src.models import User
@@ -44,7 +43,7 @@ class TestUserRepository(TestCase):
 
             self.assertTrue(user)
 
-    def test_user_create(self) -> None:
+    def test_create_user(self) -> None:
         user_create_params: Mock = Mock()
 
         user_create_params.name = "Stephanie Machado"
@@ -62,7 +61,7 @@ class TestUserRepository(TestCase):
 
             session.commit()
 
-    def test_user_update(self) -> None:
+    def test_update_user(self) -> None:
         user_update_params: Mock = Mock()
 
         user_update_params.user_uuid = "8a3f3346-d0c7-4b8a-ab8c-408999335872"
@@ -82,7 +81,7 @@ class TestUserRepository(TestCase):
 
             session.commit()
 
-    def test_user_delete(self) -> None:
+    def test_delete_user(self) -> None:
         user_delete_params: Mock = Mock()
 
         user_delete_params.user_uuid = "8a3f3346-d0c7-4b8a-ab8c-408999335872"
@@ -96,7 +95,7 @@ class TestUserRepository(TestCase):
 
             session.commit()
 
-    def test_user_find(self) -> None:
+    def test_find_user(self) -> None:
         user_find_params: Mock = Mock()
 
         user_find_params.user_uuid = "8520b889-c1ef-4ae7-9651-6d5bc9672748"

@@ -1,11 +1,16 @@
-from typing import Union
+from typing import Union, Optional
 from pathlib import Path
 import sys
+
+import src
+
+
+SRC_PATH: Path = Path(list(src.__path__)[0])
 
 
 class TestUtil:
     @classmethod
-    def load_modules(cls, path: Union[str, Path]) -> None:
+    def load_modules(cls, path: Union[str, Path] = SRC_PATH) -> None:
         parent_path: Path = Path(path)
 
         if not parent_path.exists():

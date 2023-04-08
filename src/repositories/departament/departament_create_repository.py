@@ -8,8 +8,8 @@ class DepartamentCreateRepositoryParams(Protocol):
     name: str
     unit: str
     access: str
-    cep: str
-    uf: str
+    zipcode: str
+    state: str
     city: str
     district: str
     street: str
@@ -22,8 +22,8 @@ class DepartamentCreateRepository(BaseRepository):
 
         departament.nome = params.name
         departament.acesso = params.access
-        departament.cep = params.cep
-        departament.uf = params.uf
+        departament.cep = params.zipcode
+        departament.uf = params.state
         departament.cidade = params.city
         departament.bairro = params.district
         departament.logradouro = params.street
