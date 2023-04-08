@@ -3,6 +3,7 @@ from unittest.mock import Mock
 from datetime import datetime
 
 from ..util import TestUtil
+
 TestUtil.load_modules()
 
 import src.start.application

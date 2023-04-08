@@ -1,3 +1,6 @@
-from .body_request_validation import BodyRequestValidationMiddleware
+from .body_request_validation import (
+    BodyRequestValidationMiddleware,
+    BodyRequestValidationProps,
+)
 from .user_authentication import UserAuthenticationMiddleware
-from .departament_user_authentication import DepartamentUserAuthenticationMiddleware
+from .agent_authentication import AgentAuthenticationMiddleware

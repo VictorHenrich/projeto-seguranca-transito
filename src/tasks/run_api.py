@@ -9,6 +9,6 @@ class RunApi(Task):
         import controllers.http.departamento
         import controllers.http.ocorrencias
         import controllers.http.usuarios
-        import controllers.http.usuarios_departamento
+        import controllers.http.agentes
 
         App.http.run()

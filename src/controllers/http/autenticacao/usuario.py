@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from server import App
-from middlewares.http import BodyRequestValidationMiddleware
+from middlewares.http import BodyRequestValidationMiddleware, BodyRequestValidationProps
 from patterns.service import IService
 from exceptions import UserNotFoundError
 from services.user import UserAuthenticationService, UserAuthenticationServiceProps
@@ -19,11 +19,19 @@ class AuthUserRequestBody:
     senha: str
 
 
+body_request_middleware: BodyRequestValidationMiddleware = (
+    BodyRequestValidationMiddleware()
+)
+body_request_props: BodyRequestValidationProps = BodyRequestValidationProps(
+    AuthUserRequestBody
+)
+
+
 @App.http.add_controller(
     "/autenticacao/usuario",
 )
 class AutenticacaoUsuarioController(Controller):
-    @BodyRequestValidationMiddleware.apply(AuthUserRequestBody)
+    @body_request_middleware.apply(body_request_props)
     def post(self, body_request: AuthUserRequestBody) -> ResponseDefaultJSON:
         try:
             service: IService[

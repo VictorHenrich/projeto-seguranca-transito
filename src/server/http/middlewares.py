@@ -1,37 +1,36 @@
-from abc import ABC, abstractclassmethod
+from typing import Any, Dict, Optional, Callable, TypeAlias, TypeVar, Generic
+from abc import ABC, abstractmethod
 from flask import Response
-from typing import Any, Dict, Optional, Callable, TypeAlias, Tuple
 
 
-Args: TypeAlias = Tuple[Any, ...]
-Kwargs: TypeAlias = Dict[str, Any]
-Handler: TypeAlias = Optional[Dict[str, Any]]
+T = TypeVar("T")
+E = TypeVar("E", bound=Exception, contravariant=True)
+
+HandlerReturn: TypeAlias = Optional[Dict[str, Any]]
 Target: TypeAlias = Callable[[Any], Response]
 Wrapper: TypeAlias = Callable[[Any], Response]
-Decorator: TypeAlias = Callable[[Target], Wrapper]
+Decorator: TypeAlias = Callable[[Any], Wrapper]
 
 
-class Middleware(ABC):
-    @abstractclassmethod
-    def handle(cls, *args: Args, **kwargs: Kwargs) -> Handler:
+class HttpMiddleware(ABC, Generic[T]):
+    @abstractmethod
+    def handle(self, props: T) -> HandlerReturn:
         pass
 
-    @classmethod
-    def catch(cls, exception: Exception) -> Response:
+    def catch(self, exception: Exception) -> Response:
         raise exception
 
-    @classmethod
-    def apply(cls, *args: Args, **kwargs: Kwargs) -> Decorator:
+    def apply(self, props: T) -> Decorator:
         def decorator(target: Target) -> Wrapper:
-            def wrapper(*args_w: Args, **kwargs_w: Kwargs) -> Response:
+            def wrapper(*args: Any, **kwargs: Any) -> Response:
                 try:
-                    handler_return: Handler = cls.handle(*args, **kwargs)
+                    handler_return: HandlerReturn = self.handle(props)
 
                 except Exception as error:
-                    return cls.catch(error)
+                    return self.catch(error)
 
                 else:
-                    return target(*args_w, **{**kwargs_w, **(handler_return or {})})
+                    return target(*args, **{**kwargs, **(handler_return or {})})
 
             return wrapper
 

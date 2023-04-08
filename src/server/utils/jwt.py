@@ -1,10 +1,8 @@
 from jwt import PyJWT
-from typing import Sequence, TypeAlias, Any, Dict, TypeVar, Type, Optional, Union
+from typing import Sequence, TypeAlias, Any, Dict, Type, Optional
 
 
 DictMapping: TypeAlias = Dict[str, Any]
-
-T = TypeVar("T", covariant=True)
 
 
 class UtilsJWT:
@@ -12,12 +10,8 @@ class UtilsJWT:
 
     @classmethod
     def decode(
-        cls,
-        token: str,
-        key: str,
-        class_: Optional[Type[T]] = None,
-        **options: DictMapping
-    ) -> Union[T, DictMapping]:
+        cls, token: str, key: str, class_: Optional[Type[Any]] = None, **options: Any
+    ) -> Any:
         payload: DictMapping = PyJWT().decode(
             token, key, list(cls.algorithm), **options
         )
@@ -29,5 +23,5 @@ class UtilsJWT:
             return payload
 
     @classmethod
-    def encode(cls, payload: DictMapping, key: str, **options: DictMapping) -> str:
+    def encode(cls, payload: DictMapping, key: str, **options: Any) -> str:
         return PyJWT().encode(payload, key, list(cls.algorithm)[0], **options)

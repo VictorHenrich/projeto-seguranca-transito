@@ -1,6 +1,8 @@
 from typing import Type, TypeAlias, TypeVar, Dict, Any
 from flask import request
-from server.http import Middleware, ResponseDefaultJSON, ResponseFailure
+from dataclasses import dataclass
+
+from server.http import HttpMiddleware, ResponseDefaultJSON, ResponseFailure
 
 
 T = TypeVar("T")
@@ -9,17 +11,20 @@ JsonData: TypeAlias = Dict[str, Any]
 ParamsData: TypeAlias = Dict[str, T]
 
 
-class BodyRequestValidationMiddleware(Middleware):
-    @classmethod
-    def handle(cls, classe: Type[T]) -> ParamsData:
+@dataclass
+class BodyRequestValidationProps:
+    class_: Type[Any]
+
+
+class BodyRequestValidationMiddleware(HttpMiddleware[BodyRequestValidationProps]):
+    def handle(self, props: BodyRequestValidationProps) -> ParamsData:
         dados_json: JsonData = request.get_json()
 
-        dados_corpo: T = classe(**dados_json)
+        dados_corpo: Any = props.class_(**dados_json)
 
         return {"body_request": dados_corpo}
 
-    @classmethod
-    def catch(cls, exception: Exception) -> ResponseDefaultJSON:
+    def catch(self, exception: Exception) -> ResponseDefaultJSON:
         if TypeError:
             return ResponseFailure(data="Corpo da requisição é inválido!")
 

@@ -56,7 +56,9 @@ class TestDepartamentService(TestCase):
     def test_finding_uuid_departament(self) -> None:
         departament_finding_props: Mock = Mock()
 
-        departament_finding_props.departament_uuid = "efd0f1c8-4f32-4f3c-b7c2-1f73fa37f891"
+        departament_finding_props.departament_uuid = (
+            "efd0f1c8-4f32-4f3c-b7c2-1f73fa37f891"
+        )
 
         departament_finding_service: IService[
             DepartamentFindingUUIDServiceProps, Departament

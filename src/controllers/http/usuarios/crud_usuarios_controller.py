@@ -1,5 +1,6 @@
 from typing import Dict, Any, Optional
 from dataclasses import dataclass
+from datetime import datetime
 
 from server import App
 from server.http import (
@@ -9,6 +10,7 @@ from server.http import (
 )
 from middlewares.http import (
     BodyRequestValidationMiddleware,
+    BodyRequestValidationProps,
     UserAuthenticationMiddleware,
 )
 from models import User
@@ -31,19 +33,30 @@ class UserRegistrationRequestBody:
     email: str
     cpf: str
     senha: str
-    data_nascimento: Optional[None] = None
+    data_nascimento: Optional[str] = None
+    status: bool = True
+
+
+body_request_middleware: BodyRequestValidationMiddleware = (
+    BodyRequestValidationMiddleware()
+)
+user_auth_middleware: UserAuthenticationMiddleware = UserAuthenticationMiddleware()
+
+body_request_params: BodyRequestValidationProps = BodyRequestValidationProps(
+    UserRegistrationRequestBody
+)
 
 
 @App.http.add_controller("/usuario/crud", "/usuario/crud/<uuid:user_hash>")
 class CrudUsuariosController(Controller):
-    @BodyRequestValidationMiddleware.apply(UserRegistrationRequestBody)
+    @body_request_middleware.apply(body_request_params)
     def post(self, body_request: UserRegistrationRequestBody) -> ResponseDefaultJSON:
         service: IService[UserCreationServiceProps, None] = UserCreationService()
 
         service_props: UserCreationServiceProps = UserCreationServiceProps(
             name=body_request.nome,
             document=body_request.cpf,
-            birthday=body_request.data_nascimento,
+            birthday=None,
             email=body_request.email,
             password=body_request.senha,
         )
@@ -52,8 +65,8 @@ class CrudUsuariosController(Controller):
 
         return ResponseSuccess()
 
-    @UserAuthenticationMiddleware.apply()
-    @BodyRequestValidationMiddleware.apply(UserRegistrationRequestBody)
+    @user_auth_middleware.apply(None)
+    @body_request_middleware.apply(body_request_params)
     def put(
         self, auth: User, body_request: UserRegistrationRequestBody
     ) -> ResponseDefaultJSON:
@@ -62,17 +75,18 @@ class CrudUsuariosController(Controller):
         service_props: UserUpdateServiceProps = UserUpdateServiceProps(
             name=body_request.nome,
             document=body_request.cpf,
-            birthday=body_request.data_nascimento,
+            birthday=datetime.now().date(),
             email=body_request.email,
             password=body_request.senha,
             user_uuid=auth.id_uuid,
+            status=body_request.status,
         )
 
         service.execute(service_props)
 
         return ResponseSuccess()
 
-    @UserAuthenticationMiddleware.apply()
+    @user_auth_middleware.apply(None)
     def delete(self, auth: User) -> ResponseDefaultJSON:
         service: IService[UserExclusionServiceProps, None] = UserExclusionService()
 
@@ -84,7 +98,7 @@ class CrudUsuariosController(Controller):
 
         return ResponseSuccess()
 
-    @UserAuthenticationMiddleware.apply()
+    @user_auth_middleware.apply(None)
     def get(self, auth: User) -> ResponseDefaultJSON:
         service: IService[UserFindingServiceProps, User] = UserFindingService()
 

@@ -8,7 +8,8 @@ from models import Agent, Departament
 from server.http import Controller, ResponseDefaultJSON, ResponseSuccess
 from middlewares.http import (
     BodyRequestValidationMiddleware,
-    DepartamentUserAuthenticationMiddleware,
+    BodyRequestValidationProps,
+    AgentAuthenticationMiddleware,
 )
 from services.agent import (
     AgentCreationService,
@@ -30,12 +31,21 @@ class DepartamentUserRegistrationRequestBody:
     cargo: str
 
 
+agent_auth_middleware: AgentAuthenticationMiddleware = AgentAuthenticationMiddleware()
+body_request_middleware: BodyRequestValidationMiddleware = (
+    BodyRequestValidationMiddleware()
+)
+body_request_props: BodyRequestValidationProps = BodyRequestValidationProps(
+    DepartamentUserRegistrationRequestBody
+)
+
+
 @App.http.add_controller(
     "/departamento/usuario/crud",
     "/departamento/usuario/crud/<uuid:user_hash>",
 )
 class CrudUsuariosDepartamentosController(Controller):
-    @DepartamentUserAuthenticationMiddleware.apply()
+    @agent_auth_middleware.apply(None)
     def get(
         self,
         auth_user: Agent,
@@ -63,8 +73,7 @@ class CrudUsuariosDepartamentosController(Controller):
 
         return ResponseSuccess(data=response)
 
-    # @DepartamentUserAuthenticationMiddleware.apply()
-    @BodyRequestValidationMiddleware.apply(DepartamentUserRegistrationRequestBody)
+    @body_request_middleware.apply(body_request_props)
     def post(
         self,
         auth_user: Agent,
@@ -85,8 +94,8 @@ class CrudUsuariosDepartamentosController(Controller):
 
         return ResponseSuccess()
 
-    @DepartamentUserAuthenticationMiddleware.apply()
-    @BodyRequestValidationMiddleware.apply(DepartamentUserRegistrationRequestBody)
+    @agent_auth_middleware.apply(None)
+    @body_request_middleware.apply(body_request_props)
     def put(
         self,
         user_hash: UUID,
@@ -102,14 +111,14 @@ class CrudUsuariosDepartamentosController(Controller):
             access=body_request.usuario,
             password=body_request.senha,
             position=body_request.cargo,
-            departament_user=auth_user,
+            agent_uuid=auth_user.id_uuid,
         )
 
         service.execute(service_props)
 
         return ResponseSuccess()
 
-    @DepartamentUserAuthenticationMiddleware.apply()
+    @agent_auth_middleware.apply(None)
     def delete(
         self,
         user_hash: UUID,

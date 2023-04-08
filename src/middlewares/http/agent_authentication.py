@@ -2,8 +2,8 @@ from flask import request
 from typing import Optional
 from datetime import datetime
 
-from server.http import Middleware, ResponseInauthorized
-from server.utils import UtilsJWT, UtilsExcept
+from server.http import HttpMiddleware, ResponseInauthorized
+from server.utils import UtilsJWT
 from models import Agent, Departament
 from patterns.service import IService
 from services.agent import AgentFindingService, AgentFindingServiceProps
@@ -22,9 +22,8 @@ from utils.entities import PayloadDepartamentUserJWT
 from server import App
 
 
-class DepartamentUserAuthenticationMiddleware(Middleware):
-    @classmethod
-    def handle(cls):
+class AgentAuthenticationMiddleware(HttpMiddleware[None]):
+    def handle(self, props: None):
         token: Optional[str] = request.headers.get("Authorization")
 
         if not token:
@@ -36,51 +35,50 @@ class DepartamentUserAuthenticationMiddleware(Middleware):
         token = token.replace("Bearer ", "")
 
         payload: PayloadDepartamentUserJWT = UtilsJWT.decode(
-            token, App.http.configs.secret_key, PayloadDepartamentUserJWT
+            token, App.http.configs.secret_key, class_=PayloadDepartamentUserJWT
         )
 
         if payload.expired <= datetime.now().timestamp():
             raise ExpiredTokenError()
 
-        departament_service: IService[
+        departament_finding_service: IService[
             DepartamentFindingUUIDServiceProps, Departament
         ] = DepartamentFindingUUIDService()
 
-        departament_user_service: IService[
+        agent_finding_service: IService[
             AgentFindingServiceProps, Agent
         ] = AgentFindingService()
 
-        departament_service_props: DepartamentFindingUUIDServiceProps = (
+        departament_finding_service_props: DepartamentFindingUUIDServiceProps = (
             DepartamentFindingUUIDServiceProps(
-                uuid_departament=payload.uuid_departament
+                departament_uuid=payload.uuid_departament
             )
         )
 
-        departament: Departament = departament_service.execute(
-            departament_service_props
+        departament: Departament = departament_finding_service.execute(
+            departament_finding_service_props
         )
 
-        departament_user_service_props: AgentFindingServiceProps = (
+        agent_finding_service_props: AgentFindingServiceProps = (
             AgentFindingServiceProps(
                 agent_uuid=payload.user_uuid, departament=departament
             )
         )
 
-        departament_user: Agent = departament_user_service.execute(
-            departament_user_service_props
-        )
+        agent: Agent = agent_finding_service.execute(agent_finding_service_props)
 
-        return {"auth_user": departament_user, "auth_departament": departament}
+        return {"auth_user": agent, "auth_departament": departament}
 
-    @classmethod
-    def catch(cls, exception: Exception):
-        validation: bool = UtilsExcept.fired(
+    def catch(self, exception: Exception):
+        validation: bool = isinstance(
             exception,
-            DepartamentNotFoundError,
-            DepartamentNotFoundError,
-            UserNotFoundError,
-            ExpiredTokenError,
-            AuthorizationNotFoundHeader,
+            (
+                DepartamentNotFoundError,
+                DepartamentNotFoundError,
+                UserNotFoundError,
+                ExpiredTokenError,
+                AuthorizationNotFoundHeader,
+            ),
         )
 
         if validation:

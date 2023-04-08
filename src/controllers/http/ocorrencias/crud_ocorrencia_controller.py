@@ -7,6 +7,7 @@ from patterns.service import IService
 from server.http import Controller, ResponseDefaultJSON, ResponseSuccess
 from middlewares.http import (
     BodyRequestValidationMiddleware,
+    BodyRequestValidationProps,
     UserAuthenticationMiddleware,
 )
 from models import User, Occurrence
@@ -35,13 +36,26 @@ class OccurrenceUpdateBodyRequest:
     obs: str
 
 
+body_request_middleware: BodyRequestValidationMiddleware = (
+    BodyRequestValidationMiddleware()
+)
+user_auth_middleware: UserAuthenticationMiddleware = UserAuthenticationMiddleware()
+
+occurrence_update_props: BodyRequestValidationProps = BodyRequestValidationProps(
+    OccurrenceUpdateBodyRequest
+)
+occurrence_create_props: BodyRequestValidationProps = BodyRequestValidationProps(
+    OccurrenceCreationBodyRequest
+)
+
+
 @App.http.add_controller(
     "/ocorrencia/crud",
     "/ocorrencia/crud/<uuid:occurrence_hash>",
 )
 class CrudOcorrenciasController(Controller):
-    @UserAuthenticationMiddleware.apply()
-    @BodyRequestValidationMiddleware.apply(OccurrenceCreationBodyRequest)
+    @user_auth_middleware.apply(None)
+    @body_request_middleware.apply(occurrence_create_props)
     def post(
         self, auth: User, body_request: OccurrenceCreationBodyRequest
     ) -> ResponseDefaultJSON:
@@ -62,8 +76,8 @@ class CrudOcorrenciasController(Controller):
 
         return ResponseSuccess()
 
-    @UserAuthenticationMiddleware.apply()
-    @BodyRequestValidationMiddleware.apply(OccurrenceUpdateBodyRequest)
+    @user_auth_middleware.apply(None)
+    @body_request_middleware.apply(occurrence_update_props)
     def put(
         self,
         occurrence_hash: UUID,
@@ -86,7 +100,7 @@ class CrudOcorrenciasController(Controller):
 
         return ResponseSuccess()
 
-    @UserAuthenticationMiddleware.apply()
+    @user_auth_middleware.apply(None)
     def delete(self, occurrence_hash: UUID, auth: User) -> ResponseDefaultJSON:
         occurrence_exclusion_service: IService[
             OccurrenceExclusionServiceProps, None
@@ -100,7 +114,7 @@ class CrudOcorrenciasController(Controller):
 
         return ResponseSuccess()
 
-    @UserAuthenticationMiddleware.apply()
+    @user_auth_middleware.apply(None)
     def get(self, auth: User) -> ResponseDefaultJSON:
         occurrence_listing_service: IService[
             OccurrenceListingServiceProps, List[Occurrence]

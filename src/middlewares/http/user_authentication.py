@@ -2,8 +2,8 @@ from flask import request
 from typing import Optional
 from datetime import datetime
 
-from server.http import Middleware, ResponseInauthorized
-from server.utils import UtilsJWT, UtilsExcept
+from server.http import HttpMiddleware, ResponseInauthorized
+from server.utils import UtilsJWT
 from patterns.service import IService
 from models import User
 from services.user import UserFindingService, UserFindingServiceProps
@@ -17,9 +17,8 @@ from utils.entities import PayloadUserJWT
 from server import App
 
 
-class UserAuthenticationMiddleware(Middleware):
-    @classmethod
-    def handle(cls):
+class UserAuthenticationMiddleware(HttpMiddleware[None]):
+    def handle(self, props: None):
         token: Optional[str] = request.headers.get("Authorization")
 
         if not token:
@@ -47,14 +46,15 @@ class UserAuthenticationMiddleware(Middleware):
 
         return {"auth": user}
 
-    @classmethod
-    def catch(cls, exception: Exception):
-        validation: bool = UtilsExcept.fired(
+    def catch(self, exception: Exception):
+        validation: bool = isinstance(
             exception,
-            ExpiredTokenError,
-            UserNotFoundError,
-            TokenTypeNotBearerError,
-            AuthorizationNotFoundHeader,
+            (
+                ExpiredTokenError,
+                UserNotFoundError,
+                TokenTypeNotBearerError,
+                AuthorizationNotFoundHeader,
+            ),
         )
 
         if validation:
