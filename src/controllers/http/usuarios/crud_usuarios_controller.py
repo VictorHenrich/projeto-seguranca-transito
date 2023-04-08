@@ -16,8 +16,8 @@ from patterns.service import IService
 from services.user import (
     UserCreationService,
     UserCreationServiceProps,
-    UserGettingService,
-    UserGettingServiceProps,
+    UserFindingService,
+    UserFindingServiceProps,
     UserExclusionService,
     UserExclusionServiceProps,
     UserUpdateService,
@@ -86,9 +86,9 @@ class CrudUsuariosController(Controller):
 
     @UserAuthenticationMiddleware.apply()
     def get(self, auth: User) -> ResponseDefaultJSON:
-        service: IService[UserGettingServiceProps, User] = UserGettingService()
+        service: IService[UserFindingServiceProps, User] = UserFindingService()
 
-        service_props: UserGettingServiceProps = UserGettingServiceProps(
+        service_props: UserFindingServiceProps = UserFindingServiceProps(
             user_uuid=auth.id_uuid
         )
 

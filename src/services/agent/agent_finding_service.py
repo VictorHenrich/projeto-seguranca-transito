@@ -10,13 +10,13 @@ from models import Agent, Departament
 
 
 @dataclass
-class AgentGettingServiceProps:
+class AgentFindingServiceProps:
     agent_uuid: str
     departament: Departament
 
 
-class AgentGettingService:
-    def execute(self, props: AgentGettingServiceProps) -> Agent:
+class AgentFindingService:
+    def execute(self, props: AgentFindingServiceProps) -> Agent:
         with App.databases.create_session() as session:
             getting_repository: IFindRepository[
                 AgentFindRepositoryParams, Agent

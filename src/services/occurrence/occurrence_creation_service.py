@@ -6,8 +6,8 @@ from patterns.repository import ICreateRepository
 from patterns.service import IService
 from models import User, Departament
 from services.departament import (
-    DepartamentGettingUUIDService,
-    DepartamentGettingUUIDServiceProps,
+    DepartamentFindingUUIDService,
+    DepartamentFindingUUIDServiceProps,
 )
 from repositories.occurrence import (
     OccurrenceCreateRepository,
@@ -35,11 +35,11 @@ class OccurrenceCreationService:
     def execute(self, props: OccurrenceCreationServiceProps) -> None:
         with App.databases.create_session() as session:
             departament_getting_service: IService[
-                DepartamentGettingUUIDServiceProps, Departament
-            ] = DepartamentGettingUUIDService()
+                DepartamentFindingUUIDServiceProps, Departament
+            ] = DepartamentFindingUUIDService()
 
-            departament_getting_service_props: DepartamentGettingUUIDServiceProps = (
-                DepartamentGettingUUIDServiceProps(
+            departament_getting_service_props: DepartamentFindingUUIDServiceProps = (
+                DepartamentFindingUUIDServiceProps(
                     uuid_departament=props.uuid_departament
                 )
             )

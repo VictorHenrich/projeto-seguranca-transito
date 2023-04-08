@@ -13,8 +13,8 @@ class DepartamentCreationServiceProps:
     name: str
     unit: str
     access: str
-    cep: str
-    uf: str
+    zipcode: str
+    state: str
     city: str
     district: str
     street: str

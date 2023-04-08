@@ -1,10 +1,10 @@
-from .departament_getting_service import (
-    DepartamentGettingService,
-    DepartamentGettingServiceProps,
+from .departament_finding_service import (
+    DepartamentFindingService,
+    DepartamentFindingServiceProps,
 )
-from .departament_getting_uuid_service import (
-    DepartamentGettingUUIDService,
-    DepartamentGettingUUIDServiceProps,
+from .departament_finding_uuid_service import (
+    DepartamentFindingUUIDService,
+    DepartamentFindingUUIDServiceProps,
 )
 from .departament_creation_service import (
     DepartamentCreationService,

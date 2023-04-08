@@ -11,14 +11,14 @@ from middlewares.http import (
     DepartamentUserAuthenticationMiddleware,
 )
 from services.agent import (
-    AgentCriationService,
-    AgentCriationServiceProps,
+    AgentCreationService,
+    AgentCreationServiceProps,
     AgentExclusionService,
     AgentExclusionServiceProps,
-    AgentListingService,
-    AgentListingServiceProps,
-    AgentUpgradeService,
-    AgentUpgradeServiceProps,
+    AgentsFetchingService,
+    AgentsFetchingServiceProps,
+    AgentUpdateService,
+    AgentUpdateServiceProps,
 )
 
 
@@ -41,9 +41,11 @@ class CrudUsuariosDepartamentosController(Controller):
         auth_user: Agent,
         auth_departament: Departament,
     ) -> ResponseDefaultJSON:
-        service: IService[AgentListingServiceProps, List[Agent]] = AgentListingService()
+        service: IService[
+            AgentsFetchingServiceProps, List[Agent]
+        ] = AgentsFetchingService()
 
-        service_props: AgentListingServiceProps = AgentListingServiceProps(
+        service_props: AgentsFetchingServiceProps = AgentsFetchingServiceProps(
             departament=auth_departament
         )
 
@@ -69,9 +71,9 @@ class CrudUsuariosDepartamentosController(Controller):
         auth_departament: Departament,
         body_request: DepartamentUserRegistrationRequestBody,
     ) -> ResponseDefaultJSON:
-        service: IService[AgentCriationServiceProps, None] = AgentCriationService()
+        service: IService[AgentCreationServiceProps, None] = AgentCreationService()
 
-        service_props: AgentCriationServiceProps = AgentCriationServiceProps(
+        service_props: AgentCreationServiceProps = AgentCreationServiceProps(
             departament=auth_departament,
             name=body_request.nome,
             access=body_request.usuario,
@@ -92,9 +94,9 @@ class CrudUsuariosDepartamentosController(Controller):
         auth_departament: Departament,
         body_request: DepartamentUserRegistrationRequestBody,
     ) -> ResponseDefaultJSON:
-        service: IService[AgentUpgradeServiceProps, None] = AgentUpgradeService()
+        service: IService[AgentUpdateServiceProps, None] = AgentUpdateService()
 
-        service_props: AgentUpgradeServiceProps = AgentUpgradeServiceProps(
+        service_props: AgentUpdateServiceProps = AgentUpdateServiceProps(
             departament=auth_departament,
             name=body_request.nome,
             access=body_request.usuario,

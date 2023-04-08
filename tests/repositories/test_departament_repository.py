@@ -2,6 +2,7 @@ from unittest import TestCase
 from unittest.mock import Mock
 
 from ..util import TestUtil
+
 TestUtil.load_modules()
 
 
@@ -60,7 +61,9 @@ class TestDepartamentRepository(TestCase):
     def test_find_uuid_departament(self) -> None:
         departament_find_params: Mock = Mock()
 
-        departament_find_params.departament_uuid = "07b9c089-4f16-4075-8710-f7173f710d4b"
+        departament_find_params.departament_uuid = (
+            "07b9c089-4f16-4075-8710-f7173f710d4b"
+        )
 
         with App.databases.create_session() as session:
             departament_find_repository: IFindRepository[

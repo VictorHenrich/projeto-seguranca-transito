@@ -11,8 +11,8 @@ from repositories.agent import (
     AgentAuthRepository,
 )
 from services.departament import (
-    DepartamentGettingService,
-    DepartamentGettingServiceProps,
+    DepartamentFindingService,
+    DepartamentFindingServiceProps,
 )
 from utils.entities import PayloadDepartamentUserJWT
 
@@ -34,11 +34,11 @@ class AgentAuthorizationService:
             departament_user: Agent = dep_user_auth_repository.auth(props)
 
             departament_getting_service: IService[
-                DepartamentGettingServiceProps, Departament
-            ] = DepartamentGettingService()
+                DepartamentFindingServiceProps, Departament
+            ] = DepartamentFindingService()
 
-            departament_getting_service_props: DepartamentGettingServiceProps = (
-                DepartamentGettingServiceProps(departament_user.id_departamento)
+            departament_getting_service_props: DepartamentFindingServiceProps = (
+                DepartamentFindingServiceProps(departament_user.id_departamento)
             )
 
             departament: Departament = departament_getting_service.execute(

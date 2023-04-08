@@ -10,7 +10,7 @@ from repositories.agent import (
 
 
 @dataclass
-class AgentCriationServiceProps:
+class AgentCreationServiceProps:
     departament: Departament
     name: str
     access: str
@@ -18,8 +18,8 @@ class AgentCriationServiceProps:
     position: str
 
 
-class AgentCriationService:
-    def execute(self, props: AgentCriationServiceProps) -> None:
+class AgentCreationService:
+    def execute(self, props: AgentCreationServiceProps) -> None:
         with App.databases.create_session() as session:
             creating_repository: ICreateRepository[
                 AgentCreateRepositoryParams, None

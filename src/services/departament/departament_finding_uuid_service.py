@@ -4,22 +4,22 @@ from server import App
 from patterns.repository import IFindRepository
 from models import Departament
 from repositories.departament import (
-    DepartamentFindRepository,
-    DepartamentFindRepositoryParams,
+    DepartamentFindUUIDRepository,
+    DepartamentFindUUIDRepositoryParams,
 )
 
 
 @dataclass
-class DepartamentGettingServiceProps:
-    departament_id: int
+class DepartamentFindingUUIDServiceProps:
+    departament_uuid: str
 
 
-class DepartamentGettingService:
-    def execute(self, props: DepartamentGettingServiceProps) -> Departament:
+class DepartamentFindingUUIDService:
+    def execute(self, props: DepartamentFindingUUIDServiceProps) -> Departament:
         with App.databases.create_session() as session:
             getting_repository: IFindRepository[
-                DepartamentFindRepositoryParams, Departament
-            ] = DepartamentFindRepository(session)
+                DepartamentFindUUIDRepositoryParams, Departament
+            ] = DepartamentFindUUIDRepository(session)
 
             departament: Departament = getting_repository.find_one(props)
 

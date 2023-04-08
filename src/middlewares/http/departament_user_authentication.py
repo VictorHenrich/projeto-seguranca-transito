@@ -6,10 +6,10 @@ from server.http import Middleware, ResponseInauthorized
 from server.utils import UtilsJWT, UtilsExcept
 from models import Agent, Departament
 from patterns.service import IService
-from services.agent import AgentGettingService, AgentGettingServiceProps
+from services.agent import AgentFindingService, AgentFindingServiceProps
 from services.departament import (
-    DepartamentGettingUUIDService,
-    DepartamentGettingUUIDServiceProps,
+    DepartamentFindingUUIDService,
+    DepartamentFindingUUIDServiceProps,
 )
 from exceptions import (
     AuthorizationNotFoundHeader,
@@ -43,15 +43,15 @@ class DepartamentUserAuthenticationMiddleware(Middleware):
             raise ExpiredTokenError()
 
         departament_service: IService[
-            DepartamentGettingUUIDServiceProps, Departament
-        ] = DepartamentGettingUUIDService()
+            DepartamentFindingUUIDServiceProps, Departament
+        ] = DepartamentFindingUUIDService()
 
         departament_user_service: IService[
-            AgentGettingServiceProps, Agent
-        ] = AgentGettingService()
+            AgentFindingServiceProps, Agent
+        ] = AgentFindingService()
 
-        departament_service_props: DepartamentGettingUUIDServiceProps = (
-            DepartamentGettingUUIDServiceProps(
+        departament_service_props: DepartamentFindingUUIDServiceProps = (
+            DepartamentFindingUUIDServiceProps(
                 uuid_departament=payload.uuid_departament
             )
         )
@@ -60,8 +60,8 @@ class DepartamentUserAuthenticationMiddleware(Middleware):
             departament_service_props
         )
 
-        departament_user_service_props: AgentGettingServiceProps = (
-            AgentGettingServiceProps(
+        departament_user_service_props: AgentFindingServiceProps = (
+            AgentFindingServiceProps(
                 agent_uuid=payload.user_uuid, departament=departament
             )
         )

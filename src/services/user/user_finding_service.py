@@ -7,12 +7,12 @@ from models import User
 
 
 @dataclass
-class UserGettingServiceProps:
+class UserFindingServiceProps:
     user_uuid: str
 
 
-class UserGettingService:
-    def execute(self, props: UserGettingServiceProps) -> User:
+class UserFindingService:
+    def execute(self, props: UserFindingServiceProps) -> User:
         with App.databases.create_session() as session:
             repository: IFindRepository[
                 UserFindRepositoryParams, User

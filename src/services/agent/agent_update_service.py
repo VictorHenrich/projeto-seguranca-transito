@@ -6,12 +6,12 @@ from repositories.agent import (
     AgentUpdateRepository,
     AgentUpdateRepositoryParams,
 )
-from models import Agent, Departament
+from models import Departament
 
 
 @dataclass
-class AgentUpgradeServiceProps:
-    departament_user: Agent
+class AgentUpdateServiceProps:
+    agent_uuid: str
     departament: Departament
     name: str
     access: str
@@ -19,8 +19,8 @@ class AgentUpgradeServiceProps:
     position: str
 
 
-class AgentUpgradeService:
-    def execute(self, props: AgentUpgradeServiceProps) -> None:
+class AgentUpdateService:
+    def execute(self, props: AgentUpdateServiceProps) -> None:
         with App.databases.create_session() as session:
             update_repository: IUpdateRepository[
                 AgentUpdateRepositoryParams, None
