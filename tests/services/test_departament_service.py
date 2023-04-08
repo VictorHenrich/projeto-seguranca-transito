@@ -5,6 +5,7 @@ from ..util import TestUtil
 
 TestUtil.load_modules()
 
+import src.start.application
 from src.patterns.service import IService
 from src.models import Departament
 from src.services.departament import (
@@ -21,14 +22,14 @@ class TestDepartamentService(TestCase):
     def test_creation_departament(self) -> None:
         departament_creation_props: Mock = Mock()
 
-        departament_creation_props.name = ""
-        departament_creation_props.unit = ""
-        departament_creation_props.access = ""
-        departament_creation_props.zipcode = ""
-        departament_creation_props.state = ""
-        departament_creation_props.city = ""
-        departament_creation_props.district = ""
-        departament_creation_props.street = ""
+        departament_creation_props.name = "TESTE"
+        departament_creation_props.unit = "teste-81"
+        departament_creation_props.access = "teste"
+        departament_creation_props.zipcode = "11111"
+        departament_creation_props.state = "RS"
+        departament_creation_props.city = "Porto Alegre"
+        departament_creation_props.district = "Bairro teste"
+        departament_creation_props.street = "Rua teste"
         departament_creation_props.complement = ""
 
         departament_creation_service: IService[
@@ -40,7 +41,7 @@ class TestDepartamentService(TestCase):
     def test_finding_departament(self) -> None:
         departament_finding_props: Mock = Mock()
 
-        departament_finding_props.departament_id = 1
+        departament_finding_props.departament_id = 3
 
         departament_finding_service: IService[
             DepartamentFindingServiceProps, Departament
@@ -55,7 +56,7 @@ class TestDepartamentService(TestCase):
     def test_finding_uuid_departament(self) -> None:
         departament_finding_props: Mock = Mock()
 
-        departament_finding_props.departament_uuid = ""
+        departament_finding_props.departament_uuid = "efd0f1c8-4f32-4f3c-b7c2-1f73fa37f891"
 
         departament_finding_service: IService[
             DepartamentFindingUUIDServiceProps, Departament
