@@ -2,12 +2,15 @@ from typing import Dict, TypeAlias, Any, List, Optional
 
 from server import App
 from server.websocket import Controller, ConnectionController
-from middlewares.websocket import DepartamentUserAuthenticationMiddleware
+from middlewares.websocket import AgentAuthenticationMiddleware
 from models import Agent, Departament
 from .user_controller import ConnectionUser
 
 
 JSONType: TypeAlias = Dict[str, Any]
+
+
+agent_auth_middleware: AgentAuthenticationMiddleware = AgentAuthenticationMiddleware()
 
 
 class ConnectionDepartamentUser(ConnectionController):
@@ -27,7 +30,7 @@ class ConnectionDepartamentUser(ConnectionController):
 
 @App.websocket.add_controller("/departament_user")
 class DepartamentUserController(Controller[ConnectionDepartamentUser]):
-    @DepartamentUserAuthenticationMiddleware.apply()
+    @agent_auth_middleware.apply(None)
     def on_open(
         self,
         connection: ConnectionController,

@@ -15,7 +15,7 @@ Decorator: TypeAlias = Callable[[Any], Wrapper]
 class HttpMiddleware(ABC, Generic[T]):
     @abstractmethod
     def handle(self, props: T) -> HandlerReturn:
-        pass
+        ...
 
     def catch(self, exception: Exception) -> Response:
         raise exception

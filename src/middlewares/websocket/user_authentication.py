@@ -1,8 +1,8 @@
 from flask import request
-from typing import Optional
+from typing import Optional, Dict
 from datetime import datetime
 
-from server.websocket import Middleware
+from server.websocket import SocketMiddleware
 from server.utils import UtilsJWT
 from patterns.service import IService
 from models import User
@@ -16,9 +16,8 @@ from utils.entities import PayloadUserJWT
 from server import App
 
 
-class UserAuthenticationMiddleware(Middleware):
-    @classmethod
-    def handle(cls):
+class UserAuthenticationMiddleware(SocketMiddleware[None]):
+    def handle(self, props: None) -> Dict[str, User]:
         token: Optional[str] = App.websocket.global_request.headers.get("Authorization")
 
         if not token:

@@ -1,8 +1,7 @@
-from typing import Optional
+from typing import Optional, Dict, Union
 from datetime import datetime
 
-from start import app
-from server.websocket import Middleware
+from server.websocket import SocketMiddleware
 from server.utils import UtilsJWT
 from models import Agent, Departament
 from patterns.service import IService
@@ -20,9 +19,8 @@ from utils.entities import PayloadDepartamentUserJWT
 from server import App
 
 
-class DepartamentUserAuthenticationMiddleware(Middleware):
-    @classmethod
-    def handle(cls):
+class AgentAuthenticationMiddleware(SocketMiddleware[None]):
+    def handle(self, props: None) -> Dict[str, Union[Agent, Departament]]:
         token: Optional[str] = App.websocket.global_request.headers.get("Authorization")
 
         if not token:
@@ -44,13 +42,11 @@ class DepartamentUserAuthenticationMiddleware(Middleware):
             DepartamentFindingUUIDServiceProps, Departament
         ] = DepartamentFindingUUIDService()
 
-        departament_user_service: IService[
-            AgentFindingServiceProps, Agent
-        ] = AgentFindingService()
+        agent_service: IService[AgentFindingServiceProps, Agent] = AgentFindingService()
 
         departament_service_props: DepartamentFindingUUIDServiceProps = (
             DepartamentFindingUUIDServiceProps(
-                uuid_departament=payload.uuid_departament
+                departament_uuid=payload.uuid_departament
             )
         )
 
@@ -58,14 +54,10 @@ class DepartamentUserAuthenticationMiddleware(Middleware):
             departament_service_props
         )
 
-        departament_user_service_props: AgentFindingServiceProps = (
-            AgentFindingServiceProps(
-                agent_uuid=payload.user_uuid, departament=departament
-            )
+        agent_service_props: AgentFindingServiceProps = AgentFindingServiceProps(
+            agent_uuid=payload.user_uuid, departament=departament
         )
 
-        departament_user: Agent = departament_user_service.execute(
-            departament_user_service_props
-        )
+        agent: Agent = agent_service.execute(agent_service_props)
 
-        return {"auth_user": departament_user, "auth_departament": departament}
+        return {"auth_user": agent, "auth_departament": departament}
