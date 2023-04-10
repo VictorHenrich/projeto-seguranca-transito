@@ -1,7 +1,7 @@
 from typing import Type, TypeAlias, TypeVar, Dict, Any
-from flask import request
 from dataclasses import dataclass
 
+from server import App
 from server.http import HttpMiddleware, ResponseDefaultJSON, ResponseFailure
 
 
@@ -18,7 +18,7 @@ class BodyRequestValidationProps:
 
 class BodyRequestValidationMiddleware(HttpMiddleware[BodyRequestValidationProps]):
     def handle(self, props: BodyRequestValidationProps) -> ParamsData:
-        dados_json: JsonData = request.get_json()
+        dados_json: JsonData = App.http.global_request.get_json()
 
         dados_corpo: Any = props.class_(**dados_json)
 

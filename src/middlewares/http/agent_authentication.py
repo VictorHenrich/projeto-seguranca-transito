@@ -1,16 +1,10 @@
-from flask import request
-from typing import Optional
-from datetime import datetime
+from typing import Tuple
 
+from server import App
 from server.http import HttpMiddleware, ResponseInauthorized
-from server.utils import UtilsJWT
 from models import Agent, Departament
 from patterns.service import IService
-from services.agent import AgentFindingService, AgentFindingServiceProps
-from services.departament import (
-    DepartamentFindingUUIDService,
-    DepartamentFindingUUIDServiceProps,
-)
+from services.agent import VerifyAgentAuthService, VerifyAgentAuthServiceProps
 from exceptions import (
     AuthorizationNotFoundHeader,
     TokenTypeNotBearerError,
@@ -18,54 +12,22 @@ from exceptions import (
     UserNotFoundError,
     DepartamentNotFoundError,
 )
-from utils.entities import PayloadDepartamentUserJWT
 from server import App
 
 
 class AgentAuthenticationMiddleware(HttpMiddleware[None]):
     def handle(self, props: None):
-        token: Optional[str] = request.headers.get("Authorization")
+        token: str = App.http.global_request.headers.get("Authorization") or ""
 
-        if not token:
-            raise AuthorizationNotFoundHeader()
-
-        if "Bearer" not in token:
-            raise TokenTypeNotBearerError()
-
-        token = token.replace("Bearer ", "")
-
-        payload: PayloadDepartamentUserJWT = UtilsJWT.decode(
-            token, App.http.configs.secret_key, class_=PayloadDepartamentUserJWT
+        verify_agent_auth_props: VerifyAgentAuthServiceProps = (
+            VerifyAgentAuthServiceProps(token)
         )
 
-        if payload.expired <= datetime.now().timestamp():
-            raise ExpiredTokenError()
+        verify_agent_auth_service: IService[
+            VerifyAgentAuthServiceProps, Tuple[Agent, Departament]
+        ] = VerifyAgentAuthService()
 
-        departament_finding_service: IService[
-            DepartamentFindingUUIDServiceProps, Departament
-        ] = DepartamentFindingUUIDService()
-
-        agent_finding_service: IService[
-            AgentFindingServiceProps, Agent
-        ] = AgentFindingService()
-
-        departament_finding_service_props: DepartamentFindingUUIDServiceProps = (
-            DepartamentFindingUUIDServiceProps(
-                departament_uuid=payload.uuid_departament
-            )
-        )
-
-        departament: Departament = departament_finding_service.execute(
-            departament_finding_service_props
-        )
-
-        agent_finding_service_props: AgentFindingServiceProps = (
-            AgentFindingServiceProps(
-                agent_uuid=payload.user_uuid, departament=departament
-            )
-        )
-
-        agent: Agent = agent_finding_service.execute(agent_finding_service_props)
+        agent, departament = verify_agent_auth_service.execute(verify_agent_auth_props)
 
         return {"auth_user": agent, "auth_departament": departament}
 
@@ -78,6 +40,7 @@ class AgentAuthenticationMiddleware(HttpMiddleware[None]):
                 UserNotFoundError,
                 ExpiredTokenError,
                 AuthorizationNotFoundHeader,
+                TokenTypeNotBearerError,
             ),
         )
 

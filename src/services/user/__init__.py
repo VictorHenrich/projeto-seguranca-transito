@@ -6,3 +6,4 @@ from .user_authentication_service import (
     UserAuthenticationService,
     UserAuthenticationServiceProps,
 )
+from .verify_user_auth_service import VerifyUserAuthService, VerifyUserAuthServiceProps
