@@ -1,8 +1,9 @@
-from typing import Callable, Any, Dict, TypeAlias
+from typing import Callable, Any, Dict, TypeAlias, Optional
 from .http import HttpServer, HttpServerBuilder
 from .websocket import SocketServer, SocketServerBuilder
 from .database import Databases, DatabaseBuilder
 from .cli import ManagerController
+from .amqp import AMQPServer, ConnectionBuilder
 
 
 Target: TypeAlias = Callable[[None], None]
@@ -14,6 +15,7 @@ class App:
     __databases: Databases
     __websocket: SocketServer
     __cli: ManagerController
+    __amqp: AMQPServer
 
     @classmethod
     @property
@@ -34,6 +36,23 @@ class App:
     @property
     def cli(cls) -> ManagerController:
         return cls.__cli
+    
+    @classmethod
+    @property
+    def amqp(cls) -> AMQPServer:
+        return cls.__amqp
+    
+    @classmethod
+    def __create_amqp(cls, data: Optional[ParamDict]) -> None:
+        if not data: return
+
+        cls.__amqp = AMQPServer(
+            ConnectionBuilder()
+                .set_host(data['host'])
+                .set_port(data['port'])
+                .set_credentials(data['username'], data['password'])
+                .build()
+        )
 
     @classmethod
     def __create_http(cls, data: ParamDict) -> None:
@@ -90,12 +109,13 @@ class App:
 
     @classmethod
     def init_server(
-        cls, http: ParamDict, databases: ParamDict, websocket: ParamDict, cli: ParamDict
+        cls, http: ParamDict, databases: ParamDict, websocket: ParamDict, cli: ParamDict, amqp: Optional[ParamDict]
     ) -> None:
         cls.__create_http(http)
         cls.__create_databases(databases)
         cls.__create_websocket(websocket)
         cls.__create_cli(cli)
+        cls.__create_amqp(amqp)
 
     @classmethod
     def start(cls) -> None:

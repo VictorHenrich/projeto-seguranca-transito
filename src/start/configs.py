@@ -8,7 +8,7 @@ CLI = {
     "name": "CLI PROJETO SEGURANÇA",
     "description": "Sistema CLI resposável pela execução de linhas de comando para tarefas distintas",
     "version": 1.0,
-    "managers": ["api", "websocket", "database"],
+    "managers": ["api", "websocket", "database", "amqp"],
 }
 
 DATABASE = {
@@ -38,4 +38,12 @@ WEBSOCKET = {
     "port": env_value["SOCKET_PORT"],
     "secret_key": env_value["APP_KEY"],
     "debug": True,
+}
+
+
+AMQP = {
+    "host": "",
+    "port": "",
+    "username": "",
+    "password": ""
 }
