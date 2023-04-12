@@ -48,7 +48,7 @@ body_request_params: BodyRequestValidationProps = BodyRequestValidationProps(
 
 
 @App.http.add_controller("/usuario/crud", "/usuario/crud/<uuid:user_hash>")
-class CrudUsuariosController(Controller):
+class UserCrudController(Controller):
     @body_request_middleware.apply(body_request_params)
     def post(self, body_request: UserRegistrationRequestBody) -> ResponseDefaultJSON:
         service: IService[UserCreationServiceProps, None] = UserCreationService()

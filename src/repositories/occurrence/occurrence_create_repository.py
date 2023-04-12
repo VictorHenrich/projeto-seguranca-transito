@@ -1,12 +1,12 @@
 from typing import Protocol
 
+from models import User, Occurrence
 from patterns.repository import BaseRepository
-from models import Occurrence, User, Departament
 
 
 class OccurrenceCreateRepositoryParam(Protocol):
     user: User
-    departament: Departament
+    code_external: str
     description: str
     obs: str
 
@@ -15,8 +15,8 @@ class OccurrenceCreateRepository(BaseRepository):
     def create(self, params: OccurrenceCreateRepositoryParam) -> None:
         occurrence: Occurrence = Occurrence()
 
-        occurrence.id_departamento = params.departament.id
         occurrence.id_usuario = params.user.id
+        occurrence.codigo_externo = params.code_external
         occurrence.descricao = params.description
         occurrence.obs = params.obs
         occurrence.status = "ANDAMENTO"

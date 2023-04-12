@@ -30,7 +30,7 @@ body_request_props: BodyRequestValidationProps = BodyRequestValidationProps(
 @App.http.add_controller(
     "/autenticacao/usuario",
 )
-class AutenticacaoUsuarioController(Controller):
+class UserAuthController(Controller):
     @body_request_middleware.apply(body_request_props)
     def post(self, body_request: AuthUserRequestBody) -> ResponseDefaultJSON:
         try:
