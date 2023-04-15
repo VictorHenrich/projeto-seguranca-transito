@@ -1,12 +1,16 @@
 from dotenv import dotenv_values, get_key
 from pathlib import Path
 from typing import Dict, Optional, Union, Any
-from .execeptions import FileEnvNotFoundError
 
 
 EnvPathParameter = Optional[Union[str, Path]]
 EnvReturn = Dict[str, Optional[str]]
 EnvOptions = Dict[str, Any]
+
+
+class FileEnvNotFoundError(FileNotFoundError):
+    def __init__(self) -> None:
+        super().__init__("Não possível localizar o arquivo .env!")
 
 
 class UtilsEnv:

@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from server import App
 from patterns.repository import IAuthRepository
 from repositories.user import UserAuthRepository, UserAuthRepositoryParams
-from server.utils import UtilsJWT, Constants
+from utils import UtilsJWT, UtilsConstants
 from utils.entities import PayloadUserJWT
 from models import User
 
@@ -24,7 +24,7 @@ class UserAuthenticationService:
 
             user: User = repository.auth(props)
 
-            max_time: float = Constants.Authentication.max_minute_authenticated
+            max_time: float = UtilsConstants.Authentication.max_minute_authenticated
 
             expired: float = (datetime.now() + timedelta(minutes=max_time)).timestamp()
 

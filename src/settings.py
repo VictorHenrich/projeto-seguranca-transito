@@ -1,4 +1,4 @@
-from server.utils import UtilsEnv
+from utils import UtilsEnv
 
 
 env_value = UtilsEnv.get_values()

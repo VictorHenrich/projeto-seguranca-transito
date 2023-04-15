@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from server import App
-from server.utils import UtilsJWT
+from utils import UtilsJWT
 from patterns.service import IService
 from models import User
 from .user_finding_service import UserFindingService, UserFindingServiceProps
