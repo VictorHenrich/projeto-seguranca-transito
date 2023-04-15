@@ -53,7 +53,7 @@ occurrence_create_props: BodyRequestValidationProps = BodyRequestValidationProps
     "/ocorrencia/crud",
     "/ocorrencia/crud/<uuid:occurrence_hash>",
 )
-class OccurrenceCrudController(Controller):
+class OccurrenceController(Controller):
     @user_auth_middleware.apply(None)
     @body_request_middleware.apply(occurrence_create_props)
     def post(
