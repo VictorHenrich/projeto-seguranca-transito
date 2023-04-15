@@ -5,7 +5,7 @@ from ..util import TestUtil
 
 TestUtil.load_modules()
 
-from src.start.application import App
+from src.main import App
 from src.models import User
 from src.patterns.repository import (
     IAuthRepository,

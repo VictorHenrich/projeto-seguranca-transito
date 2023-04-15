@@ -11,7 +11,7 @@ class AMQPPublisher(AbstractAMQP):
         publisher_name: str,
         connection: ConnectionParameters,
         exchange: str,
-        body: Mapping[str, Any],
+        body: Any,
         routing_key: str,
         properties: Mapping[str, Any],
     ) -> None:
@@ -19,7 +19,7 @@ class AMQPPublisher(AbstractAMQP):
 
         self.__publisher_name: str = publisher_name
         self.__exchange: str = exchange
-        self.__body: Mapping[str, Any] = body
+        self.__body: Any = body
         self.__routing_key: str = routing_key
         self.__properties: BasicProperties = BasicProperties(**properties)
 

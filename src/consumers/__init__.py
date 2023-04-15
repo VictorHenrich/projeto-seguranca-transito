@@ -1,0 +1,1 @@
+from .consumer_occurrences_integration import ConsumerOccurrencesIntegration

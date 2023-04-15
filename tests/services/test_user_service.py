@@ -6,7 +6,7 @@ from ..util import TestUtil
 
 TestUtil.load_modules()
 
-import src.start.application
+import src.main
 from src.patterns.service import IService
 from src.models import User
 from src.services.user import (

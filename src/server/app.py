@@ -1,4 +1,6 @@
 from typing import Callable, Any, Dict, TypeAlias, Optional
+from pika import ConnectionParameters
+
 from .http import HttpServer, HttpServerBuilder
 from .websocket import SocketServer, SocketServerBuilder
 from .database import Databases, DatabaseBuilder
@@ -44,15 +46,18 @@ class App:
     
     @classmethod
     def __create_amqp(cls, data: Optional[ParamDict]) -> None:
-        if not data: return
+        connection: Optional[ConnectionParameters] = None
 
-        cls.__amqp = AMQPServer(
-            ConnectionBuilder()
-                .set_host(data['host'])
-                .set_port(data['port'])
-                .set_credentials(data['username'], data['password'])
-                .build()
-        )
+        if data:
+            connection = (
+                ConnectionBuilder()
+                    .set_host(data['host'])
+                    .set_port(data['port'])
+                    .set_credentials(data['username'], data['password'])
+                    .build()
+            )
+        
+        cls.__amqp = AMQPServer(connection)
 
     @classmethod
     def __create_http(cls, data: ParamDict) -> None:

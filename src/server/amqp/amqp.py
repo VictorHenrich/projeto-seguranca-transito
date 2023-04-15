@@ -56,7 +56,7 @@ class AMQPServer:
         arguments: Optional[Dict[str, Any]] = None,
         data_class: Optional[Type] = None,
     ) -> ReturnDecoratorAddConsumer:
-        def wrapper(cls: TypeAMQPConsumer) -> TypeAMQPConsumer:
+        def decorator(cls: TypeAMQPConsumer) -> TypeAMQPConsumer:
             connection_: Optional[ConnectionParameters] = (
                 connection or self.__default_connection
             )
@@ -72,7 +72,7 @@ class AMQPServer:
 
             return cls
 
-        return wrapper
+        return decorator
 
     def start_consumers(self) -> None:
         threads: List[Thread] = [
