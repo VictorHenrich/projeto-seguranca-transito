@@ -41,9 +41,4 @@ WEBSOCKET = {
 }
 
 
-AMQP = {
-    "host": "",
-    "port": "",
-    "username": "",
-    "password": ""
-}
+AMQP = {"host": "", "port": "", "username": "", "password": ""}

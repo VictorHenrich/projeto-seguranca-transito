@@ -38,12 +38,12 @@ class App:
     @property
     def cli(cls) -> ManagerController:
         return cls.__cli
-    
+
     @classmethod
     @property
     def amqp(cls) -> AMQPServer:
         return cls.__amqp
-    
+
     @classmethod
     def __create_amqp(cls, data: Optional[ParamDict]) -> None:
         connection: Optional[ConnectionParameters] = None
@@ -51,12 +51,12 @@ class App:
         if data:
             connection = (
                 ConnectionBuilder()
-                    .set_host(data['host'])
-                    .set_port(data['port'])
-                    .set_credentials(data['username'], data['password'])
-                    .build()
+                .set_host(data["host"])
+                .set_port(data["port"])
+                .set_credentials(data["username"], data["password"])
+                .build()
             )
-        
+
         cls.__amqp = AMQPServer(connection)
 
     @classmethod
@@ -114,7 +114,12 @@ class App:
 
     @classmethod
     def init_server(
-        cls, http: ParamDict, databases: ParamDict, websocket: ParamDict, cli: ParamDict, amqp: Optional[ParamDict]
+        cls,
+        http: ParamDict,
+        databases: ParamDict,
+        websocket: ParamDict,
+        cli: ParamDict,
+        amqp: Optional[ParamDict],
     ) -> None:
         cls.__create_http(http)
         cls.__create_databases(databases)

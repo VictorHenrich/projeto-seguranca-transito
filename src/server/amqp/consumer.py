@@ -13,7 +13,7 @@ class AMQPConsumer(AbstractAMQP, ABC):
         connection: ConnectionParameters,
         queue_name: str,
         ack: bool,
-        arguments: Optional[Mapping[str, Any]]
+        arguments: Optional[Mapping[str, Any]],
     ) -> None:
         super().__init__(connection)
 
