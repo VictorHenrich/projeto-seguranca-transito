@@ -7,19 +7,21 @@ from selenium.webdriver import Chrome
 from selenium.webdriver.common.by import By
 from time import sleep
 
+from utils import CharUtils
+
 
 class OccurrenceIntegrationService:
     def __init__(
-            self,
-            occurrence_date: datetime,
-            district: str,
-            city: str,
-            street: str,
-        ) -> None:
-            self.__occurrence_date: datetime = occurrence_date
-            self.__district: str = district
-            self.__city: str = city
-            self.__street: str = street
+        self,
+        occurrence_date: datetime,
+        district: str,
+        city: str,
+        street: str,
+    ) -> None:
+        self.__occurrence_date: datetime = occurrence_date
+        self.__district: str = CharUtils.replace_characters_especial(district).upper()
+        self.__city: str = CharUtils.replace_characters_especial(city).upper()
+        self.__street: str = CharUtils.replace_characters_especial(street).upper()
 
     def __access_page(self, browser: WebDriver) -> None:
         url: str = "https://delegaciavirtual.sc.gov.br/nova-ocorrencia"

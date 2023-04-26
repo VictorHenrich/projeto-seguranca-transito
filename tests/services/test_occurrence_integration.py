@@ -16,9 +16,9 @@ class TestOccurrenceIntegration(TestCase):
         webdriver_payload: Mock = Mock()
 
         webdriver_payload.occurrence_date = datetime.now()
-        webdriver_payload.city = "CAPIVARI DE BAIXO"
-        webdriver_payload.district = "CAÇADOR"
-        webdriver_payload.street = "RUA ANTONIO MANUEL DOS SANTOS"
+        webdriver_payload.city = "capivari de baixo"
+        webdriver_payload.district = "caçador"
+        webdriver_payload.street = "rua antônio manuel dos santos"
 
         service: IService[None] = OccurrenceIntegrationService(
             occurrence_date=webdriver_payload.occurrence_date,

@@ -2,7 +2,8 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from server import App
-from utils import UtilsJWT
+from src.utils.jwt import JWTUtils
+from utils import JWTUtils
 from patterns.service import IService
 from models import User
 from .user_finding_service import UserFindingService
@@ -32,7 +33,7 @@ class VerifyUserAuthService:
 
         token = self.__props.token.replace("Bearer ", "")
 
-        payload: PayloadUserJWT = UtilsJWT.decode(
+        payload: PayloadUserJWT = JWTUtils.decode(
             token, App.http.configs.secret_key, class_=PayloadUserJWT
         )
 

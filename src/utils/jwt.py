@@ -5,7 +5,7 @@ from typing import Sequence, TypeAlias, Any, Dict, Type, Optional
 DictMapping: TypeAlias = Dict[str, Any]
 
 
-class UtilsJWT:
+class JWTUtils:
     algorithm: Sequence[str] = ["HS256"]
 
     @classmethod

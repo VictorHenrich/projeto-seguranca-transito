@@ -4,7 +4,6 @@ from typing import Dict, Optional, Union, Any
 
 
 EnvPathParameter = Optional[Union[str, Path]]
-EnvReturn = Dict[str, Optional[str]]
 EnvOptions = Dict[str, Any]
 
 
@@ -13,12 +12,12 @@ class FileEnvNotFoundError(FileNotFoundError):
         super().__init__("Não possível localizar o arquivo .env!")
 
 
-class UtilsEnv:
-    __default_path: list[Path] = list(Path.cwd().glob("**/*.env"))
+class EnvUtils:
+    __default_path: Path = list(Path.cwd().glob("**/*.env"))[0]
 
     @classmethod
     def __handle_path(cls, path: EnvPathParameter) -> Path:
-        path_: Union[str, Path] = ([path] if path else cls.__default_path)[0]
+        path_: Union[str, Path] = path or cls.__default_path
 
         if not Path(path_).exists():
             raise FileEnvNotFoundError()
@@ -27,17 +26,17 @@ class UtilsEnv:
 
     @classmethod
     def get_values(
-        cls, path: EnvPathParameter = False, **options: EnvOptions
-    ) -> EnvReturn:
+        cls, path: EnvPathParameter = None, **options: EnvOptions
+    ) -> Dict:
         path_: Path = cls.__handle_path(path)
 
         return dotenv_values(path_, **options)
 
     @classmethod
     def get_value(
-        cls, key: str, path: EnvPathParameter = False, **options: EnvOptions
-    ) -> EnvReturn:
-        path_: Path = cls.__default_path(path)
+        cls, key: str, path: EnvPathParameter = None, **options: EnvOptions
+    ) -> Optional[str]:
+        path_: Path = cls.__handle_path(path)
 
         return get_key(path_, key, **options)
 

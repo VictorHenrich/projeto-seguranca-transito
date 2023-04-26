@@ -1,7 +1,7 @@
-from utils import UtilsEnv
+from utils import EnvUtils
 
 
-env_value = UtilsEnv.get_values()
+env_value = EnvUtils.get_values()
 
 
 CLI = {
