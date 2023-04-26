@@ -11,12 +11,15 @@ class UserExclusionServiceProps:
 
 
 class UserExclusionService:
-    def execute(self, props: UserExclusionServiceProps) -> None:
+    def __init__(self, user_uuid: str) -> None:
+        self.__props: UserExclusionServiceProps = UserExclusionServiceProps(user_uuid)
+
+    def execute(self) -> None:
         with App.databases.create_session() as session:
             repository: IDeleteRepository[
                 UserDeleteRepositoryParams, None
             ] = UserDeleteRepository(session)
 
-            repository.delete(props)
+            repository.delete(self.__props)
 
             session.commit()

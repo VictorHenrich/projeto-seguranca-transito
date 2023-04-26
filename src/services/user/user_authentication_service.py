@@ -16,13 +16,18 @@ class UserAuthenticationServiceProps:
 
 
 class UserAuthenticationService:
-    def execute(self, props: UserAuthenticationServiceProps) -> str:
+    def __init__(self, email: str, password: str) -> None:
+        self.__props: UserAuthenticationServiceProps = UserAuthenticationServiceProps(
+            email, password
+        )
+
+    def execute(self) -> str:
         with App.databases.create_session() as session:
             repository: IAuthRepository[
                 UserAuthRepositoryParams, User
             ] = UserAuthRepository(session)
 
-            user: User = repository.auth(props)
+            user: User = repository.auth(self.__props)
 
             max_time: float = UtilsConstants.Authentication.max_minute_authenticated
 

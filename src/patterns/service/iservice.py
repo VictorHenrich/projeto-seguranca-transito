@@ -1,10 +1,9 @@
-from typing import Protocol, Generic, TypeVar, Union, Any, Optional
+from typing import Protocol, Generic, TypeVar
 
 
-T = TypeVar("T", contravariant=True)
-TR = TypeVar("TR", covariant=True)
+T = TypeVar("T", covariant=True)
 
 
-class IService(Protocol, Generic[T, TR]):
-    def execute(self, props: T) -> TR:
+class IService(Protocol, Generic[T]):
+    def execute(self) -> T:
         ...

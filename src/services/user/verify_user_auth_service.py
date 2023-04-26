@@ -5,7 +5,7 @@ from server import App
 from utils import UtilsJWT
 from patterns.service import IService
 from models import User
-from .user_finding_service import UserFindingService, UserFindingServiceProps
+from .user_finding_service import UserFindingService
 from exceptions import (
     AuthorizationNotFoundHeader,
     TokenTypeNotBearerError,
@@ -20,14 +20,17 @@ class VerifyUserAuthServiceProps:
 
 
 class VerifyUserAuthService:
-    def execute(self, props: VerifyUserAuthServiceProps) -> User:
-        if not props.token:
+    def __init__(self, token: str) -> None:
+        self.__props: VerifyUserAuthServiceProps = VerifyUserAuthServiceProps(token)
+
+    def execute(self) -> User:
+        if not self.__props.token:
             raise AuthorizationNotFoundHeader()
 
-        if "Bearer" not in props.token:
+        if "Bearer" not in self.__props.token:
             raise TokenTypeNotBearerError()
 
-        token = props.token.replace("Bearer ", "")
+        token = self.__props.token.replace("Bearer ", "")
 
         payload: PayloadUserJWT = UtilsJWT.decode(
             token, App.http.configs.secret_key, class_=PayloadUserJWT
@@ -36,12 +39,8 @@ class VerifyUserAuthService:
         if payload.expired <= datetime.now().timestamp():
             raise ExpiredTokenError()
 
-        service: IService[UserFindingServiceProps, User] = UserFindingService()
+        service: IService[User] = UserFindingService(user_uuid=payload.user_uuid)
 
-        service_props: UserFindingServiceProps = UserFindingServiceProps(
-            user_uuid=payload.user_uuid
-        )
-
-        user: User = service.execute(service_props)
+        user: User = service.execute()
 
         return user

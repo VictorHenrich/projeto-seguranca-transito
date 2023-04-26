@@ -19,12 +19,32 @@ class UserUpdateServiceProps:
 
 
 class UserUpdateService:
-    def execute(self, props: UserUpdateServiceProps) -> None:
+    def __init__(
+        self,
+        user_uuid: str,
+        name: str,
+        email: str,
+        password: str,
+        document: str,
+        birthday: date,
+        status: bool,
+    ) -> None:
+        self.__props: UserUpdateServiceProps = UserUpdateServiceProps(
+            user_uuid,
+            name,
+            email,
+            password,
+            document,
+            birthday,
+            status,
+        )
+
+    def execute(self) -> None:
         with App.databases.create_session() as session:
             repository: IUpdateRepository[
                 UserUpdateRepositoryParams, None
             ] = UserUpdateRepository(session)
 
-            repository.update(props)
+            repository.update(self.__props)
 
             session.commit()

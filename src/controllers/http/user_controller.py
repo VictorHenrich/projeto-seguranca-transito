@@ -17,13 +17,9 @@ from models import User
 from patterns.service import IService
 from services.user import (
     UserCreationService,
-    UserCreationServiceProps,
     UserFindingService,
-    UserFindingServiceProps,
     UserExclusionService,
-    UserExclusionServiceProps,
     UserUpdateService,
-    UserUpdateServiceProps,
 )
 
 
@@ -51,9 +47,7 @@ body_request_params: BodyRequestValidationProps = BodyRequestValidationProps(
 class UserController(Controller):
     @body_request_middleware.apply(body_request_params)
     def post(self, body_request: UserRegistrationRequestBody) -> ResponseDefaultJSON:
-        service: IService[UserCreationServiceProps, None] = UserCreationService()
-
-        service_props: UserCreationServiceProps = UserCreationServiceProps(
+        service: IService[None] = UserCreationService(
             name=body_request.nome,
             document=body_request.cpf,
             birthday=None,
@@ -61,7 +55,7 @@ class UserController(Controller):
             password=body_request.senha,
         )
 
-        service.execute(service_props)
+        service.execute()
 
         return ResponseSuccess()
 
@@ -70,9 +64,7 @@ class UserController(Controller):
     def put(
         self, auth: User, body_request: UserRegistrationRequestBody
     ) -> ResponseDefaultJSON:
-        service: IService[UserUpdateServiceProps, None] = UserUpdateService()
-
-        service_props: UserUpdateServiceProps = UserUpdateServiceProps(
+        service: IService[None] = UserUpdateService(
             name=body_request.nome,
             document=body_request.cpf,
             birthday=datetime.now().date(),
@@ -82,31 +74,23 @@ class UserController(Controller):
             status=body_request.status,
         )
 
-        service.execute(service_props)
+        service.execute()
 
         return ResponseSuccess()
 
     @user_auth_middleware.apply(None)
     def delete(self, auth: User) -> ResponseDefaultJSON:
-        service: IService[UserExclusionServiceProps, None] = UserExclusionService()
+        service: IService[None] = UserExclusionService(user_uuid=auth.id_uuid)
 
-        service_props: UserExclusionServiceProps = UserExclusionServiceProps(
-            user_uuid=auth.id_uuid
-        )
-
-        service.execute(service_props)
+        service.execute()
 
         return ResponseSuccess()
 
     @user_auth_middleware.apply(None)
     def get(self, auth: User) -> ResponseDefaultJSON:
-        service: IService[UserFindingServiceProps, User] = UserFindingService()
+        service: IService[User] = UserFindingService(user_uuid=auth.id_uuid)
 
-        service_props: UserFindingServiceProps = UserFindingServiceProps(
-            user_uuid=auth.id_uuid
-        )
-
-        user: User = service.execute(service_props)
+        user: User = service.execute()
 
         response: Dict[str, Any] = {
             "nome": user.nome,

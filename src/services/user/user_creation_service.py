@@ -17,12 +17,24 @@ class UserCreationServiceProps:
 
 
 class UserCreationService:
-    def execute(self, props: UserCreationServiceProps) -> None:
+    def __init__(
+        self,
+        name: str,
+        email: str,
+        password: str,
+        document: str,
+        birthday: Optional[date],
+    ):
+        self.__props: UserCreationServiceProps = UserCreationServiceProps(
+            name, email, password, document, birthday
+        )
+
+    def execute(self) -> None:
         with App.databases.create_session() as session:
             repository: ICreateRepository[
                 UserCreateRepositoryParams, None
             ] = UserCreateRepository(session)
 
-            repository.create(props)
+            repository.create(self.__props)
 
             session.commit()
