@@ -25,9 +25,7 @@ class EnvUtils:
         return Path(path_)
 
     @classmethod
-    def get_values(
-        cls, path: EnvPathParameter = None, **options: EnvOptions
-    ) -> Dict:
+    def get_values(cls, path: EnvPathParameter = None, **options: EnvOptions) -> Dict:
         path_: Path = cls.__handle_path(path)
 
         return dotenv_values(path_, **options)

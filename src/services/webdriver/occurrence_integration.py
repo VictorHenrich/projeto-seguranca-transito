@@ -8,25 +8,28 @@ from selenium.webdriver.common.by import By
 from time import sleep
 
 from utils import CharUtils
+from models import User
 
 
 class OccurrenceIntegrationService:
+    __url: str = "https://delegaciavirtual.sc.gov.br/nova-ocorrencia"
+
     def __init__(
         self,
         occurrence_date: datetime,
         district: str,
         city: str,
         street: str,
+        user: User,
     ) -> None:
         self.__occurrence_date: datetime = occurrence_date
         self.__district: str = CharUtils.replace_characters_especial(district).upper()
         self.__city: str = CharUtils.replace_characters_especial(city).upper()
         self.__street: str = CharUtils.replace_characters_especial(street).upper()
+        self.__user: User = user
 
     def __access_page(self, browser: WebDriver) -> None:
-        url: str = "https://delegaciavirtual.sc.gov.br/nova-ocorrencia"
-
-        browser.get(url)
+        browser.get(OccurrenceIntegrationService.__url)
 
         sleep(5)
 
@@ -111,6 +114,49 @@ class OccurrenceIntegrationService:
 
         browser.find_element(By.ID, "botaoProximaEtapa").click()
 
+        sleep(5)
+
+    def __add_participation(self, browser: WebDriver) -> None:
+        browser.find_element(By.ID, "inserirEnvolvido").click()
+
+        sleep(2)
+
+        browser.find_element(By.ID, "tipoParticipacaoPessoa_2_fatoOcorrido_1").click()
+
+        browser.find_element(By.ID, "tipoParticipacaoPessoa_37_fatoOcorrido_1").click()
+
+        browser.find_element(By.ID, "botaoAvancarEnvolvido").click()
+
+        sleep(2)
+
+        # ADICIONANDO INFORMAÇÕES DA PESSOA
+
+        browser.find_element(By.ID, "nomePessoa").send_keys(self.__user.nome)
+
+        browser.find_element(By.ID, "email").send_keys(self.__user.email)
+
+        browser.find_element(By.ID, "confirmacaoEmail").send_keys(self.__user.email)
+
+        Select(browser.find_element(By.ID, "profissao")).select_by_value("32767")
+
+        Select(browser.find_element(By.ID, "sexo")).select_by_value("3")
+
+        browser.find_element(By.ID, "nomeMae").send_keys("Não informado")
+
+        browser.find_element(By.ID, "botaoAvancarEnvolvido").click()
+
+        # ADICIONANDO INFORMAÇÕES DE NASCIMENTO
+
+        sleep(2)
+
+        date_string: str = self.__user.data_nascimento.strftime("%d/%m/%Y")
+
+        browser.find_element(By.ID, "dataNascimento").send_keys(date_string)
+
+        Select(browser.find_element(By.ID, "cidadeNascimento")).select_by_value("5890")
+
+        browser.find_element(By.ID, "botaoAvancarEnvolvido").click()
+
     def execute(self) -> None:
         webdriver_path: Path = (
             Path().cwd() / "src" / "utils" / "webdrivers" / "chromedriver.exe"
@@ -124,5 +170,7 @@ class OccurrenceIntegrationService:
             self.__add_date_data(browser)
 
             self.__add_address_data(browser)
+
+            self.__add_participation(browser)
 
             sleep(10)

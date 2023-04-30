@@ -12,10 +12,16 @@ class Occurrence(BaseModel):
     id_usuario: Mapped[int] = mapped_column(
         Integer, ForeignKey(f"{User.__tablename__}.id"), nullable=False
     )
-    codigo_externo: Mapped[str] = mapped_column(String(200))
     descricao: Mapped[str] = mapped_column(String(200), nullable=False)
     obs: Mapped[str] = mapped_column(String(5000))
     data_cadastro: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, default=datetime.now
     )
     status: Mapped[str] = mapped_column(String(20), nullable=False, default="pendente")
+    endereco_uf: Mapped[str] = mapped_column(String(2), nullable=False, default="SC")
+    endereco_cidade: Mapped[str] = mapped_column(String(200), nullable=False)
+    endereco_bairro: Mapped[str] = mapped_column(String(200), nullable=False)
+    endereco_logragouro: Mapped[str] = mapped_column(String(300), nullable=False)
+    endereco_numero: Mapped[str] = mapped_column(String(10), nullable=False)
+    latitude: Mapped[str] = mapped_column(String(100), nullable=False)
+    longitude: Mapped[str] = mapped_column(String(100), nullable=False)
