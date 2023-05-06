@@ -7,7 +7,7 @@ from utils import CharUtils
 from models import User, Occurrence
 
 
-class OccurrenceIntegrationService:
+class OccurrenceIntegrationCreationService:
     __url: str = "https://delegaciavirtual.sc.gov.br/nova-ocorrencia"
 
     def __init__(
@@ -19,7 +19,7 @@ class OccurrenceIntegrationService:
         self.__user: User = user
 
     async def __access_page(self, page: Page) -> None:
-        await page.goto(OccurrenceIntegrationService.__url)
+        await page.goto(OccurrenceIntegrationCreationService.__url)
 
     async def __handle_registration_page(self, page: Page) -> None:
         await page.locator("#botaoAceite").click()

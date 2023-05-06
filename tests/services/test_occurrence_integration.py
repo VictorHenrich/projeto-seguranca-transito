@@ -8,11 +8,11 @@ TestUtil.load_modules()
 
 import src.main
 from src.patterns.service import IService
-from src.services.webdriver.occurrence_integration import OccurrenceIntegrationService
+from src.services.integrations import OccurrenceIntegrationCreationService
 
 
 class TestOccurrenceIntegration(TestCase):
-    def test_web_driver(self) -> None:
+    def test_create_occurrence(self) -> None:
         user_payload: Mock = Mock()
 
         occurrence_payload: Mock = Mock()
@@ -34,7 +34,7 @@ class TestOccurrenceIntegration(TestCase):
         occurrence_payload.endereco_logradouro = "rua antônio manuel dos santos"
         occurrence_payload.endereco_numero = "393"
 
-        service: IService[None] = OccurrenceIntegrationService(
+        service: IService[None] = OccurrenceIntegrationCreationService(
             occurrence=occurrence_payload,
             user=user_payload,
         )
