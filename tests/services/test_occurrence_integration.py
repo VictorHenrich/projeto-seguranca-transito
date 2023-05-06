@@ -8,29 +8,32 @@ TestUtil.load_modules()
 
 import src.main
 from src.patterns.service import IService
-from src.services.webdriver import OccurrenceIntegrationService
+from src.services.webdriver.occurrence_integration import OccurrenceIntegrationService
 
 
 class TestOccurrenceIntegration(TestCase):
     def test_web_driver(self) -> None:
         user_payload: Mock = Mock()
 
-        webdriver_payload: Mock = Mock()
+        occurrence_payload: Mock = Mock()
 
         user_payload.email = "victorhenrich993@gmail.com"
         user_payload.nome = "victor henrich"
         user_payload.data_nascimento = datetime(1998, 5, 27).date()
+        user_payload.cpf = "02988790000"
+        user_payload.rg = "11111111111"
+        user_payload.estado_emissor = "SANTA CATARINA"
 
-        webdriver_payload.occurrence_date = datetime.now()
-        webdriver_payload.city = "capivari de baixo"
-        webdriver_payload.district = "caçador"
-        webdriver_payload.street = "rua antônio manuel dos santos"
+        occurrence_payload.occurrence_date = datetime.now()
+        occurrence_payload.city = "capivari de baixo"
+        occurrence_payload.district = "caçador"
+        occurrence_payload.street = "rua antônio manuel dos santos"
 
         service: IService[None] = OccurrenceIntegrationService(
-            occurrence_date=webdriver_payload.occurrence_date,
-            city=webdriver_payload.city,
-            district=webdriver_payload.district,
-            street=webdriver_payload.street,
+            occurrence_date=occurrence_payload.occurrence_date,
+            city=occurrence_payload.city,
+            district=occurrence_payload.district,
+            street=occurrence_payload.street,
             user=user_payload,
         )
 

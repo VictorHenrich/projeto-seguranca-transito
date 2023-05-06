@@ -1,10 +1,6 @@
-from pathlib import Path
+from playwright.async_api import async_playwright, Browser, Page
 from datetime import datetime
-from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support.select import Select
-from selenium.webdriver import Chrome
-from selenium.webdriver.common.by import By
+import asyncio
 from time import sleep
 
 from utils import CharUtils
@@ -28,149 +24,142 @@ class OccurrenceIntegrationService:
         self.__street: str = CharUtils.replace_characters_especial(street).upper()
         self.__user: User = user
 
-    def __access_page(self, browser: WebDriver) -> None:
-        browser.get(OccurrenceIntegrationService.__url)
+    async def __access_page(self, page: Page) -> None:
+        await page.goto(OccurrenceIntegrationService.__url)
 
-        sleep(5)
+    async def __handle_registration_page(self, page: Page) -> None:
+        await page.locator("#botaoAceite").click()
 
-    def __handle_registration_page(self, browser: WebDriver) -> None:
-        accept_button: WebElement = browser.find_element(By.ID, "botaoAceite")
+        await page.locator("div.card-fato-ocorrido:first-child").click()
 
-        accept_button.click()
+        await page.locator("#botaoContinuar").click()
 
-        sleep(5)
-
-        option_fact_occurred: WebElement = browser.find_elements(
-            By.CLASS_NAME, "card-fato-ocorrido"
-        )[0]
-
-        option_fact_occurred.click()
-
-        button_next: WebElement = browser.find_element(By.ID, "botaoContinuar")
-
-        button_next.click()
-
-        sleep(5)
-
-    def __add_date_data(self, browser: WebDriver) -> None:
-        input_date: WebElement = browser.find_element(By.ID, "dataFato")
-
-        input_hours: WebElement = browser.find_element(By.ID, "horaFato")
-
-        input_minutes: WebElement = browser.find_element(By.ID, "minutoFato")
-
-        button_next_step: WebElement = browser.find_element(By.ID, "botaoProximaEtapa")
-
+    async def __add_date_data(self, page: Page) -> None:
         date_string: str = self.__occurrence_date.strftime("%d/%m/%Y")
 
         hours_string: str = str(self.__occurrence_date.hour)
 
         minutes_string: str = str(self.__occurrence_date.minute)
 
-        input_date.send_keys(date_string)
+        await page.locator("#dataFato").fill(date_string)
 
-        input_hours.send_keys(hours_string)
+        await page.locator("#horaFato").fill(hours_string)
 
-        input_minutes.send_keys(minutes_string)
+        await page.locator("#minutoFato").fill(minutes_string)
 
-        button_next_step.click()
+        await page.locator("#botaoProximaEtapa").click()
 
-        sleep(5)
+    async def __add_address_data(self, page: Page) -> None:
+        await page.locator("#tipoLocalFato").select_option("22")
 
-    def __add_address_data(self, browser: WebDriver) -> None:
-        Select(browser.find_element(By.ID, "tipoLocalFato")).select_by_value("22")
+        await page.locator("#botaoConsultarEnderecoFato").click()
 
-        browser.find_element(By.ID, "botaoConsultarEnderecoFato").click()
+        await page.locator("#ngb-tab-1").click()
 
-        browser.find_element(By.ID, "ngb-tab-1").click()
+        await page.locator("#municipio").select_option(label=self.__city.upper())
 
-        sleep(2)
+        await page.locator("#bairro").select_option(label=self.__district.upper())
 
-        Select(browser.find_element(By.ID, "municipio")).select_by_visible_text(
-            self.__city.upper()
-        )
+        await page.locator("#tipoLogradouro").select_option("309: 232")
 
-        sleep(2)
+        await page.locator("#logradouro").fill(self.__street.upper())
 
-        Select(browser.find_element(By.ID, "bairro")).select_by_visible_text(
-            self.__district.upper()
-        )
+        await page.locator("#botaoConsultar").click()
 
-        sleep(2)
+        await page.locator("#botaoSelecionarEndereco0").click()
 
-        Select(browser.find_element(By.ID, "tipoLogradouro")).select_by_value("59: 52")
+        await page.locator("#numeroLogradouro").fill("0")
 
-        browser.find_element(By.ID, "logradouro").send_keys(self.__street.upper())
+        await page.locator("#botaoProximaEtapa").click()
 
-        browser.find_element(By.ID, "botaoConsultar").click()
+    async def __add_part_personal(self, page: Page) -> None:
+        await page.locator("#nomePessoa").fill(self.__user.nome)
 
-        sleep(2)
+        await page.locator("#email").fill(self.__user.email)
 
-        browser.find_element(By.ID, "botaoSelecionarEndereco0").click()
+        await page.locator("#confirmacaoEmail").fill(self.__user.email)
 
-        browser.find_element(By.ID, "numeroLogradouro").send_keys("null")
+        await page.locator("#profissao").select_option(value="32767")
 
-        browser.find_element(By.ID, "referencia").send_keys("null")
+        await page.locator("#sexo").select_option(value="3")
 
-        browser.find_element(By.ID, "botaoProximaEtapa").click()
+        await page.locator("#nomeMae").fill("Não informado")
 
-        sleep(5)
+        await page.locator("#botaoAvancarEnvolvido").click()
 
-    def __add_participation(self, browser: WebDriver) -> None:
-        browser.find_element(By.ID, "inserirEnvolvido").click()
-
-        sleep(2)
-
-        browser.find_element(By.ID, "tipoParticipacaoPessoa_2_fatoOcorrido_1").click()
-
-        browser.find_element(By.ID, "tipoParticipacaoPessoa_37_fatoOcorrido_1").click()
-
-        browser.find_element(By.ID, "botaoAvancarEnvolvido").click()
-
-        sleep(2)
-
-        # ADICIONANDO INFORMAÇÕES DA PESSOA
-
-        browser.find_element(By.ID, "nomePessoa").send_keys(self.__user.nome)
-
-        browser.find_element(By.ID, "email").send_keys(self.__user.email)
-
-        browser.find_element(By.ID, "confirmacaoEmail").send_keys(self.__user.email)
-
-        Select(browser.find_element(By.ID, "profissao")).select_by_value("32767")
-
-        Select(browser.find_element(By.ID, "sexo")).select_by_value("3")
-
-        browser.find_element(By.ID, "nomeMae").send_keys("Não informado")
-
-        browser.find_element(By.ID, "botaoAvancarEnvolvido").click()
-
-        # ADICIONANDO INFORMAÇÕES DE NASCIMENTO
-
-        sleep(2)
-
+    async def __add_part_birthday(self, page: Page) -> None:
         date_string: str = self.__user.data_nascimento.strftime("%d/%m/%Y")
 
-        browser.find_element(By.ID, "dataNascimento").send_keys(date_string)
+        await page.locator("#dataNascimento").fill(date_string)
 
-        Select(browser.find_element(By.ID, "cidadeNascimento")).select_by_value("5890")
+        await page.locator("#cidadeNascimento").select_option(value="5890")
 
-        browser.find_element(By.ID, "botaoAvancarEnvolvido").click()
+        await page.locator("#botaoAvancarEnvolvido").click()
 
-    def execute(self) -> None:
-        webdriver_path: Path = (
-            Path().cwd() / "src" / "utils" / "webdrivers" / "chromedriver.exe"
+    async def __add_part_documents(self, page: Page) -> None:
+        await page.locator("#cpf").fill(self.__user.cpf)
+
+        await page.locator("#rg").fill(self.__user.rg)
+
+        await page.locator("#estadoEmissorRG").select_option(
+            label=self.__user.estado_emissor.upper()
         )
 
-        with Chrome(str(webdriver_path)) as browser:
-            self.__access_page(browser)
+        await page.locator("#botaoAvancarEnvolvido").click()
 
-            self.__handle_registration_page(browser)
+    async def __add_part_address(self, page: Page) -> None:
+        await page.locator("#botaoConsultarEnderecoEnvolvido").click()
 
-            self.__add_date_data(browser)
+        await page.locator("#ngb-tab-9").click()
 
-            self.__add_address_data(browser)
+        await page.locator("#municipio").select_option(label=self.__city.upper())
 
-            self.__add_participation(browser)
+        await page.locator("#bairro").select_option(label=self.__district.upper())
 
-            sleep(10)
+        await page.locator("#tipoLogradouro").select_option("309: 232")
+
+        await page.locator("#logradouro").fill(self.__street.upper())
+
+        await page.locator("#botaoConsultar").click()
+
+        await page.locator("#botaoSelecionarEndereco0").click()
+
+        await page.locator("input[formcontrolname='numeroLogradouro']").fill(
+            value="0", force=True
+        )
+
+        await page.locator("#botaoProximaEtapa").click()
+
+    async def __add_participation(self, page: Page) -> None:
+        await page.locator("#inserirEnvolvido").click()
+
+        await page.locator("#tipoParticipacaoPessoa_2_fatoOcorrido_1").click()
+
+        await page.locator("#tipoParticipacaoPessoa_37_fatoOcorrido_1").click()
+
+        await page.locator("#botaoAvancarEnvolvido").click()
+
+        await self.__add_part_personal(page)
+
+        await self.__add_part_birthday(page)
+
+        await self.__add_part_documents(page)
+
+        await self.__add_part_address(page)
+
+    async def __run(self) -> None:
+        async with async_playwright() as playwright:
+            browser: Browser = await playwright.chromium.launch(headless=False)
+
+            page: Page = await browser.new_page()
+
+            await self.__access_page(page)
+            await self.__handle_registration_page(page)
+            await self.__add_date_data(page)
+            await self.__add_address_data(page)
+            await self.__add_participation(page)
+
+            sleep(2)
+
+    def execute(self) -> None:
+        asyncio.get_event_loop().run_until_complete(self.__run())
