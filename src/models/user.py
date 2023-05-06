@@ -17,8 +17,10 @@ class User(BaseModel):
     data_nascimento: Mapped[date] = mapped_column(Date)
     data_cadastro: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
     ativo: Mapped[bool] = mapped_column(Boolean, default=True)
-    uf: Mapped[str] = mapped_column(String(2), nullable=False)
-    cidade: Mapped[str] = mapped_column(String(200), nullable=False)
-    bairro: Mapped[str] = mapped_column(String(200), nullable=False)
-    logradouro: Mapped[str] = mapped_column(String(200), nullable=False)
-    numero: Mapped[str] = mapped_column(String(30), nullable=False, default="0")
+    endereco_uf: Mapped[str] = mapped_column(String(2), nullable=False)
+    endereco_cidade: Mapped[str] = mapped_column(String(200), nullable=False)
+    endereco_bairro: Mapped[str] = mapped_column(String(200), nullable=False)
+    endereco_logradouro: Mapped[str] = mapped_column(String(200), nullable=False)
+    endereco_numero: Mapped[str] = mapped_column(
+        String(30), nullable=False, default="0"
+    )

@@ -23,17 +23,19 @@ class TestOccurrenceIntegration(TestCase):
         user_payload.cpf = "02988790000"
         user_payload.rg = "11111111111"
         user_payload.estado_emissor = "SANTA CATARINA"
+        user_payload.end_uf = "SC"
+        user_payload.end_bairro = "caçador"
+        user_payload.end_logradouro = "Antonio Manuel dos Santos"
+        user_payload.end_numero = "393"
 
-        occurrence_payload.occurrence_date = datetime.now()
-        occurrence_payload.city = "capivari de baixo"
-        occurrence_payload.district = "caçador"
-        occurrence_payload.street = "rua antônio manuel dos santos"
+        occurrence_payload.data_cadastro = datetime.now()
+        occurrence_payload.endereco_cidade = "capivari de baixo"
+        occurrence_payload.endereco_bairro = "caçador"
+        occurrence_payload.endereco_logradouro = "rua antônio manuel dos santos"
+        occurrence_payload.endereco_numero = "393"
 
         service: IService[None] = OccurrenceIntegrationService(
-            occurrence_date=occurrence_payload.occurrence_date,
-            city=occurrence_payload.city,
-            district=occurrence_payload.district,
-            street=occurrence_payload.street,
+            occurrence=occurrence_payload,
             user=user_payload,
         )
 

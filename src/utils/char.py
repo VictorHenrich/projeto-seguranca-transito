@@ -1,4 +1,5 @@
 import unicodedata
+import re
 
 
 class CharUtils:
@@ -9,3 +10,7 @@ class CharUtils:
             .encode("ASCII", "ignore")
             .decode("ASCII")
         )
+
+    @classmethod
+    def keep_only_number(cls, string: str) -> str:
+        return re.sub(r"[^0-9]", "", string)

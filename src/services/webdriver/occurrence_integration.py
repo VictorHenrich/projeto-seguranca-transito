@@ -4,7 +4,7 @@ import asyncio
 from time import sleep
 
 from utils import CharUtils
-from models import User
+from models import User, Occurrence
 
 
 class OccurrenceIntegrationService:
@@ -12,16 +12,10 @@ class OccurrenceIntegrationService:
 
     def __init__(
         self,
-        occurrence_date: datetime,
-        district: str,
-        city: str,
-        street: str,
+        occurrence: Occurrence,
         user: User,
     ) -> None:
-        self.__occurrence_date: datetime = occurrence_date
-        self.__district: str = CharUtils.replace_characters_especial(district).upper()
-        self.__city: str = CharUtils.replace_characters_especial(city).upper()
-        self.__street: str = CharUtils.replace_characters_especial(street).upper()
+        self.__occurrence: Occurrence = occurrence
         self.__user: User = user
 
     async def __access_page(self, page: Page) -> None:
@@ -35,11 +29,11 @@ class OccurrenceIntegrationService:
         await page.locator("#botaoContinuar").click()
 
     async def __add_date_data(self, page: Page) -> None:
-        date_string: str = self.__occurrence_date.strftime("%d/%m/%Y")
+        date_string: str = self.__occurrence.data_cadastro.strftime("%d/%m/%Y")
 
-        hours_string: str = str(self.__occurrence_date.hour)
+        hours_string: str = str(self.__occurrence.data_cadastro.hour)
 
-        minutes_string: str = str(self.__occurrence_date.minute)
+        minutes_string: str = str(self.__occurrence.data_cadastro.minute)
 
         await page.locator("#dataFato").fill(date_string)
 
@@ -50,25 +44,43 @@ class OccurrenceIntegrationService:
         await page.locator("#botaoProximaEtapa").click()
 
     async def __add_address_data(self, page: Page) -> None:
+        city: str = CharUtils.replace_characters_especial(
+            self.__occurrence.endereco_cidade
+        ).upper()
+
+        district: str = CharUtils.replace_characters_especial(
+            self.__occurrence.endereco_bairro
+        )
+
+        street: str = CharUtils.replace_characters_especial(
+            self.__occurrence.endereco_logragouro
+        )
+
+        zipcode: str = self.__occurrence.endereco_uf.upper()
+
+        house_number: str = CharUtils.keep_only_number(
+            self.__occurrence.endereco_numero
+        )
+
         await page.locator("#tipoLocalFato").select_option("22")
 
         await page.locator("#botaoConsultarEnderecoFato").click()
 
         await page.locator("#ngb-tab-1").click()
 
-        await page.locator("#municipio").select_option(label=self.__city.upper())
+        await page.locator("#municipio").select_option(label=city)
 
-        await page.locator("#bairro").select_option(label=self.__district.upper())
+        await page.locator("#bairro").select_option(label=district)
 
         await page.locator("#tipoLogradouro").select_option("309: 232")
 
-        await page.locator("#logradouro").fill(self.__street.upper())
+        await page.locator("#logradouro").fill(street)
 
         await page.locator("#botaoConsultar").click()
 
         await page.locator("#botaoSelecionarEndereco0").click()
 
-        await page.locator("#numeroLogradouro").fill("0")
+        await page.locator("#numeroLogradouro").fill(house_number)
 
         await page.locator("#botaoProximaEtapa").click()
 
@@ -108,25 +120,40 @@ class OccurrenceIntegrationService:
         await page.locator("#botaoAvancarEnvolvido").click()
 
     async def __add_part_address(self, page: Page) -> None:
+
+        city: str = CharUtils.replace_characters_especial(
+            self.__user.endereco_cidade
+        ).upper()
+
+        district: str = CharUtils.replace_characters_especial(
+            self.__user.endereco_bairro
+        ).upper()
+
+        street: str = CharUtils.replace_characters_especial(
+            self.__user.endereco_logradouro
+        ).upper()
+
+        house_number: str = CharUtils.keep_only_number(self.__user.endereco_numero)
+
         await page.locator("#botaoConsultarEnderecoEnvolvido").click()
 
         await page.locator("#ngb-tab-9").click()
 
-        await page.locator("#municipio").select_option(label=self.__city.upper())
+        await page.locator("#municipio").select_option(label=city)
 
-        await page.locator("#bairro").select_option(label=self.__district.upper())
+        await page.locator("#bairro").select_option(label=district)
 
         await page.locator("#tipoLogradouro").select_option("309: 232")
 
-        await page.locator("#logradouro").fill(self.__street.upper())
+        await page.locator("#logradouro").fill(street)
 
         await page.locator("#botaoConsultar").click()
 
         await page.locator("#botaoSelecionarEndereco0").click()
 
-        await page.locator("#numeroLogradouro:last-child").fill(
-            value="0", force=True
-        )
+        await page.locator("#numeroLogradouro").nth(1).fill(value=house_number)
+
+        sleep(10)
 
         await page.locator("#botaoProximaEtapa").click()
 
