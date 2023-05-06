@@ -124,7 +124,7 @@ class OccurrenceIntegrationService:
 
         await page.locator("#botaoSelecionarEndereco0").click()
 
-        await page.locator("input[formcontrolname='numeroLogradouro']").fill(
+        await page.locator("#numeroLogradouro:last-child").fill(
             value="0", force=True
         )
 

@@ -21,4 +21,4 @@ class User(BaseModel):
     cidade: Mapped[str] = mapped_column(String(200), nullable=False)
     bairro: Mapped[str] = mapped_column(String(200), nullable=False)
     logradouro: Mapped[str] = mapped_column(String(200), nullable=False)
-    numero: Mapped[str] = mapped_column(String(30), nullable=False, defauilt="0")
+    numero: Mapped[str] = mapped_column(String(30), nullable=False, default="0")
