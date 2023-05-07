@@ -1,22 +1,36 @@
 from playwright.async_api import async_playwright, Browser, Page
-from datetime import datetime
 import asyncio
 from time import sleep
 
 from utils import CharUtils
-from models import User, Occurrence
+from models import User, Occurrence, Vehicle
 
 
 class OccurrenceIntegrationCreationService:
     __url: str = "https://delegaciavirtual.sc.gov.br/nova-ocorrencia"
 
-    def __init__(
-        self,
-        occurrence: Occurrence,
-        user: User,
-    ) -> None:
+    __keys_vehicle_type = {"carro": "6", "moto": "4"}
+
+    __keys_vehicle_color = {
+        "amarelo": "1",
+        "azul": "2",
+        "bege": "3",
+        "branco": "4",
+        "cinza": "5",
+        "dourado": "6",
+        "laranja": "8",
+        "marrom": "9",
+        "prata": "10",
+        "preto": "11",
+        "rosa": "12",
+        "roxa": "13",
+        "outra": "32767",
+    }
+
+    def __init__(self, occurrence: Occurrence, user: User, vehicle: Vehicle) -> None:
         self.__occurrence: Occurrence = occurrence
         self.__user: User = user
+        self.__vehicle: Vehicle = vehicle
 
     async def __access_page(self, page: Page) -> None:
         await page.goto(OccurrenceIntegrationCreationService.__url)
@@ -50,11 +64,11 @@ class OccurrenceIntegrationCreationService:
 
         district: str = CharUtils.replace_characters_especial(
             self.__occurrence.endereco_bairro
-        )
+        ).upper()
 
         street: str = CharUtils.replace_characters_especial(
             self.__occurrence.endereco_logragouro
-        )
+        ).upper()
 
         zipcode: str = self.__occurrence.endereco_uf.upper()
 
@@ -153,9 +167,9 @@ class OccurrenceIntegrationCreationService:
 
         await page.locator("#numeroLogradouro").nth(1).fill(value=house_number)
 
-        sleep(10)
+        await page.locator("#tipoEndereco").select_option(value="1")
 
-        await page.locator("#botaoProximaEtapa").click()
+        await page.locator("#botaoAvancarEnvolvido").click()
 
     async def __add_participation(self, page: Page) -> None:
         await page.locator("#inserirEnvolvido").click()
@@ -174,6 +188,90 @@ class OccurrenceIntegrationCreationService:
 
         await self.__add_part_address(page)
 
+        await self.__add_part_telephone(page)
+
+        await page.locator("#botaoSalvarEnvolvido").click()
+
+        await page.locator("#botaoProximaEtapa").click()
+
+    async def __add_part_telephone(self, page: Page) -> None:
+        telephone: str = CharUtils.keep_only_number(self.__user.telefone)
+
+        await page.locator("#botaoNovoTelefone").click()
+
+        await page.locator("#tipoTelefone").select_option(value="4")
+
+        await page.locator("#numeroTelefone").fill(telephone)
+
+        await page.locator("#botaoSalvarTelefone").click()
+
+    async def __add_car(self, page: Page) -> None:
+        vehicle_type: str = CharUtils.replace_characters_especial(
+            self.__vehicle.tipo_veiculo
+        ).lower()
+
+        plate: str = CharUtils.replace_characters_especial(self.__vehicle.placa).lower()
+
+        renavam: str = CharUtils.replace_characters_especial(
+            self.__vehicle.renavam
+        ).lower()
+
+        await page.locator("#botaoInserirNovoObjeto").click()
+
+        await page.locator("#placa").nth(1).fill(plate)
+
+        await page.locator("#renavam").nth(1).fill(renavam)
+
+        if self.__vehicle.marca:
+            brand: str = CharUtils.replace_characters_especial(
+                self.__vehicle.marca
+            ).upper()
+
+            await page.locator("#marca").fill(brand)
+
+        if self.__vehicle.modelo:
+            model: str = CharUtils.replace_characters_especial(
+                self.__vehicle.modelo
+            ).upper()
+
+            await page.locator("#modelo").fill(model)
+
+        if self.__vehicle.ano:
+            year: str = CharUtils.replace_characters_especial(
+                str(self.__vehicle.ano)
+            ).upper()
+
+            await page.locator("#anoModelo").fill(year)
+
+        if self.__vehicle.cor:
+            color: str = CharUtils.replace_characters_especial(
+                self.__vehicle.cor
+            ).upper()
+
+            color_value: str = (
+                OccurrenceIntegrationCreationService.__keys_vehicle_color[color]
+            )
+
+            await page.locator("#anoModelo").fill(color_value)
+
+        if self.__vehicle.chassi:
+            chassi: str = CharUtils.keep_only_number(self.__vehicle.chassi).upper()
+
+            await page.locator("#chassi").fill(chassi)
+
+        if self.__vehicle.possui_seguro:
+            await page.locator("possuiSeguro").click()
+
+        vehicle_type_value: str = (
+            OccurrenceIntegrationCreationService.__keys_vehicle_type[vehicle_type]
+        )
+
+        await page.locator("#detalhamentoObjeto").select_option(
+            value=vehicle_type_value
+        )
+
+        await page.locator("#envolvido").select_option(index=0)
+
     async def __run(self) -> None:
         async with async_playwright() as playwright:
             browser: Browser = await playwright.chromium.launch(headless=False)
@@ -185,8 +283,7 @@ class OccurrenceIntegrationCreationService:
             await self.__add_date_data(page)
             await self.__add_address_data(page)
             await self.__add_participation(page)
-
-            sleep(2)
+            await self.__add_car(page)
 
     def execute(self) -> None:
         asyncio.get_event_loop().run_until_complete(self.__run())

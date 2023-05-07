@@ -13,6 +13,7 @@ class User(BaseModel):
     senha: Mapped[str] = mapped_column(String(50), nullable=False)
     cpf: Mapped[str] = mapped_column(String(20), nullable=False, unique=True)
     rg: Mapped[str] = mapped_column(String(20), nullable=False, unique=True)
+    telefone: Mapped[str] = mapped_column(String(20), nullable=False)
     estado_emissor: Mapped[str] = mapped_column(String(50), nullable=False)
     data_nascimento: Mapped[date] = mapped_column(Date)
     data_cadastro: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
