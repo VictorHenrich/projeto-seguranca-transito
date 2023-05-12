@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class Task:
+class Task(ABC):
     def __init__(self, name: str, shortname: str, description: str) -> None:
         self.__name: str = name
         self.__shortname: str = shortname
@@ -18,7 +18,10 @@ class Task:
     @property
     def description(self) -> str:
         return self.__description
-
+    
     @abstractmethod
-    def execute(self, props: None) -> None:
+    def run(self) -> None:
         ...
+
+    def execute(self, props: None) -> None:
+        self.run()
