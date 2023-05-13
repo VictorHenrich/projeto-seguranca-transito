@@ -29,10 +29,6 @@ class AMQPConsumer(AbstractAMQP, ABC):
     def start(self) -> None:
         channel: BlockingChannel = self.get_channel()
 
-        channel.queue_declare(
-            queue=self.__queue_name, durable=True, arguments=self.__arguments
-        )
-
         channel.basic_consume(
             queue=self.__queue_name,
             auto_ack=self.__ack,

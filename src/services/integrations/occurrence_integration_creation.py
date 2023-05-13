@@ -210,7 +210,7 @@ class OccurrenceIntegrationCreationService:
             self.__vehicle.tipo_veiculo
         ).lower()
 
-        plate: str = CharUtils.replace_characters_especial(self.__vehicle.placa).lower()
+        plate: str = self.__vehicle.placa.upper()
 
         renavam: str = CharUtils.replace_characters_especial(
             self.__vehicle.renavam
@@ -270,7 +270,22 @@ class OccurrenceIntegrationCreationService:
             value=vehicle_type_value
         )
 
-        await page.locator("#envolvido").select_option(index=0)
+        await page.locator("#envolvido").select_option(value="1")
+
+        await page.locator("#botaoSalvarObjeto").click()
+
+        await page.locator("#botaoProximaEtapa").click()
+
+    async def __add_acident(self, page: Page) -> None:
+        message_body: str = (
+            f"Fato ocorrido: {self.__occurrence.obs}\n\n"
+            + f"Foram evidenciados as seguintes imagens: \n"
+            + f"Foram evidenciados os seguintes vídeos: \n"
+        )
+
+        await page.locator("#relatoFato").fill(message_body)
+
+        await page.locator("#botaoProximaEtapa").click()
 
     async def __run(self) -> None:
         async with async_playwright() as playwright:
@@ -284,6 +299,9 @@ class OccurrenceIntegrationCreationService:
             await self.__add_address_data(page)
             await self.__add_participation(page)
             await self.__add_car(page)
+            await self.__add_acident(page)
+
+            sleep(500)
 
     def execute(self) -> None:
         asyncio.get_event_loop().run_until_complete(self.__run())

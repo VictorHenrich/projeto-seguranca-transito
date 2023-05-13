@@ -1,19 +1,43 @@
-from typing import Optional
+from typing import Optional, Sequence, Mapping, Any, Literal
 from datetime import date
 from dataclasses import dataclass
 
 from server import App
+from models import User
 from patterns.repository import ICreateRepository
 from repositories.user import UserCreateRepository, UserCreateRepositoryParams
+from repositories.vehicle import VehicleCreateRepository, VehicleCreateRepositoryParams
 
 
 @dataclass
-class UserCreationServiceProps:
+class UserCreateProps:
     name: str
     email: str
     password: str
     document: str
     birthday: Optional[date]
+    document_rg: str
+    telephone: str
+    state_issuer: str
+    address_state: str
+    address_city: str
+    address_district: str
+    address_street: str
+    address_number: str
+
+
+@dataclass
+class VehicleCreateProps:
+    user_id: int
+    plate: str
+    renavam: str
+    vehicle_type: Literal["AUTOMOVEL", "MOTOCICLETA"]
+    brand: Optional[str] = None
+    model: Optional[str] = None
+    color: Optional[str] = None
+    year: Optional[int] = None
+    chassi: Optional[str] = None
+    have_safe: bool = False
 
 
 class UserCreationService:
@@ -24,17 +48,63 @@ class UserCreationService:
         password: str,
         document: str,
         birthday: Optional[date],
+        document_rg: str,
+        telephone: str,
+        state_issuer: str,
+        address_state: str,
+        address_city: str,
+        address_district: str,
+        address_street: str,
+        address_number: str,
+        vehicles: Sequence[Mapping[str, Any]],
     ):
-        self.__props: UserCreationServiceProps = UserCreationServiceProps(
-            name, email, password, document, birthday
+        self.__user_create_props: UserCreateProps = UserCreateProps(
+            name,
+            email,
+            password,
+            document,
+            birthday,
+            document_rg,
+            telephone,
+            state_issuer,
+            address_state,
+            address_city,
+            address_district,
+            address_street,
+            address_number,
         )
+
+        self.__vehicle_create_props: Sequence[VehicleCreateProps] = [
+            VehicleCreateProps(
+                -1,
+                vehicle["plate"],
+                vehicle["renavam"],
+                vehicle["vehicle_type"],
+                brand=vehicle.get("brand"),
+                chassi=vehicle.get("chassi"),
+                color=vehicle.get("color"),
+                model=vehicle.get("model"),
+                have_safe=vehicle.get("have_safe") or False,
+                year=vehicle.get("year"),
+            )
+            for vehicle in vehicles
+        ]
 
     def execute(self) -> None:
         with App.databases.create_session() as session:
-            repository: ICreateRepository[
-                UserCreateRepositoryParams, None
+            user_create_repository: ICreateRepository[
+                UserCreateRepositoryParams, User
             ] = UserCreateRepository(session)
 
-            repository.create(self.__props)
+            new_user: User = user_create_repository.create(self.__user_create_props)
+
+            for vehicle in self.__vehicle_create_props:
+                vehicle.user_id = new_user.id
+
+                vehicle_create_repository: ICreateRepository[
+                    VehicleCreateRepositoryParams, None
+                ] = VehicleCreateRepository(session)
+
+                vehicle_create_repository.create(vehicle)
 
             session.commit()

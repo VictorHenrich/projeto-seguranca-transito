@@ -18,7 +18,7 @@ class Task(ABC):
     @property
     def description(self) -> str:
         return self.__description
-    
+
     @abstractmethod
     def run(self) -> None:
         ...

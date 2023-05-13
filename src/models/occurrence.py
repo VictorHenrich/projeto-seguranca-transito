@@ -1,9 +1,11 @@
+from typing import Optional
 from sqlalchemy import String, Integer, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime
 
 from .base_model import BaseModel
 from .user import User
+from .vehicle import Vehicle
 
 
 class Occurrence(BaseModel):
@@ -12,8 +14,12 @@ class Occurrence(BaseModel):
     id_usuario: Mapped[int] = mapped_column(
         Integer, ForeignKey(f"{User.__tablename__}.id"), nullable=False
     )
+    id_veiculo: Mapped[int] = mapped_column(
+        Integer, ForeignKey(f"{Vehicle.__tablename__}.id"), nullable=False
+    )
     descricao: Mapped[str] = mapped_column(String(200), nullable=False)
     obs: Mapped[str] = mapped_column(String(5000))
+    codigo_externo: Mapped[Optional[str]] = mapped_column(String(100))
     data_cadastro: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, default=datetime.now
     )

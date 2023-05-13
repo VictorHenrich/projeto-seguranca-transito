@@ -13,6 +13,13 @@ class OccurrenceUpdateRepositoryParam(Protocol):
     uuid_occurrence: str
     description: str
     obs: str
+    address_state: str
+    address_city: str
+    address_district: str
+    address_street: str
+    address_number: str
+    lat: str
+    lon: str
 
 
 @dataclass
@@ -34,5 +41,12 @@ class OccurrenceUpdateRepository(BaseRepository):
 
         occurrence.descricao = params.description
         occurrence.obs = params.obs
+        occurrence.descricao = params.description
+        occurrence.obs = params.obs
+        occurrence.endereco_uf = params.address_state
+        occurrence.endereco_cidade = params.address_city
+        occurrence.endereco_bairro = params.address_district
+        occurrence.endereco_logragouro = params.address_street
+        occurrence.endereco_numero = params.address_number
 
         self.session.add(occurrence)

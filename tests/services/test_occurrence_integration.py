@@ -36,6 +36,11 @@ class TestOccurrenceIntegration(TestCase):
         occurrence_payload.endereco_logragouro = "rua antônio manuel dos santos"
         occurrence_payload.endereco_numero = "393"
         occurrence_payload.endereco_uf = "SC"
+        occurrence_payload.obs = """
+                Eu estava andando de boa quando do nada o carro veio
+                e se xocou contra meu carro, fazendo eu derrapar e bater em uma parade,
+                já consegui pegar informações da outra pessoa, tal tal ta tal
+            """
 
         vehicle_payload.placa = "111111111"
         vehicle_payload.renavam = "11111111"
