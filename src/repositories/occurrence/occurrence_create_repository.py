@@ -19,7 +19,7 @@ class OccurrenceCreateRepositoryParam(Protocol):
 
 
 class OccurrenceCreateRepository(BaseRepository):
-    def create(self, params: OccurrenceCreateRepositoryParam) -> None:
+    def create(self, params: OccurrenceCreateRepositoryParam) -> Occurrence:
         occurrence: Occurrence = Occurrence()
 
         occurrence.id_usuario = params.user.id
@@ -34,3 +34,5 @@ class OccurrenceCreateRepository(BaseRepository):
         occurrence.status = "ANDAMENTO"
 
         self.session.add(occurrence)
+
+        return occurrence

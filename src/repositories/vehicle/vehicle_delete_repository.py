@@ -1,12 +1,13 @@
 from typing import Protocol
 
 from patterns.repository import BaseRepository, IFindRepository
-from models import Vehicle
+from models import Vehicle, User
 from .vehicle_find_repository import VehicleFindRepository, VehicleFindRepositoryParams
 
 
 class VehicleDeleteRepositoryParams(Protocol):
     vehicle_uuid: str
+    user: User
 
 
 class VehicleDeleteRepository(BaseRepository):

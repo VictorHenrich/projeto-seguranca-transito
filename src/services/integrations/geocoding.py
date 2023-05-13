@@ -1,6 +1,16 @@
 from typing import Union, Mapping, Any, List
 from decimal import Decimal
+from dataclasses import dataclass
 import requests
+
+
+@dataclass
+class GeocodingPayload:
+    zipcode: str
+    state: str
+    city: str
+    district: str
+    street: str
 
 
 class GeocodingService:
@@ -15,7 +25,7 @@ class GeocodingService:
 
         return f"{first_word[0]}{last_word[0]}".upper()
 
-    def execute(self) -> Mapping[str, Any]:
+    def execute(self) -> GeocodingPayload:
         response: requests.Response = requests.get(
             GeocodingService.__url,
             params={"lat": str(self.__lat), "lon": str(self.__lon), "format": "jsonv2"},
@@ -28,10 +38,10 @@ class GeocodingService:
 
         address_data: Mapping[str, Any] = response.json()
 
-        return {
-            "zipcode": address_data["address"]["postcode"],
-            "state": self.__handle_state(address_data["address"]["state"]),
-            "city": address_data["address"]["town"],
-            "district": address_data["address"]["suburb"],
-            "street": address_data["address"]["road"],
-        }
+        return GeocodingPayload(
+            address_data["address"]["postcode"],
+            self.__handle_state(address_data["address"]["state"]),
+            address_data["address"]["town"],
+            address_data["address"]["suburb"],
+            address_data["address"]["road"],
+        )

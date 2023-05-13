@@ -1,6 +1,7 @@
 from typing import Optional, Sequence, Mapping, Any, Literal
 from datetime import date
 from dataclasses import dataclass
+from sqlalchemy.orm import Session
 
 from server import App
 from models import User
@@ -28,7 +29,7 @@ class UserCreateProps:
 
 @dataclass
 class VehicleCreateProps:
-    user_id: int
+    user: User
     plate: str
     renavam: str
     vehicle_type: Literal["AUTOMOVEL", "MOTOCICLETA"]
@@ -74,9 +75,19 @@ class UserCreationService:
             address_number,
         )
 
-        self.__vehicle_create_props: Sequence[VehicleCreateProps] = [
-            VehicleCreateProps(
-                -1,
+        self.__vehicle_create_props: Sequence[Mapping[str, Any]] = vehicles
+
+    def __create_user(self, session: Session) -> User:
+        user_create_repository: ICreateRepository[
+            UserCreateRepositoryParams, User
+        ] = UserCreateRepository(session)
+
+        return user_create_repository.create(self.__user_create_props)
+
+    def __create_vehicles(self, session: Session, user: User) -> None:
+        for vehicle in self.__vehicle_create_props:
+            vehicle_create_props: VehicleCreateProps = VehicleCreateProps(
+                user,
                 vehicle["plate"],
                 vehicle["renavam"],
                 vehicle["vehicle_type"],
@@ -87,24 +98,17 @@ class UserCreationService:
                 have_safe=vehicle.get("have_safe") or False,
                 year=vehicle.get("year"),
             )
-            for vehicle in vehicles
-        ]
+
+            vehicle_create_repository: ICreateRepository[
+                VehicleCreateRepositoryParams, None
+            ] = VehicleCreateRepository(session)
+
+            vehicle_create_repository.create(vehicle_create_props)
 
     def execute(self) -> None:
         with App.databases.create_session() as session:
-            user_create_repository: ICreateRepository[
-                UserCreateRepositoryParams, User
-            ] = UserCreateRepository(session)
+            new_user: User = self.__create_user(session)
 
-            new_user: User = user_create_repository.create(self.__user_create_props)
-
-            for vehicle in self.__vehicle_create_props:
-                vehicle.user_id = new_user.id
-
-                vehicle_create_repository: ICreateRepository[
-                    VehicleCreateRepositoryParams, None
-                ] = VehicleCreateRepository(session)
-
-                vehicle_create_repository.create(vehicle)
+            self.__create_vehicles(session, new_user)
 
             session.commit()

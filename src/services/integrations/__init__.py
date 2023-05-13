@@ -1,2 +1,2 @@
 from .occurrence_integration_creation import OccurrenceIntegrationCreationService
-from .geocoding import GeocodingService
+from .geocoding import GeocodingService, GeocodingPayload

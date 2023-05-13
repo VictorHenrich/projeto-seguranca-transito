@@ -1,11 +1,11 @@
 from typing import Protocol, Literal, Optional
 
 from patterns.repository import BaseRepository
-from models import Vehicle
+from models import Vehicle, User
 
 
 class VehicleCreateRepositoryParams(Protocol):
-    user_id: int
+    user: User
     plate: str
     renavam: str
     vehicle_type: Literal["AUTOMOVEL", "MOTOCICLETA"]
@@ -21,7 +21,7 @@ class VehicleCreateRepository(BaseRepository):
     def create(self, params: VehicleCreateRepositoryParams) -> None:
         vehicle: Vehicle = Vehicle()
 
-        vehicle.id_usuario = params.user_id
+        vehicle.id_usuario = params.user.id
         vehicle.placa = params.plate
         vehicle.renavam = params.renavam
         vehicle.tipo_veiculo = params.vehicle_type

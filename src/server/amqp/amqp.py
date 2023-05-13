@@ -24,7 +24,7 @@ class AMQPServer:
         self,
         publisher_name: str,
         exchange: str,
-        body: Dict[str, Any],
+        body: bytes,
         connection: Optional[ConnectionParameters] = None,
         routing_key: str = "",
         properties: Dict[str, Any] = {"delivery_mode": 2},
@@ -54,7 +54,6 @@ class AMQPServer:
         ack: bool = True,
         connection: ConnectionParametersOptional = None,
         arguments: Optional[Dict[str, Any]] = None,
-        data_class: Optional[Type] = None,
     ) -> ReturnDecoratorAddConsumer:
         def decorator(cls: TypeAMQPConsumer) -> TypeAMQPConsumer:
             connection_: Optional[ConnectionParameters] = (
@@ -65,7 +64,7 @@ class AMQPServer:
                 raise Exception("Connection is not defined!")
 
             consumer: AMQPConsumer = cls(
-                consumer_name, connection_, queue_name, ack, arguments, data_class
+                consumer_name, connection_, queue_name, ack, arguments
             )
 
             self.__consumers[consumer.name] = consumer
