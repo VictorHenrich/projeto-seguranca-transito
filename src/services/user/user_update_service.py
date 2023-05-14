@@ -8,14 +8,21 @@ from repositories.user import UserUpdateRepository, UserUpdateRepositoryParams
 
 
 @dataclass
-class UserUpdateServiceProps:
+class UserUpdateProps:
     user_uuid: str
     name: str
     email: str
     password: str
     document: str
-    birthday: date
-    status: bool
+    document_rg: str
+    telephone: str
+    state_issuer: str
+    address_state: str
+    address_city: str
+    address_district: str
+    address_street: str
+    address_number: str
+    birthday: Optional[date]
 
 
 class UserUpdateService:
@@ -26,17 +33,31 @@ class UserUpdateService:
         email: str,
         password: str,
         document: str,
-        birthday: date,
-        status: bool,
+        document_rg: str,
+        telephone: str,
+        state_issuer: str,
+        address_state: str,
+        address_city: str,
+        address_district: str,
+        address_street: str,
+        address_number: str,
+        birthday: Optional[date],
     ) -> None:
-        self.__props: UserUpdateServiceProps = UserUpdateServiceProps(
+        self.__props: UserUpdateProps = UserUpdateProps(
             user_uuid,
             name,
             email,
             password,
             document,
+            document_rg,
+            telephone,
+            state_issuer,
+            address_state,
+            address_city,
+            address_district,
+            address_street,
+            address_number,
             birthday,
-            status,
         )
 
     def execute(self) -> None:

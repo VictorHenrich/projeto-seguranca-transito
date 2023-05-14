@@ -1,5 +1,4 @@
-from typing import Optional
-from sqlalchemy import String, Boolean, Date, DateTime
+from sqlalchemy import String, Date, DateTime
 from sqlalchemy.orm import mapped_column, Mapped
 from datetime import date, datetime
 
@@ -16,9 +15,8 @@ class User(BaseModel):
     rg: Mapped[str] = mapped_column(String(20), nullable=False, unique=True)
     telefone: Mapped[str] = mapped_column(String(20), nullable=False)
     estado_emissor: Mapped[str] = mapped_column(String(50), nullable=False)
-    data_nascimento: Mapped[Optional[date]] = mapped_column(Date)
+    data_nascimento: Mapped[date] = mapped_column(Date, nullable=False)
     data_cadastro: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
-    ativo: Mapped[bool] = mapped_column(Boolean, default=True)
     endereco_uf: Mapped[str] = mapped_column(String(2), nullable=False)
     endereco_cidade: Mapped[str] = mapped_column(String(200), nullable=False)
     endereco_bairro: Mapped[str] = mapped_column(String(200), nullable=False)

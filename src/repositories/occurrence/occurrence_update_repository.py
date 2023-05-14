@@ -1,16 +1,16 @@
 from typing import Protocol
-from dataclasses import dataclass
 
 from patterns.repository import BaseRepository, IFindRepository
-from models import Occurrence
+from models import Occurrence, Vehicle
 from .occurrence_find_repository import (
     OccurrenceFindRepository,
     OccurrenceFindRepositoryParams,
 )
 
 
-class OccurrenceUpdateRepositoryParam(Protocol):
-    uuid_occurrence: str
+class OccurrenceUpdateRepositoryParams(Protocol):
+    occurrence_uuid: str
+    vehicle: Vehicle
     description: str
     obs: str
     address_state: str
@@ -18,29 +18,17 @@ class OccurrenceUpdateRepositoryParam(Protocol):
     address_district: str
     address_street: str
     address_number: str
-    lat: str
-    lon: str
-
-
-@dataclass
-class OccurrenceFindProps:
-    uuid_occurrence: str
 
 
 class OccurrenceUpdateRepository(BaseRepository):
-    def update(self, params: OccurrenceUpdateRepositoryParam) -> None:
+    def update(self, params: OccurrenceUpdateRepositoryParams) -> None:
         getting_repository: IFindRepository[
             OccurrenceFindRepositoryParams, Occurrence
         ] = OccurrenceFindRepository(self.session)
 
-        getting_repository_param: OccurrenceFindRepositoryParams = OccurrenceFindProps(
-            uuid_occurrence=params.uuid_occurrence
-        )
+        occurrence: Occurrence = getting_repository.find_one(params)
 
-        occurrence: Occurrence = getting_repository.find_one(getting_repository_param)
-
-        occurrence.descricao = params.description
-        occurrence.obs = params.obs
+        occurrence.id_veiculo = params.vehicle.id
         occurrence.descricao = params.description
         occurrence.obs = params.obs
         occurrence.endereco_uf = params.address_state

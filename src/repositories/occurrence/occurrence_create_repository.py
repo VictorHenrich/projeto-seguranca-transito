@@ -1,10 +1,11 @@
 from typing import Protocol
+from datetime import datetime
 
 from models import User, Occurrence, Vehicle
 from patterns.repository import BaseRepository
 
 
-class OccurrenceCreateRepositoryParam(Protocol):
+class OccurrenceCreateRepositoryParams(Protocol):
     user: User
     vehicle: Vehicle
     description: str
@@ -16,10 +17,11 @@ class OccurrenceCreateRepositoryParam(Protocol):
     address_number: str
     lat: str
     lon: str
+    created: datetime = datetime.now()
 
 
 class OccurrenceCreateRepository(BaseRepository):
-    def create(self, params: OccurrenceCreateRepositoryParam) -> Occurrence:
+    def create(self, params: OccurrenceCreateRepositoryParams) -> Occurrence:
         occurrence: Occurrence = Occurrence()
 
         occurrence.id_usuario = params.user.id
@@ -31,6 +33,9 @@ class OccurrenceCreateRepository(BaseRepository):
         occurrence.endereco_bairro = params.address_district
         occurrence.endereco_logragouro = params.address_street
         occurrence.endereco_numero = params.address_number
+        occurrence.latitude = params.lat
+        occurrence.longitude = params.lon
+        occurrence.data_cadastro = params.created
         occurrence.status = "ANDAMENTO"
 
         self.session.add(occurrence)

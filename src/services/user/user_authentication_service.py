@@ -10,16 +10,14 @@ from models import User
 
 
 @dataclass
-class UserAuthenticationServiceProps:
+class UserAuthenticationProps:
     email: str
     password: str
 
 
 class UserAuthenticationService:
     def __init__(self, email: str, password: str) -> None:
-        self.__props: UserAuthenticationServiceProps = UserAuthenticationServiceProps(
-            email, password
-        )
+        self.__props: UserAuthenticationProps = UserAuthenticationProps(email, password)
 
     def execute(self) -> str:
         with App.databases.create_session() as session:

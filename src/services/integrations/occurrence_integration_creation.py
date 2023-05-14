@@ -1,6 +1,5 @@
 from playwright.async_api import async_playwright, Browser, Page
 import asyncio
-from time import sleep
 
 from utils import CharUtils
 from models import User, Occurrence, Vehicle
@@ -134,7 +133,6 @@ class OccurrenceIntegrationCreationService:
         await page.locator("#botaoAvancarEnvolvido").click()
 
     async def __add_part_address(self, page: Page) -> None:
-
         city: str = CharUtils.replace_characters_especial(
             self.__user.endereco_cidade
         ).upper()
@@ -300,8 +298,6 @@ class OccurrenceIntegrationCreationService:
             await self.__add_participation(page)
             await self.__add_car(page)
             await self.__add_acident(page)
-
-            sleep(500)
 
     def execute(self) -> None:
         asyncio.get_event_loop().run_until_complete(self.__run())

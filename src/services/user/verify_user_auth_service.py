@@ -16,13 +16,13 @@ from utils.entities import PayloadUserJWT
 
 
 @dataclass
-class VerifyUserAuthServiceProps:
+class VerifyUserAuthProps:
     token: str
 
 
 class VerifyUserAuthService:
     def __init__(self, token: str) -> None:
-        self.__props: VerifyUserAuthServiceProps = VerifyUserAuthServiceProps(token)
+        self.__props: VerifyUserAuthProps = VerifyUserAuthProps(token)
 
     def execute(self) -> User:
         if not self.__props.token:

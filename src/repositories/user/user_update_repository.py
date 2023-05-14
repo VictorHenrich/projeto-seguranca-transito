@@ -19,9 +19,8 @@ class UserUpdateRepositoryParams(Protocol):
     address_city: str
     address_district: str
     address_street: str
-    status: bool = True
-    address_number: str = "0"
-    birthday: Optional[date] = None
+    address_number: str
+    birthday: date
 
 
 class UserUpdateRepository(BaseRepository):
@@ -32,7 +31,6 @@ class UserUpdateRepository(BaseRepository):
 
         user: User = getting_repository.find_one(params)
 
-        user.ativo = params.status
         user.cpf = params.document
         user.data_nascimento = params.birthday
         user.email = params.email

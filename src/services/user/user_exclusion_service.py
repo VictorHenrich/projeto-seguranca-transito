@@ -6,13 +6,13 @@ from repositories.user import UserDeleteRepository, UserDeleteRepositoryParams
 
 
 @dataclass
-class UserExclusionServiceProps:
+class UserDeleteProps:
     user_uuid: str
 
 
 class UserExclusionService:
     def __init__(self, user_uuid: str) -> None:
-        self.__props: UserExclusionServiceProps = UserExclusionServiceProps(user_uuid)
+        self.__props: UserDeleteProps = UserDeleteProps(user_uuid)
 
     def execute(self) -> None:
         with App.databases.create_session() as session:

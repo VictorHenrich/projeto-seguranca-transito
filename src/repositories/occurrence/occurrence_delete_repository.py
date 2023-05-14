@@ -9,7 +9,7 @@ from .occurrence_find_repository import (
 
 
 class OccurrenceDeleteRepositoryParams(Protocol):
-    uuid_occurrence: str
+    occurrence_uuid: str
 
 
 class OccurrenceDeleteRepository(BaseRepository):

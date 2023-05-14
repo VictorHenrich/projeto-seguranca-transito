@@ -17,8 +17,8 @@ class UserCreateRepositoryParams(Protocol):
     address_city: str
     address_district: str
     address_street: str
-    address_number: str = "0"
-    birthday: Optional[date] = None
+    address_number: str
+    birthday: date
 
 
 class UserCreateRepository(BaseRepository):
@@ -30,7 +30,6 @@ class UserCreateRepository(BaseRepository):
         user.email = params.email
         user.nome = params.name
         user.senha = params.password
-        user.ativo = True
         user.telefone = params.telephone
         user.estado_emissor = params.state_issuer
         user.endereco_uf = params.address_state

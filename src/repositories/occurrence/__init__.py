@@ -1,6 +1,6 @@
 from .occurrence_create_repository import (
     OccurrenceCreateRepository,
-    OccurrenceCreateRepositoryParam,
+    OccurrenceCreateRepositoryParams,
 )
 
 from .occurrence_delete_repository import (
@@ -20,5 +20,13 @@ from .occurrence_findmany_repository import (
 
 from .occurrence_update_repository import (
     OccurrenceUpdateRepository,
-    OccurrenceUpdateRepositoryParam,
+    OccurrenceUpdateRepositoryParams,
+)
+from .occurrence_update_status_repository import (
+    OccurrenceUpdateStatusRepository,
+    OccurrenceUpdateStatusRepositoryParams,
+)
+from .occurrence_aggregate_repository import (
+    OccurrenceAggregateRepository,
+    OccurrenceAggregateRepositoryParams,
 )

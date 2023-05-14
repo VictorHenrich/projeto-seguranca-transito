@@ -1,6 +1,7 @@
 from typing import Optional, Mapping, Any
 from dataclasses import dataclass
 from sqlalchemy.orm import Session
+from datetime import datetime
 import json
 
 from server import App
@@ -9,7 +10,7 @@ from patterns.service import IService
 from models import User, Vehicle, Occurrence
 from repositories.occurrence import (
     OccurrenceCreateRepository,
-    OccurrenceCreateRepositoryParam,
+    OccurrenceCreateRepositoryParams,
 )
 from repositories.user import UserFindRepository, UserFindRepositoryParams
 from repositories.vehicle import VehicleFindRepository, VehicleFindRepositoryParams
@@ -32,6 +33,7 @@ class OccurrenceCreationProps:
     address_number: str
     lat: str
     lon: str
+    created: datetime
 
 
 @dataclass
@@ -54,6 +56,7 @@ class OccurrenceCreationService:
         obs: str,
         lat: str,
         lon: str,
+        created: datetime,
     ) -> None:
         self.__user_uuid: str = user_uuid
         self.__vehicle_uuid: str = vehicle_uuid
@@ -61,6 +64,7 @@ class OccurrenceCreationService:
         self.__obs: str = obs
         self.__lat: str = lat
         self.__lon: str = lon
+        self.__created: datetime = created
 
     def __find_user(self, session: Session) -> User:
         user_find_repository: IFindRepository[
@@ -89,7 +93,7 @@ class OccurrenceCreationService:
         self, session: Session, user: User, vehicle: Vehicle, address: GeocodingPayload
     ) -> Occurrence:
         occurrence_creation_repository: ICreateRepository[
-            OccurrenceCreateRepositoryParam, Occurrence
+            OccurrenceCreateRepositoryParams, Occurrence
         ] = OccurrenceCreateRepository(session)
 
         return occurrence_creation_repository.create(
@@ -105,6 +109,7 @@ class OccurrenceCreationService:
                 "0",
                 self.__lat,
                 self.__lon,
+                self.__created,
             )
         )
 

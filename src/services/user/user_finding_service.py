@@ -7,13 +7,13 @@ from models import User
 
 
 @dataclass
-class UserFindingServiceProps:
+class UserFindProps:
     user_uuid: str
 
 
 class UserFindingService:
     def __init__(self, user_uuid: str) -> None:
-        self.__props: UserFindingServiceProps = UserFindingServiceProps(user_uuid)
+        self.__props: UserFindProps = UserFindProps(user_uuid)
 
     def execute(self) -> User:
         with App.databases.create_session() as session:
