@@ -4,9 +4,9 @@ from datetime import datetime
 from server import App
 from src.utils.jwt import JWTUtils
 from utils import JWTUtils
-from patterns.service import IService
+from patterns.repository import IFindRepository
 from models import User
-from .user_finding_service import UserFindingService
+from repositories.user import UserFindRepository, UserFindRepositoryParams
 from exceptions import (
     AuthorizationNotFoundHeader,
     TokenTypeNotBearerError,
@@ -18,6 +18,11 @@ from utils.entities import PayloadUserJWT
 @dataclass
 class VerifyUserAuthProps:
     token: str
+
+
+@dataclass
+class FindUserProps:
+    user_uuid: str
 
 
 class VerifyUserAuthService:
@@ -40,8 +45,9 @@ class VerifyUserAuthService:
         if payload.expired <= datetime.now().timestamp():
             raise ExpiredTokenError()
 
-        service: IService[User] = UserFindingService(user_uuid=payload.user_uuid)
+        with App.databases.create_session() as session:
+            user_find: IFindRepository[UserFindRepositoryParams, User] = UserFindRepository(session)
 
-        user: User = service.execute()
+            user: User = user_find.find_one(FindUserProps(payload.user_uuid))
 
-        return user
+            return user

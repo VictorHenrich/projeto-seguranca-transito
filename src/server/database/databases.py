@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Dict, Any, Optional
 from sqlalchemy.orm.session import Session
 from .database import Database
-from .exceptions import DatabaseNotFoundError
+from exceptions import DatabaseNotFoundError
 
 
 class Databases:

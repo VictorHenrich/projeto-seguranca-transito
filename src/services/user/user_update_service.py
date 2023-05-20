@@ -3,8 +3,9 @@ from dataclasses import dataclass
 from datetime import date
 
 from server import App
+from models import User
 from patterns.repository import IUpdateRepository
-from repositories.user import UserUpdateRepository, UserUpdateRepositoryParams
+from repositories.user import UserFindAndUpdateRepository, UserFindAndUpdateRepositoryParams
 
 
 @dataclass
@@ -22,7 +23,7 @@ class UserUpdateProps:
     address_district: str
     address_street: str
     address_number: str
-    birthday: Optional[date]
+    birthday: date
 
 
 class UserUpdateService:
@@ -41,7 +42,7 @@ class UserUpdateService:
         address_district: str,
         address_street: str,
         address_number: str,
-        birthday: Optional[date],
+        birthday: date,
     ) -> None:
         self.__props: UserUpdateProps = UserUpdateProps(
             user_uuid,
@@ -63,8 +64,8 @@ class UserUpdateService:
     def execute(self) -> None:
         with App.databases.create_session() as session:
             repository: IUpdateRepository[
-                UserUpdateRepositoryParams, None
-            ] = UserUpdateRepository(session)
+                UserFindAndUpdateRepositoryParams, User
+            ] = UserFindAndUpdateRepository(session)
 
             repository.update(self.__props)
 

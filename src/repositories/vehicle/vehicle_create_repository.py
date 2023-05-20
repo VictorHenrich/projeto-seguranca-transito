@@ -8,7 +8,7 @@ class VehicleCreateRepositoryParams(Protocol):
     user: User
     plate: str
     renavam: str
-    vehicle_type: Literal["AUTOMOVEL", "MOTOCICLETA"]
+    vehicle_type: Literal["CARRO", "MOTO"]
     brand: Optional[str] = None
     model: Optional[str] = None
     color: Optional[str] = None

@@ -8,7 +8,7 @@ from .vehicle_delete_repository import (
 )
 from .vehicle_find_many_repository import (
     VehicleFindManyRepository,
-    VehicleFindRepositoryParams,
+    VehicleFindManyRepositoryParams,
 )
 from .vehicle_find_repository import VehicleFindRepository, VehicleFindRepositoryParams
 from .vehicle_update_repository import (

@@ -17,7 +17,6 @@ from models import User
 from patterns.service import IService
 from services.user import (
     UserCreationService,
-    UserFindingService,
     UserExclusionService,
     UserUpdateService,
 )
@@ -88,16 +87,12 @@ class UserController(Controller):
 
     @user_auth_middleware.apply(None)
     def get(self, auth: User) -> ResponseDefaultJSON:
-        service: IService[User] = UserFindingService(user_uuid=auth.id_uuid)
-
-        user: User = service.execute()
-
         response: Dict[str, Any] = {
-            "nome": user.nome,
-            "email": user.email,
-            "cpf": user.cpf,
-            "uuid": user.id_uuid,
-            "data_nascimento": user.data_nascimento,
+            "nome": auth.nome,
+            "email": auth.email,
+            "cpf": auth.cpf,
+            "uuid": auth.id_uuid,
+            "data_nascimento": auth.data_nascimento,
         }
 
         return ResponseSuccess(data=response)

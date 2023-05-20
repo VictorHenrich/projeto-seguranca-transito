@@ -1,12 +1,14 @@
 from typing import Protocol
 from datetime import date
 
-from patterns.repository import BaseRepository
+from patterns.repository import IFindRepository, BaseRepository
 from models import User
+from .user_find_repository import UserFindRepository, UserFindRepositoryParams
 from utils import CharUtils
 
 
-class UserCreateRepositoryParams(Protocol):
+class UserFindAndUpdateRepositoryParams(Protocol):
+    user_uuid: str
     name: str
     email: str
     password: str
@@ -22,10 +24,14 @@ class UserCreateRepositoryParams(Protocol):
     birthday: date
 
 
-class UserCreateRepository(BaseRepository):
-    def create(self, params: UserCreateRepositoryParams) -> User:
-        user: User = User()
-        
+class UserFindAndUpdateRepository(BaseRepository):
+    def update(self, params: UserFindAndUpdateRepositoryParams) -> User:
+        getting_repository: IFindRepository[
+            UserFindRepositoryParams, User
+        ] = UserFindRepository(self.session)
+
+        user: User = getting_repository.find_one(params)
+
         user.rg = CharUtils.keep_only_number(params.document_rg)
         user.cpf = CharUtils.keep_only_number(params.document)
         user.data_nascimento = params.birthday

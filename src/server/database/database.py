@@ -34,7 +34,7 @@ class Database:
         return Base
 
     def create_session(self, **options: Dict[str, Any]) -> Session:
-        return Session(self.__engine, **options)
+        return Session(self.__engine, autoflush=True, **options)
 
     def migrate(self, drop_tables: bool = False) -> None:
         if drop_tables:

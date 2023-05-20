@@ -6,7 +6,6 @@ import json
 
 from server import App
 from server.amqp import AMQPConsumer
-from services.user import UserFindingService
 
 
 QUEUE_OCCURRENCE_INTEGRATION_NAME: str = "queue_occurrences_integration"

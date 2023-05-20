@@ -1,25 +1,45 @@
+from typing import Sequence
 from dataclasses import dataclass
 
 from server import App
-from patterns.repository import IDeleteRepository
-from repositories.user import UserDeleteRepository, UserDeleteRepositoryParams
+from patterns.repository import IFindManyRepository, IFindRepository
+from models import User, Vehicle
+from repositories.user import UserFindRepository, UserFindRepositoryParams
+from repositories.vehicle import VehicleFindManyRepository, VehicleFindManyRepositoryParams
 
 
 @dataclass
-class UserDeleteProps:
+class UserFindProps:
     user_uuid: str
+
+@dataclass
+class VehicleFindManyProps:
+    user: User
 
 
 class UserExclusionService:
     def __init__(self, user_uuid: str) -> None:
-        self.__props: UserDeleteProps = UserDeleteProps(user_uuid)
+        self.__user_uuid: str = user_uuid
 
     def execute(self) -> None:
         with App.databases.create_session() as session:
-            repository: IDeleteRepository[
-                UserDeleteRepositoryParams, None
-            ] = UserDeleteRepository(session)
+            user_find_repo: IFindRepository[
+                UserFindRepositoryParams, User
+            ] = UserFindRepository(session)
 
-            repository.delete(self.__props)
+            vehicle_find_many_repo: IFindManyRepository[
+                VehicleFindManyRepositoryParams, Vehicle
+            ] = VehicleFindManyRepository(session)
+
+            user: User = user_find_repo.find_one(UserFindProps(self.__user_uuid))
+
+            vehicles: Sequence[Vehicle] = vehicle_find_many_repo.find_many(
+                VehicleFindManyProps(user)
+            )
+
+            for vehicle in vehicles: 
+                session.delete(vehicle)
+
+            session.delete(user)
 
             session.commit()

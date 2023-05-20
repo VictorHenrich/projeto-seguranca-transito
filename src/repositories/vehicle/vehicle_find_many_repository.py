@@ -4,12 +4,12 @@ from patterns.repository import BaseRepository
 from models import Vehicle, User
 
 
-class VehicleFindRepositoryParams(Protocol):
+class VehicleFindManyRepositoryParams(Protocol):
     user: User
 
 
 class VehicleFindManyRepository(BaseRepository):
-    def find_many(self, params: VehicleFindRepositoryParams) -> Sequence[Vehicle]:
+    def find_many(self, params: VehicleFindManyRepositoryParams) -> Sequence[Vehicle]:
         return (
             self.session.query(Vehicle)
             .join(User, User.id == Vehicle.id_usuario)

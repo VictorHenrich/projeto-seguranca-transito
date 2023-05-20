@@ -16,7 +16,6 @@ class UserCreateProps:
     email: str
     password: str
     document: str
-    birthday: Optional[date]
     document_rg: str
     telephone: str
     state_issuer: str
@@ -25,6 +24,7 @@ class UserCreateProps:
     address_district: str
     address_street: str
     address_number: str
+    birthday: date
 
 
 @dataclass
@@ -32,7 +32,7 @@ class VehicleCreateProps:
     user: User
     plate: str
     renavam: str
-    vehicle_type: Literal["AUTOMOVEL", "MOTOCICLETA"]
+    vehicle_type: Literal["CARRO", "MOTO"]
     brand: Optional[str] = None
     model: Optional[str] = None
     color: Optional[str] = None
@@ -48,7 +48,7 @@ class UserCreationService:
         email: str,
         password: str,
         document: str,
-        birthday: Optional[date],
+        birthday: date,
         document_rg: str,
         telephone: str,
         state_issuer: str,
@@ -60,19 +60,19 @@ class UserCreationService:
         vehicles: Sequence[Mapping[str, Any]],
     ):
         self.__user_create_props: UserCreateProps = UserCreateProps(
-            name,
-            email,
-            password,
-            document,
-            birthday,
-            document_rg,
-            telephone,
-            state_issuer,
-            address_state,
-            address_city,
-            address_district,
-            address_street,
-            address_number,
+            name=name,
+            email=email,
+            password=password,
+            document=document,
+            birthday=birthday,
+            document_rg=document_rg,
+            telephone=telephone,
+            state_issuer=state_issuer,
+            address_state=address_state,
+            address_city=address_city,
+            address_district=address_district,
+            address_street=address_street,
+            address_number=address_number,
         )
 
         self.__vehicle_create_props: Sequence[Mapping[str, Any]] = vehicles
@@ -87,10 +87,10 @@ class UserCreationService:
     def __create_vehicles(self, session: Session, user: User) -> None:
         for vehicle in self.__vehicle_create_props:
             vehicle_create_props: VehicleCreateProps = VehicleCreateProps(
-                user,
-                vehicle["plate"],
-                vehicle["renavam"],
-                vehicle["vehicle_type"],
+                user=user,
+                plate=vehicle["plate"],
+                renavam=vehicle["renavam"],
+                vehicle_type=vehicle["vehicle_type"],
                 brand=vehicle.get("brand"),
                 chassi=vehicle.get("chassi"),
                 color=vehicle.get("color"),
@@ -105,10 +105,12 @@ class UserCreationService:
 
             vehicle_create_repository.create(vehicle_create_props)
 
-    def execute(self) -> None:
+    def execute(self) -> User:
         with App.databases.create_session() as session:
             new_user: User = self.__create_user(session)
 
             self.__create_vehicles(session, new_user)
 
             session.commit()
+
+            return new_user
