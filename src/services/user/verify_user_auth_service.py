@@ -46,7 +46,9 @@ class VerifyUserAuthService:
             raise ExpiredTokenError()
 
         with App.databases.create_session() as session:
-            user_find: IFindRepository[UserFindRepositoryParams, User] = UserFindRepository(session)
+            user_find: IFindRepository[
+                UserFindRepositoryParams, User
+            ] = UserFindRepository(session)
 
             user: User = user_find.find_one(FindUserProps(payload.user_uuid))
 

@@ -5,7 +5,10 @@ from datetime import date
 from server import App
 from models import User
 from patterns.repository import IUpdateRepository
-from repositories.user import UserFindAndUpdateRepository, UserFindAndUpdateRepositoryParams
+from repositories.user import (
+    UserFindAndUpdateRepository,
+    UserFindAndUpdateRepositoryParams,
+)
 
 
 @dataclass

@@ -6,5 +6,5 @@ class BaseExceptionApplication(Exception):
         message: str = "".join(messages)
 
         super().__init__(message)
-        
+
         logging.error(message)

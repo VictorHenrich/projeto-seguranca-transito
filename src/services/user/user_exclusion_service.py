@@ -5,12 +5,16 @@ from server import App
 from patterns.repository import IFindManyRepository, IFindRepository
 from models import User, Vehicle
 from repositories.user import UserFindRepository, UserFindRepositoryParams
-from repositories.vehicle import VehicleFindManyRepository, VehicleFindManyRepositoryParams
+from repositories.vehicle import (
+    VehicleFindManyRepository,
+    VehicleFindManyRepositoryParams,
+)
 
 
 @dataclass
 class UserFindProps:
     user_uuid: str
+
 
 @dataclass
 class VehicleFindManyProps:
@@ -37,7 +41,7 @@ class UserExclusionService:
                 VehicleFindManyProps(user)
             )
 
-            for vehicle in vehicles: 
+            for vehicle in vehicles:
                 session.delete(vehicle)
 
             session.delete(user)

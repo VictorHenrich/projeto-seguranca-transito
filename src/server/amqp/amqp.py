@@ -4,6 +4,7 @@ from pika import ConnectionParameters
 
 from .consumer import AMQPConsumer
 from .publisher import AMQPPublisher
+from exceptions import ConnectionAMQPNotDefined
 
 
 TypeAMQPConsumer: TypeAlias = type[AMQPConsumer]
@@ -34,7 +35,7 @@ class AMQPServer:
         )
 
         if not connection_:
-            raise Exception("Connection is not defined!")
+            raise ConnectionAMQPNotDefined()
 
         publiser: AMQPPublisher = AMQPPublisher(
             publisher_name,
@@ -61,7 +62,7 @@ class AMQPServer:
             )
 
             if not connection_:
-                raise Exception("Connection is not defined!")
+                raise ConnectionAMQPNotDefined()
 
             consumer: AMQPConsumer = cls(
                 consumer_name, connection_, queue_name, ack, arguments

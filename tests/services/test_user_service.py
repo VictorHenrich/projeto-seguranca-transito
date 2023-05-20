@@ -13,11 +13,11 @@ from src.services.user import (
     UserCreationService,
     UserUpdateService,
     UserAuthenticationService,
-    UserExclusionService
+    UserExclusionService,
 )
 
 
-class TestUserService(TestCase):
+class UserServiceCase(TestCase):
     def setUp(self) -> None:
         self.__user_payload: Mock = Mock()
 
@@ -36,22 +36,22 @@ class TestUserService(TestCase):
         self.__user_payload.telephone = "48999197582"
         self.__user_payload.id_uuid = None
 
-    def __test_creation(self) -> None:
+    def test_creation(self) -> None:
         vehicle_payload: MagicMock = MagicMock()
 
         vehicle_payload.__getitem__.side_effect = lambda key: {
             "plate": "XYZ9999",
             "renavam": "12345678901",
-            "vehicle_type": "CARRO"
+            "vehicle_type": "CARRO",
         }[key]
 
         vehicle_payload.get.side_effect = lambda key, default=None: {
             "brand": None,
             "chassi": None,
             "color": None,
-            "model":  None,
+            "model": None,
             "have_safe": False,
-            "year": None
+            "year": None,
         }.get(key, default)
 
         self.__user_payload.vehicles = [vehicle_payload]
@@ -70,7 +70,7 @@ class TestUserService(TestCase):
             document_rg=self.__user_payload.document_rg,
             state_issuer=self.__user_payload.state_issuer,
             telephone=self.__user_payload.telephone,
-            vehicles=self.__user_payload.vehicles
+            vehicles=self.__user_payload.vehicles,
         )
 
         user_creation_service.execute()
@@ -106,7 +106,7 @@ class TestUserService(TestCase):
             address_street=self.__user_payload.address_street,
             document_rg=self.__user_payload.document_rg,
             state_issuer=self.__user_payload.state_issuer,
-            telephone=self.__user_payload.telephone
+            telephone=self.__user_payload.telephone,
         )
 
         update_service.execute()

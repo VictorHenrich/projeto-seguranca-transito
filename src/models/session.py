@@ -16,5 +16,3 @@ class Session(BaseModel):
     id_socket: Mapped[Optional[str]] = mapped_column(String(300))
     data_login: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
     data_logout: Mapped[Optional[datetime]] = mapped_column(DateTime)
-
-

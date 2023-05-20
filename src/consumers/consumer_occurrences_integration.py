@@ -6,6 +6,8 @@ import json
 
 from server import App
 from server.amqp import AMQPConsumer
+from services.integrations import OccurrenceIntegrationProcessService
+from patterns.service import IService
 
 
 QUEUE_OCCURRENCE_INTEGRATION_NAME: str = "queue_occurrences_integration"
@@ -38,3 +40,9 @@ class ConsumerOccurrencesIntegration(AMQPConsumer):
 
     def on_message_queue(self, body: bytes, **kwargs: Any) -> None:
         data: Mapping[str, Any] = json.loads(body)
+
+        occurrence_integration_service: IService[
+            None
+        ] = OccurrenceIntegrationProcessService(data["occurrence_uuid"])
+
+        occurrence_integration_service.execute()

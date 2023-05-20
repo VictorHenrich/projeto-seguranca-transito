@@ -25,7 +25,7 @@ class UserCreateRepositoryParams(Protocol):
 class UserCreateRepository(BaseRepository):
     def create(self, params: UserCreateRepositoryParams) -> User:
         user: User = User()
-        
+
         user.rg = CharUtils.keep_only_number(params.document_rg)
         user.cpf = CharUtils.keep_only_number(params.document)
         user.data_nascimento = params.birthday
