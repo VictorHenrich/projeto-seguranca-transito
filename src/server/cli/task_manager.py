@@ -1,4 +1,4 @@
-from typing import TypeAlias, Dict, Sequence
+from typing import TypeAlias, Mapping, Collection
 from argparse import ArgumentParser, _SubParsersAction
 
 from .task import Task
@@ -6,7 +6,7 @@ from patterns.command import ICommand
 
 
 ITask: TypeAlias = ICommand[None]
-Tasks: TypeAlias = Dict[str, ITask]
+Tasks: TypeAlias = Mapping[str, ITask]
 
 
 class TaskManager:
@@ -30,14 +30,14 @@ class TaskManager:
     def add_task(self, task: Task):
         self.__tasks[task.name] = task
 
-        names: Sequence[str] = f"-{task.shortname}", f"--{task.name}"
+        names: Collection[str] = f"-{task.shortname}", f"--{task.name}"
 
         self.__argument_parser.add_argument(
             *names, help=task.description, action="store_true"
         )
 
-    def execute(self, props: Sequence[str]) -> None:
-        tasks: Sequence[ITask] = [
+    def execute(self, props: Collection[str]) -> None:
+        tasks: Collection[ITask] = [
             task for task_name, task in self.__tasks.items() if task_name in props
         ]
 

@@ -1,4 +1,4 @@
-from typing import Protocol, Type, Union, TypeAlias, Callable, Dict
+from typing import Protocol, Type, Union, TypeAlias, Callable, Mapping
 
 from flask import Flask, request, Request
 from flask_socketio import SocketIO
@@ -32,7 +32,7 @@ class SocketServer(SocketIO):
 
         self.__global_request: Request = request
 
-        self.__controllers: Dict[str, Controller] = {}
+        self.__controllers: Mapping[str, Controller] = {}
 
         super().__init__(self.__app, cors_allowed_origins="*")
 

@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Collection
 from dataclasses import dataclass
 
 from server import App
@@ -37,7 +37,7 @@ class UserExclusionService:
 
             user: User = user_find_repo.find_one(UserFindProps(self.__user_uuid))
 
-            vehicles: Sequence[Vehicle] = vehicle_find_many_repo.find_many(
+            vehicles: Collection[Vehicle] = vehicle_find_many_repo.find_many(
                 VehicleFindManyProps(user)
             )
 

@@ -1,4 +1,4 @@
-from typing import Optional, Sequence, Mapping, Any, Literal
+from typing import Optional, Collection, Mapping, Any, Literal
 from datetime import date
 from dataclasses import dataclass
 from sqlalchemy.orm import Session
@@ -57,7 +57,7 @@ class UserCreationService:
         address_district: str,
         address_street: str,
         address_number: str,
-        vehicles: Sequence[Mapping[str, Any]],
+        vehicles: Collection[Mapping[str, Any]],
     ):
         self.__user_create_props: UserCreateProps = UserCreateProps(
             name=name,
@@ -75,7 +75,7 @@ class UserCreationService:
             address_number=address_number,
         )
 
-        self.__vehicle_create_props: Sequence[Mapping[str, Any]] = vehicles
+        self.__vehicle_create_props: Collection[Mapping[str, Any]] = vehicles
 
     def __create_user(self, session: Session) -> User:
         user_create_repository: ICreateRepository[

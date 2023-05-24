@@ -1,4 +1,4 @@
-from typing import Callable, Any, Dict, TypeAlias, Optional
+from typing import Callable, Any, Mapping, TypeAlias, Optional
 from pika import ConnectionParameters
 
 from .http import HttpServer, HttpServerBuilder
@@ -9,7 +9,7 @@ from .amqp import AMQPServer, ConnectionBuilder
 
 
 Target: TypeAlias = Callable[[None], None]
-ParamDict: TypeAlias = Dict[str, Any]
+ParamDict: TypeAlias = Mapping[str, Any]
 
 
 class App:
@@ -71,7 +71,7 @@ class App:
         )
 
     @classmethod
-    def __create_databases(cls, data: Dict[str, ParamDict]) -> None:
+    def __create_databases(cls, data: Mapping[str, ParamDict]) -> None:
         databases: Databases = Databases()
 
         for base_name, base_props in data.items():

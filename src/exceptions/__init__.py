@@ -5,3 +5,4 @@ from .user_not_found import UserNotFoundError
 from .occurrence_not_found import OccurrenceNotFoundError
 from .database_notfound import DatabaseNotFoundError
 from .connection_amqp_not_defined import ConnectionAMQPNotDefined
+from .middleware_error_value import MiddlewareErrorValue

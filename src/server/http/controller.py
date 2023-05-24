@@ -1,12 +1,12 @@
 from abc import ABC
-from typing import TypeAlias, Sequence, Dict, Any
+from typing import TypeAlias, Collection, Mapping, Any
 from flask_restful import Resource
 from flask import Response
 from .responses_default import ResponseNotFound
 
 
-Args: TypeAlias = Sequence[Any]
-Kwargs: TypeAlias = Dict[str, Any]
+Args: TypeAlias = Collection[Any]
+Kwargs: TypeAlias = Mapping[str, Any]
 
 
 class Controller(Resource, ABC):

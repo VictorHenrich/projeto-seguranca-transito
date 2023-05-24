@@ -1,4 +1,4 @@
-from typing import Protocol, Generic, TypeVar, Sequence
+from typing import Protocol, Generic, TypeVar, Collection
 
 from models import BaseModel
 
@@ -8,5 +8,5 @@ M = TypeVar("M", bound=BaseModel, covariant=True)
 
 
 class IFindManyRepository(Protocol, Generic[T, M]):
-    def find_many(self, params: T) -> Sequence[M]:
+    def find_many(self, params: T) -> Collection[M]:
         ...

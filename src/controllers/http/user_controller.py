@@ -1,6 +1,6 @@
-from typing import Dict, Any, Optional
+from typing import Mapping, Any, Collection
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import date
 
 from server import App
 from server.http import (
@@ -20,16 +20,43 @@ from services.user import (
     UserExclusionService,
     UserUpdateService,
 )
+from server.http.responses_default import ResponseFailure
+from utils import DateUtils
 
 
 @dataclass
-class UserRegistrationRequestBody:
+class UserCreateBody:
     nome: str
     email: str
-    cpf: str
     senha: str
-    data_nascimento: Optional[str] = None
-    status: bool = True
+    cpf: str
+    rg: str
+    estado_emissor: str
+    telefone: str
+    data_nascimento: str
+    endereco_uf: str
+    endereco_cidade: str
+    endereco_bairro: str
+    endereco_logradouro: str
+    endereco_numero: str
+    veiculos: Collection[Mapping[str, Any]]
+
+
+@dataclass
+class UserUpdateBody:
+    nome: str
+    email: str
+    senha: str
+    cpf: str
+    rg: str
+    estado_emissor: str
+    telefone: str
+    data_nascimento: str
+    endereco_uf: str
+    endereco_cidade: str
+    endereco_bairro: str
+    endereco_logradouro: str
+    endereco_numero: str
 
 
 body_request_middleware: BodyRequestValidationMiddleware = (
@@ -37,47 +64,73 @@ body_request_middleware: BodyRequestValidationMiddleware = (
 )
 user_auth_middleware: UserAuthenticationMiddleware = UserAuthenticationMiddleware()
 
-body_request_params: BodyRequestValidationProps = BodyRequestValidationProps(
-    UserRegistrationRequestBody
-)
-
 
 @App.http.add_controller("/usuario/crud", "/usuario/crud/<uuid:user_hash>")
 class UserController(Controller):
-    @body_request_middleware.apply(body_request_params)
-    def post(self, body_request: UserRegistrationRequestBody) -> ResponseDefaultJSON:
-        service: IService[None] = UserCreationService(
+    @body_request_middleware.apply(BodyRequestValidationProps(UserCreateBody))
+    def post(self, body_request: UserCreateBody) -> ResponseDefaultJSON:
+        try:
+            birthday: date = DateUtils.parse_string_to_datetime(
+                body_request.data_nascimento
+            ).date()
+
+        except:
+            return ResponseFailure(data="Data passada é inválida!")
+
+        service: IService[User] = UserCreationService(
             name=body_request.nome,
-            document=body_request.cpf,
-            birthday=None,
             email=body_request.email,
             password=body_request.senha,
+            document=body_request.cpf,
+            document_rg=body_request.rg,
+            state_issuer=body_request.estado_emissor,
+            telephone=body_request.telefone,
+            birthday=birthday,
+            address_state=body_request.endereco_uf,
+            address_city=body_request.endereco_cidade,
+            address_district=body_request.endereco_bairro,
+            address_street=body_request.endereco_logradouro,
+            address_number=body_request.endereco_numero,
+            vehicles=body_request.veiculos,
         )
 
         service.execute()
 
         return ResponseSuccess()
 
-    @user_auth_middleware.apply(None)
-    @body_request_middleware.apply(body_request_params)
-    def put(
-        self, auth: User, body_request: UserRegistrationRequestBody
-    ) -> ResponseDefaultJSON:
+    @user_auth_middleware.apply()
+    @body_request_middleware.apply(BodyRequestValidationProps(UserUpdateBody))
+    def put(self, auth: User, body_request: UserUpdateBody) -> ResponseDefaultJSON:
+        try:
+            birthday: date = DateUtils.parse_string_to_datetime(
+                body_request.data_nascimento
+            ).date()
+
+        except:
+            return ResponseFailure(data="Data passada é inválida!")
+
         service: IService[None] = UserUpdateService(
             name=body_request.nome,
-            document=body_request.cpf,
-            birthday=datetime.now().date(),
             email=body_request.email,
             password=body_request.senha,
+            document=body_request.cpf,
+            document_rg=body_request.rg,
+            state_issuer=body_request.estado_emissor,
+            telephone=body_request.telefone,
+            birthday=birthday,
+            address_state=body_request.endereco_uf,
+            address_city=body_request.endereco_cidade,
+            address_district=body_request.endereco_bairro,
+            address_street=body_request.endereco_logradouro,
+            address_number=body_request.endereco_numero,
             user_uuid=auth.id_uuid,
-            status=body_request.status,
         )
 
         service.execute()
 
         return ResponseSuccess()
 
-    @user_auth_middleware.apply(None)
+    @user_auth_middleware.apply()
     def delete(self, auth: User) -> ResponseDefaultJSON:
         service: IService[None] = UserExclusionService(user_uuid=auth.id_uuid)
 
@@ -85,9 +138,9 @@ class UserController(Controller):
 
         return ResponseSuccess()
 
-    @user_auth_middleware.apply(None)
+    @user_auth_middleware.apply()
     def get(self, auth: User) -> ResponseDefaultJSON:
-        response: Dict[str, Any] = {
+        response: Mapping[str, Any] = {
             "nome": auth.nome,
             "email": auth.email,
             "cpf": auth.cpf,

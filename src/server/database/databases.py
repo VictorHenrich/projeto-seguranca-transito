@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Dict, Any, Optional
+from typing import Mapping, Any, Optional
 from sqlalchemy.orm.session import Session
 from .database import Database
 from exceptions import DatabaseNotFoundError
@@ -7,10 +7,10 @@ from exceptions import DatabaseNotFoundError
 
 class Databases:
     def __init__(self) -> None:
-        self.__bases: Dict[str, Database] = {}
+        self.__bases: Mapping[str, Database] = {}
 
     @property
-    def bases(self) -> Dict[str, Database]:
+    def bases(self) -> Mapping[str, Database]:
         return self.__bases
 
     def get_database(self, database_name: Optional[str] = None) -> Database:

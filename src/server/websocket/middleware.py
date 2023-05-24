@@ -1,10 +1,10 @@
-from typing import Any, Dict, Optional, Callable, TypeAlias, TypeVar, Generic
+from typing import Any, Mapping, Optional, Callable, TypeAlias, TypeVar, Generic
 from abc import ABC, abstractmethod
 
 
 T = TypeVar("T")
 
-HandlerReturn: TypeAlias = Optional[Dict[str, Any]]
+HandlerReturn: TypeAlias = Optional[Mapping[str, Any]]
 Method: TypeAlias = Callable[[Any], Any]
 Decorator: TypeAlias = Callable[[Method], Method]
 

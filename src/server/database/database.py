@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Type
+from typing import Any, Mapping, Optional, Type
 from sqlalchemy.engine import create_engine, Engine
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm.session import Session
@@ -33,7 +33,7 @@ class Database:
 
         return Base
 
-    def create_session(self, **options: Dict[str, Any]) -> Session:
+    def create_session(self, **options: Mapping[str, Any]) -> Session:
         return Session(self.__engine, autoflush=True, **options)
 
     def migrate(self, drop_tables: bool = False) -> None:

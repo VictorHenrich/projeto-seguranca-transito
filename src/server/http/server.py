@@ -1,12 +1,12 @@
 from typing import (
     Any,
-    Dict,
+    Mapping,
     Union,
     Type,
     Callable,
     TypeAlias,
     Protocol,
-    Sequence,
+    Collection,
     Optional,
 )
 from flask import Flask, Request, request
@@ -16,7 +16,7 @@ from flask_restful import Api
 from .controller import Controller
 
 
-Kwargs: TypeAlias = Dict[str, Any]
+Kwargs: TypeAlias = Mapping[str, Any]
 
 
 class HttpServerConfig(Protocol):
@@ -64,7 +64,7 @@ class HttpServer(Api):
         )
 
     def add_controller(
-        self, *urls: Sequence[str], **kwargs: Kwargs
+        self, *urls: Collection[str], **kwargs: Kwargs
     ) -> Callable[[Type[Controller]], Type[Controller]]:
         def wrapper(cls: Type[Controller]) -> Type[Controller]:
             self.add_resource(cls, *urls, **kwargs)

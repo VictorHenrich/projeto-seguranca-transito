@@ -1,4 +1,4 @@
-from typing import Union, Dict, TypeAlias, Sequence, Type, Callable, Tuple
+from typing import Union, Mapping, TypeAlias, Collection, Type, Callable, Tuple
 from argparse import ArgumentParser, Namespace, _SubParsersAction
 
 from patterns.command import ICommand
@@ -6,7 +6,7 @@ from .task_manager import TaskManager
 from .task import Task
 
 
-ITaskManager: TypeAlias = ICommand[Sequence[str]]
+ITaskManager: TypeAlias = ICommand[Collection[str]]
 DecoratorAddTask: TypeAlias = Callable[[Type[Task]], Type[Task]]
 
 
@@ -18,7 +18,7 @@ class ManagerController:
 
         self.__subparser: _SubParsersAction = subparser
 
-        self.__managers: Dict[str, ITaskManager] = {}
+        self.__managers: Mapping[str, ITaskManager] = {}
 
     def __handle_parsers(
         self, name: str, description: str, version: Union[str, int]
@@ -76,7 +76,7 @@ class ManagerController:
             self.__argument.print_help()
 
         else:
-            args: Sequence[str] = [
+            args: Collection[str] = [
                 key for key, value in namespaces.__dict__.items() if value is True
             ]
 

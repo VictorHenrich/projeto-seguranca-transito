@@ -1,12 +1,12 @@
 from jwt import PyJWT
-from typing import Sequence, TypeAlias, Any, Dict, Type, Optional
+from typing import Collection, TypeAlias, Any, Mapping, Type, Optional
 
 
-DictMapping: TypeAlias = Dict[str, Any]
+DictMapping: TypeAlias = Mapping[str, Any]
 
 
 class JWTUtils:
-    algorithm: Sequence[str] = ["HS256"]
+    algorithm: Collection[str] = ["HS256"]
 
     @classmethod
     def decode(

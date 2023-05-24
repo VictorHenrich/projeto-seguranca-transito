@@ -1,4 +1,4 @@
-from typing import Type, TypeAlias, TypeVar, Dict, Any
+from typing import Type, TypeAlias, TypeVar, Mapping, Any
 from dataclasses import dataclass
 
 from server import App
@@ -7,8 +7,8 @@ from server.http import HttpMiddleware, ResponseDefaultJSON, ResponseFailure
 
 T = TypeVar("T")
 
-JsonData: TypeAlias = Dict[str, Any]
-ParamsData: TypeAlias = Dict[str, T]
+JsonData: TypeAlias = Mapping[str, Any]
+ParamsData: TypeAlias = Mapping[str, T]
 
 
 @dataclass

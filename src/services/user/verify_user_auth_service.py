@@ -2,8 +2,9 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from server import App
-from src.utils.jwt import JWTUtils
+from utils.jwt import JWTUtils
 from utils import JWTUtils
+from utils.entities import PayloadUserJWT
 from patterns.repository import IFindRepository
 from models import User
 from repositories.user import UserFindRepository, UserFindRepositoryParams
@@ -12,7 +13,6 @@ from exceptions import (
     TokenTypeNotBearerError,
     ExpiredTokenError,
 )
-from utils.entities import PayloadUserJWT
 
 
 @dataclass

@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import List, Mapping, Any
 from dataclasses import dataclass
 from uuid import UUID
 
@@ -128,7 +128,7 @@ class OccurrenceController(Controller):
             occurrence_listing_service_props
         )
 
-        response: List[Dict[str, Any]] = [
+        response: List[Mapping[str, Any]] = [
             {
                 "description": occurrence.descricao,
                 "obs": occurrence.obs,
