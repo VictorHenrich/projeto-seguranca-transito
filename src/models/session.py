@@ -11,7 +11,10 @@ class Session(BaseModel):
     __tablename__: str = "sessoes"
 
     id_usuario: Mapped[int] = mapped_column(
-        Integer, ForeignKey(f"{User.__tablename__}.id"), nullable=False
+        Integer,
+        ForeignKey(f"{User.__tablename__}.id"),
+        nullable=False,
+        primary_key=True,
     )
     id_socket: Mapped[Optional[str]] = mapped_column(String(300))
     data_login: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
