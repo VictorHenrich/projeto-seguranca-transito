@@ -1,8 +1,7 @@
-from typing import Tuple, TypeAlias, Literal, Awaitable
+from typing import Tuple, TypeAlias, Literal
 from dataclasses import dataclass
 from sqlalchemy.orm import Session
 import logging
-import asyncio
 
 from server import App
 from patterns.repository import IAggregateRepository, IUpdateRepository

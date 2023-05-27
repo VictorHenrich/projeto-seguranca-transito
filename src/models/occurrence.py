@@ -1,5 +1,5 @@
 from typing import Optional
-from sqlalchemy import String, Integer, DateTime, ForeignKey
+from sqlalchemy import String, Integer, DateTime, ForeignKey, Text
 from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime
 
@@ -17,8 +17,7 @@ class Occurrence(BaseModel):
     id_veiculo: Mapped[int] = mapped_column(
         Integer, ForeignKey(f"{Vehicle.__tablename__}.id"), nullable=False
     )
-    descricao: Mapped[str] = mapped_column(String(200), nullable=False)
-    obs: Mapped[str] = mapped_column(String(5000))
+    descricao: Mapped[str] = mapped_column(Text, nullable=False)
     codigo_externo: Mapped[Optional[str]] = mapped_column(String(100))
     data_cadastro: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, default=datetime.now
@@ -29,5 +28,5 @@ class Occurrence(BaseModel):
     endereco_bairro: Mapped[str] = mapped_column(String(200), nullable=False)
     endereco_logragouro: Mapped[str] = mapped_column(String(300), nullable=False)
     endereco_numero: Mapped[str] = mapped_column(String(10), nullable=False)
-    latitude: Mapped[str] = mapped_column(String(100), nullable=False)
-    longitude: Mapped[str] = mapped_column(String(100), nullable=False)
+    latitude: Mapped[str] = mapped_column(String(300), nullable=False)
+    longitude: Mapped[str] = mapped_column(String(300), nullable=False)

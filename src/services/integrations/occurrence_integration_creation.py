@@ -276,7 +276,7 @@ class OccurrenceIntegrationCreationService:
 
     async def __add_acident(self, page: Page) -> None:
         message_body: str = (
-            f"Fato ocorrido: {self.__occurrence.obs}\n\n"
+            f"Fato ocorrido: {self.__occurrence.descricao}\n\n"
             + f"Foram evidenciados as seguintes imagens: \n"
             + f"Foram evidenciados os seguintes vídeos: \n"
         )

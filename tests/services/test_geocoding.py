@@ -10,7 +10,7 @@ from src.patterns.service import IService
 from src.services.integrations import GeocodingService, GeocodingPayload
 
 
-class TestGeocoding(TestCase):
+class GeocodingServiceCase(TestCase):
     def test_search(self):
         geocoding_payload: Mock = Mock()
 

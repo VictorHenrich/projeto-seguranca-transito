@@ -15,10 +15,9 @@ class OccurrenceServiceCase(TestCase):
     def setUp(self) -> None:
         self.__occurrence_payload: Mock = Mock()
 
-        self.__occurrence_payload.user_uuid = "248312c5-1980-43d1-a940-1673340eb9f3"
-        self.__occurrence_payload.vehicle_uuid = "95a2a8cc-57e1-4dc0-92be-9c491e90217e"
+        self.__occurrence_payload.user_uuid = "e3eb578a-f643-482d-ac73-f290b70041d5"
+        self.__occurrence_payload.vehicle_uuid = "48b5cbd1-928e-4ce1-94c6-e7b57ed8dc3a"
         self.__occurrence_payload.description = "EU BATI MEU CARRO"
-        self.__occurrence_payload.obs = "ACONTECEU TAL TAL E TAL COISA"
         self.__occurrence_payload.lat = -28.4400207
         self.__occurrence_payload.lon = -48.9545278
         self.__occurrence_payload.created = datetime.now()
@@ -30,7 +29,6 @@ class OccurrenceServiceCase(TestCase):
             description=self.__occurrence_payload.description,
             lat=self.__occurrence_payload.lat,
             lon=self.__occurrence_payload.lon,
-            obs=self.__occurrence_payload.obs,
             created=self.__occurrence_payload.created,
         )
 

@@ -26,7 +26,6 @@ class OccurrenceCreationProps:
     user: User
     vehicle: Vehicle
     description: str
-    obs: str
     address_state: str
     address_city: str
     address_district: str
@@ -54,7 +53,6 @@ class OccurrenceCreationService:
         user_uuid: str,
         vehicle_uuid: str,
         description: str,
-        obs: str,
         lat: str,
         lon: str,
         created: datetime,
@@ -62,7 +60,6 @@ class OccurrenceCreationService:
         self.__user_uuid: str = user_uuid
         self.__vehicle_uuid: str = vehicle_uuid
         self.__description: str = description
-        self.__obs: str = obs
         self.__lat: str = lat
         self.__lon: str = lon
         self.__created: datetime = created
@@ -102,7 +99,6 @@ class OccurrenceCreationService:
                 user,
                 vehicle,
                 self.__description,
-                self.__obs,
                 address.state,
                 address.city,
                 address.district,

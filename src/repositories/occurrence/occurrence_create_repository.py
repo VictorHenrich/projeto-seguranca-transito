@@ -9,7 +9,6 @@ class OccurrenceCreateRepositoryParams(Protocol):
     user: User
     vehicle: Vehicle
     description: str
-    obs: str
     address_state: str
     address_city: str
     address_district: str
@@ -27,7 +26,6 @@ class OccurrenceCreateRepository(BaseRepository):
         occurrence.id_usuario = params.user.id
         occurrence.id_veiculo = params.vehicle.id
         occurrence.descricao = params.description
-        occurrence.obs = params.obs
         occurrence.endereco_uf = params.address_state
         occurrence.endereco_cidade = params.address_city
         occurrence.endereco_bairro = params.address_district

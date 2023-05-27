@@ -14,7 +14,6 @@ class OccurrenceUpdateServiceProps:
     occurrence_uuid: str
     vehicle: Vehicle
     description: str
-    obs: str
     address_state: str
     address_city: str
     address_district: str
@@ -28,7 +27,6 @@ class OccurrenceUpdateService:
         occurrence_uuid: str,
         vehicle: Vehicle,
         description: str,
-        obs: str,
         address_state: str,
         address_city: str,
         address_district: str,
@@ -39,7 +37,6 @@ class OccurrenceUpdateService:
             occurrence_uuid,
             vehicle,
             description,
-            obs,
             address_state,
             address_city,
             address_district,
