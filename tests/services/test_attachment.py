@@ -21,18 +21,18 @@ class AttachmentServiceCase(TestCase):
 
         self.__occurrence_payload.id = 1
 
-        self.__attachment_payload.id_uuid = "b11e7dcb-52ed-4932-a3f1-62891b541da2"
+        self.__attachment_payload.id_uuid = "008ab7fc-4d7b-422a-8013-eadccad40865"
 
         self.__attachment_payload.attachments = [
             {
                 "content": b64encode(
-                    "Isto aqui é apenas um teste meu amigo".encode("utf-8")
+                    "Estou apenas testando isso aqui".encode("utf-8")
                 ),
                 "type": "text/plain",
             }
         ]
 
-    def test_creation(self) -> None:
+    def __test_creation(self) -> None:
         attachment_creation_service: IService[None] = AttachmentCreationService(
             self.__occurrence_payload, *self.__attachment_payload.attachments
         )

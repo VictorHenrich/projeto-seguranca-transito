@@ -289,7 +289,7 @@ class OccurrenceIntegrationCreationService:
             + f"Foram evidenciados as seguintes evidencias: \n"
             "\n".join(
                 [
-                    f"http://localhost/occurrence/attachment/{attachment.id_uuid}"
+                    f"http://localhost:5000/ocorrencia/anexos/{attachment.id_uuid}"
                     for attachment in self.__attachments
                 ]
             )

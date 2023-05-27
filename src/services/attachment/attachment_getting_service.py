@@ -1,6 +1,7 @@
-from typing import Mapping, Any
+from typing import IO
 from dataclasses import dataclass
 from sqlalchemy.orm import Session
+from io import BytesIO
 
 from server import App
 from patterns.repository import IFindRepository
@@ -16,6 +17,7 @@ class AttachmentFindProps:
     attachment_uuid: str
 
 
+
 class AttachmentGettingService:
     def __init__(self, attachment_uuid: str) -> None:
         self.__props: AttachmentFindRepositoryParams = AttachmentFindProps(
@@ -29,9 +31,13 @@ class AttachmentGettingService:
 
         return attachment_find_repo.find_one(self.__props)
 
-    def execute(self) -> Mapping[str, Any]:
+    def execute(self) -> IO:
         with App.databases.create_session() as session:
             attachment: Attachment = self.__get_attanchment(session)
 
-            with open(attachment.caminho_interno) as file:
-                return {"filename": file.name, "content": file.read()}
+            with open(attachment.caminho_interno, "rb") as file:
+                new_file = BytesIO(file.read())
+
+                new_file.name = file.name
+
+                return new_file
