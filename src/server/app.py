@@ -1,5 +1,6 @@
 from typing import Callable, Any, Mapping, TypeAlias, Optional
 from pika import ConnectionParameters
+import logging
 
 from .http import HttpServer, HttpServerBuilder
 from .websocket import SocketServer, SocketServerBuilder
@@ -10,6 +11,9 @@ from .amqp import AMQPServer, ConnectionBuilder
 
 Target: TypeAlias = Callable[[None], None]
 ParamDict: TypeAlias = Mapping[str, Any]
+
+
+logging.basicConfig(level=logging.INFO)
 
 
 class App:

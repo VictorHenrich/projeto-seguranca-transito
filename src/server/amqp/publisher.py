@@ -1,7 +1,8 @@
 from typing import Union, Mapping, Any
 from pika import ConnectionParameters, BasicProperties
 from pika.adapters.blocking_connection import BlockingChannel
-import json
+import logging
+
 from .abstract_amqp import AbstractAMQP
 
 
@@ -33,4 +34,4 @@ class AMQPPublisher(AbstractAMQP):
             properties=self.__properties,
         )
 
-        print(f"Publisher {self.__publisher_name} triggered an event!")
+        logging.info(f"Publisher {self.__publisher_name} triggered an event!")

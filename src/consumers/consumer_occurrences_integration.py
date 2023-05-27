@@ -2,6 +2,7 @@ from typing import Any, Mapping
 from pika import ConnectionParameters
 from pika.adapters.blocking_connection import BlockingChannel
 import json
+import logging
 
 
 from server import App
@@ -12,6 +13,7 @@ from patterns.service import IService
 
 QUEUE_OCCURRENCE_INTEGRATION_NAME: str = "queue_occurrences_integration"
 EXCHANGE_OCCURRENCE_INTEGRATION_NAME: str = "exchange_occurrence_integration"
+ROUTING_KEY_OCCURRENCE_INTEGRATION_NAME: str = "occurrence_integration"
 
 
 @App.amqp.add_consumer(
@@ -30,19 +32,27 @@ class ConsumerOccurrencesIntegration(AMQPConsumer):
 
         channel: BlockingChannel = self.get_channel()
 
-        channel.exchange_declare(EXCHANGE_OCCURRENCE_INTEGRATION_NAME)
+        channel.exchange_declare(
+            exchange=EXCHANGE_OCCURRENCE_INTEGRATION_NAME, exchange_type="direct"
+        )
 
         channel.queue_declare(QUEUE_OCCURRENCE_INTEGRATION_NAME)
 
         channel.queue_bind(
-            QUEUE_OCCURRENCE_INTEGRATION_NAME, EXCHANGE_OCCURRENCE_INTEGRATION_NAME
+            queue=QUEUE_OCCURRENCE_INTEGRATION_NAME,
+            exchange=EXCHANGE_OCCURRENCE_INTEGRATION_NAME,
+            routing_key=ROUTING_KEY_OCCURRENCE_INTEGRATION_NAME,
         )
 
     def on_message_queue(self, body: bytes, **kwargs: Any) -> None:
         data: Mapping[str, Any] = json.loads(body)
+
+        logging.info(f"Payload do consumer occurrences_integration: \n{data}")
 
         occurrence_integration_service: IService[
             None
         ] = OccurrenceIntegrationProcessService(data["occurrence_uuid"])
 
         occurrence_integration_service.execute()
+
+        logging.info(f"Mensagem consumida com sucesso!")

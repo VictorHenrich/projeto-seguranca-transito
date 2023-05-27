@@ -3,6 +3,8 @@ from abc import ABC, abstractmethod
 from pika import ConnectionParameters
 from pika.adapters.blocking_connection import BlockingChannel
 from pika.spec import Basic, BasicProperties
+import logging
+
 from .abstract_amqp import AbstractAMQP
 
 
@@ -36,7 +38,7 @@ class AMQPConsumer(AbstractAMQP, ABC):
             arguments=self.__arguments,
         )
 
-        print(
+        logging.info(
             f"Consumer {self.__name} running in {self.connection.host}:{self.connection.port}"
         )
 

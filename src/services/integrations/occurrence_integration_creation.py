@@ -300,4 +300,6 @@ class OccurrenceIntegrationCreationService:
             await self.__add_acident(page)
 
     def execute(self) -> None:
-        asyncio.get_event_loop().run_until_complete(self.__run())
+        event_loop: asyncio.AbstractEventLoop = asyncio.new_event_loop()
+
+        event_loop.run_until_complete(self.__run())

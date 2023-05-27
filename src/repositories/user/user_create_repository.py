@@ -41,5 +41,6 @@ class UserCreateRepository(BaseRepository):
         user.endereco_numero = CharUtils.keep_only_number(params.address_number)
 
         self.session.add(user)
+        self.session.flush()
 
         return user

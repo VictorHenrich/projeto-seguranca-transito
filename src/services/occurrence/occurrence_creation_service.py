@@ -17,6 +17,7 @@ from repositories.vehicle import VehicleFindRepository, VehicleFindRepositoryPar
 from services.integrations import GeocodingService, GeocodingPayload
 from consumers.consumer_occurrences_integration import (
     EXCHANGE_OCCURRENCE_INTEGRATION_NAME,
+    ROUTING_KEY_OCCURRENCE_INTEGRATION_NAME,
 )
 
 
@@ -127,17 +128,18 @@ class OccurrenceCreationService:
 
             session.commit()
 
-        if not occurrence:
-            raise Exception("Falha ao cadastrar ocorrência!")
+            if not occurrence:
+                raise Exception("Falha ao cadastrar ocorrência!")
 
-        consumer_payload: Mapping[str, Any] = {
-            "user_uuid": user.id_uuid,
-            "vehicle_uuid": vehicle.id_uuid,
-            "occurrence_uuid": occurrence.id_uuid,
-        }
+            consumer_payload: Mapping[str, Any] = {
+                "user_uuid": user.id_uuid,
+                "vehicle_uuid": vehicle.id_uuid,
+                "occurrence_uuid": occurrence.id_uuid,
+            }
 
-        App.amqp.create_publisher(
-            "publisher_occurrence_integration",
-            EXCHANGE_OCCURRENCE_INTEGRATION_NAME,
-            json.dumps(consumer_payload).encode("utf-8"),
-        )
+            App.amqp.create_publisher(
+                "publisher_occurrence_integration",
+                exchange=EXCHANGE_OCCURRENCE_INTEGRATION_NAME,
+                routing_key=ROUTING_KEY_OCCURRENCE_INTEGRATION_NAME,
+                body=json.dumps(consumer_payload).encode("utf-8"),
+            )
