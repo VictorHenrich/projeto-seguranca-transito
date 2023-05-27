@@ -32,7 +32,7 @@ class UserServiceCase(TestCase):
         self.__user_payload.address_number = "0"
         self.__user_payload.address_state = "sc"
         self.__user_payload.address_street = "rua antonio manuel dos santos"
-        self.__user_payload.state_issuer = "sc"
+        self.__user_payload.state_issuer = "santa catarina"
         self.__user_payload.telephone = "48999197582"
         self.__user_payload.id_uuid = None
 
