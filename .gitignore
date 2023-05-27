@@ -4,6 +4,8 @@
 
 ### Python ###
 
+Objects
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -133,8 +135,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-<<<<<<< HEAD
-=======
-
-# End of https://www.gitignore.io/api/python
->>>>>>> dev
