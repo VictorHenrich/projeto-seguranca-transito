@@ -1,4 +1,4 @@
-from typing import Optional, Mapping, Any
+from typing import Optional, Mapping, Any, Collection
 from dataclasses import dataclass
 from sqlalchemy.orm import Session
 from datetime import datetime
@@ -15,6 +15,7 @@ from repositories.occurrence import (
 from repositories.user import UserFindRepository, UserFindRepositoryParams
 from repositories.vehicle import VehicleFindRepository, VehicleFindRepositoryParams
 from services.integrations import GeocodingService, GeocodingPayload
+from services.attachment import AttachmentCreationService
 from consumers.consumer_occurrences_integration import (
     EXCHANGE_OCCURRENCE_INTEGRATION_NAME,
     ROUTING_KEY_OCCURRENCE_INTEGRATION_NAME,
@@ -56,6 +57,7 @@ class OccurrenceCreationService:
         lat: str,
         lon: str,
         created: datetime,
+        attachments: Collection[Mapping[str, Any]],
     ) -> None:
         self.__user_uuid: str = user_uuid
         self.__vehicle_uuid: str = vehicle_uuid
@@ -63,6 +65,7 @@ class OccurrenceCreationService:
         self.__lat: str = lat
         self.__lon: str = lon
         self.__created: datetime = created
+        self.__attachments: Collection[Mapping[str, Any]] = attachments
 
     def __find_user(self, session: Session) -> User:
         user_find_repository: IFindRepository[
@@ -110,6 +113,13 @@ class OccurrenceCreationService:
             )
         )
 
+    def __create_attachments(self, session: Session, occurrence: Occurrence) -> None:
+        attachment_create_service: IService[None] = AttachmentCreationService(
+            occurrence, *self.__attachments, session=session
+        )
+
+        attachment_create_service.execute()
+
     def execute(self) -> None:
         occurrence: Optional[Occurrence] = None
 
@@ -121,6 +131,8 @@ class OccurrenceCreationService:
             address: GeocodingPayload = self.__find_address()
 
             occurrence = self.__create_occurrence(session, user, vehicle, address)
+
+            self.__create_attachments(session, occurrence)
 
             session.commit()
 

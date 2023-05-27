@@ -12,7 +12,7 @@ from repositories.attachment import (
     AttachmentCreateRepository,
     AttachmentCreateRepositoryParams,
 )
-from models import Occurrence
+from models import Occurrence, Attachment
 
 
 LiteralKeyAttachment: TypeAlias = Literal["content", "type"]
@@ -40,7 +40,10 @@ class AttachmentCreationService:
         occurrence: Occurrence,
         *attachments: Mapping[LiteralKeyAttachment, Any],
         url: Optional[str] = None,
+        session: Optional[Session] = None,
     ) -> None:
+        self.__session: Optional[Session] = session
+
         self.__occurrence: Occurrence = occurrence
 
         self.__url: Optional[str] = url
@@ -59,7 +62,7 @@ class AttachmentCreationService:
             AttachmentCreationService.__INTERNAL_PATH.mkdir(parents=True)
 
         filename: str = str(
-            AttachmentCreationService.__INTERNAL_PATH / f"{uuid4()}.{extension}"
+            AttachmentCreationService.__INTERNAL_PATH / f"{uuid4()}{extension}"
         )
 
         filecontent: bytes = b64decode(attachment_payload.content)
@@ -71,7 +74,7 @@ class AttachmentCreationService:
 
     def __create_attachment_in_database(
         self, session: Session, internal_path: str
-    ) -> None:
+    ) -> Attachment:
         attachment_create_props: AttachmentCreateProps = AttachmentCreateProps(
             self.__occurrence, internal_path, self.__url
         )
@@ -80,13 +83,20 @@ class AttachmentCreationService:
             AttachmentCreateRepositoryParams, None
         ] = AttachmentCreateRepository(session)
 
-        attachment_create_repo.create(attachment_create_props)
+        return attachment_create_repo.create(attachment_create_props)
+
+    def __run(self, session: Session) -> None:
+        for attachment in self.__attachments:
+            internal_path: str = self.__attach_file(attachment)
+
+            self.__create_attachment_in_database(session, internal_path)
+
+            session.commit()
 
     def execute(self) -> None:
-        with App.databases.create_session() as session:
-            for attachment in self.__attachments:
-                internal_path: str = self.__attach_file(attachment)
+        if self.__session:
+            self.__run(self.__session)
 
-                self.__create_attachment_in_database(session, internal_path)
-
-                session.commit()
+        else:
+            with App.databases.create_session() as session:
+                self.__run(session)

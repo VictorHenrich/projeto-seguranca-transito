@@ -10,7 +10,7 @@ class AttachmentCreateRepositoryParams(Protocol):
 
 
 class AttachmentCreateRepository(BaseRepository):
-    def create(self, params: AttachmentCreateRepositoryParams) -> None:
+    def create(self, params: AttachmentCreateRepositoryParams) -> Attachment:
         attachment: Attachment = Attachment()
 
         attachment.id_ocorrencia = params.occurrence.id
@@ -18,3 +18,6 @@ class AttachmentCreateRepository(BaseRepository):
         attachment.url = params.url
 
         self.session.add(attachment)
+        self.session.flush()
+
+        return attachment

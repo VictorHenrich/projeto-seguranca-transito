@@ -1,6 +1,7 @@
 from unittest import TestCase
 from unittest.mock import Mock
 from datetime import datetime
+from base64 import b64encode
 
 from ..util import TestUtil
 
@@ -21,6 +22,14 @@ class OccurrenceServiceCase(TestCase):
         self.__occurrence_payload.lat = -28.4400207
         self.__occurrence_payload.lon = -48.9545278
         self.__occurrence_payload.created = datetime.now()
+        self.__occurrence_payload.attachments = [
+            {
+                "content": b64encode(
+                    "Isto aqui é apenas um teste meu amigo".encode("utf-8")
+                ),
+                "type": "text/plain",
+            }
+        ]
 
     def test_creation(self) -> None:
         occurrence_creation_service: IService[None] = OccurrenceCreationService(
@@ -30,6 +39,7 @@ class OccurrenceServiceCase(TestCase):
             lat=self.__occurrence_payload.lat,
             lon=self.__occurrence_payload.lon,
             created=self.__occurrence_payload.created,
+            attachments=self.__occurrence_payload.attachments,
         )
 
         occurrence_creation_service.execute()

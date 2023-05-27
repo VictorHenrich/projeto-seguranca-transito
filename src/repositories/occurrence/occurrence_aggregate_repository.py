@@ -1,8 +1,8 @@
-from typing import Protocol, Optional, Tuple, TypeAlias
+from typing import Protocol, Optional, Tuple, TypeAlias, Collection
 from sqlalchemy import Row
 
 from patterns.repository import BaseRepository
-from models import Occurrence, User, Vehicle
+from models import Occurrence, User, Vehicle, Attachment
 from exceptions import OccurrenceNotFoundError
 
 

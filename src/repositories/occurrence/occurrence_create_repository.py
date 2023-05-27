@@ -37,5 +37,6 @@ class OccurrenceCreateRepository(BaseRepository):
         occurrence.status = "ANDAMENTO"
 
         self.session.add(occurrence)
+        self.session.flush()
 
         return occurrence

@@ -1,8 +1,10 @@
+from typing import Collection
 from playwright.async_api import async_playwright, Browser, Page
 import asyncio
+from time import sleep
 
 from utils import CharUtils
-from models import User, Occurrence, Vehicle
+from models import User, Occurrence, Vehicle, Attachment
 
 
 class OccurrenceIntegrationCreationService:
@@ -26,10 +28,17 @@ class OccurrenceIntegrationCreationService:
         "outra": "32767",
     }
 
-    def __init__(self, occurrence: Occurrence, user: User, vehicle: Vehicle) -> None:
+    def __init__(
+        self,
+        occurrence: Occurrence,
+        user: User,
+        vehicle: Vehicle,
+        attachments: Collection[Attachment],
+    ) -> None:
         self.__occurrence: Occurrence = occurrence
         self.__user: User = user
         self.__vehicle: Vehicle = vehicle
+        self.__attachments: Collection[Attachment] = attachments
 
     async def __access_page(self, page: Page) -> None:
         await page.goto(OccurrenceIntegrationCreationService.__url)
@@ -277,8 +286,13 @@ class OccurrenceIntegrationCreationService:
     async def __add_acident(self, page: Page) -> None:
         message_body: str = (
             f"Fato ocorrido: {self.__occurrence.descricao}\n\n"
-            + f"Foram evidenciados as seguintes imagens: \n"
-            + f"Foram evidenciados os seguintes vídeos: \n"
+            + f"Foram evidenciados as seguintes evidencias: \n"
+            "\n".join(
+                [
+                    f"http://localhost/occurrence/attachment/{attachment.id_uuid}"
+                    for attachment in self.__attachments
+                ]
+            )
         )
 
         await page.locator("#relatoFato").fill(message_body)
@@ -298,6 +312,7 @@ class OccurrenceIntegrationCreationService:
             await self.__add_participation(page)
             await self.__add_car(page)
             await self.__add_acident(page)
+            sleep(10)
 
     def execute(self) -> None:
         event_loop: asyncio.AbstractEventLoop = asyncio.new_event_loop()
