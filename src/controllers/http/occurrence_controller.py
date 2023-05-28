@@ -1,6 +1,9 @@
-from typing import List, Mapping, Any
+from typing import Mapping, Any, Collection, Optional
 from dataclasses import dataclass
 from uuid import UUID
+from datetime import datetime
+
+from flask import Response
 
 from server import App
 from patterns.service import IService
@@ -13,21 +16,22 @@ from middlewares.http import (
 from models import User, Occurrence
 from services.occurrence import (
     OccurrenceCreationService,
-    OccurrenceCreationServiceProps,
     OccurrenceExclusionService,
-    OccurrenceExclusionServiceProps,
-    OccurrenceUpdateService,
-    OccurrenceUpdateServiceProps,
+    OccurrenceGettingService,
     OccurrenceListingService,
-    OccurrenceListingServiceProps,
 )
+from utils import DateUtils
 
 
 @dataclass
-class OccurrenceCreationBodyRequest:
-    descricao: str
-    obs: str
-    uuid_departamento: str
+class OccurrenceCreatePayload:
+    user_uuid: str
+    vehicle_uuid: str
+    description: str
+    lat: str
+    lon: str
+    attachments: Collection[Mapping[str, Any]] = []
+    created: Optional[str] = None
 
 
 @dataclass
@@ -45,96 +49,77 @@ occurrence_update_props: BodyRequestValidationProps = BodyRequestValidationProps
     OccurrenceUpdateBodyRequest
 )
 occurrence_create_props: BodyRequestValidationProps = BodyRequestValidationProps(
-    OccurrenceCreationBodyRequest
+    OccurrenceCreatePayload
 )
 
 
 @App.http.add_controller(
-    "/ocorrencia/crud",
-    "/ocorrencia/crud/<uuid:occurrence_hash>",
+    "/ocorrencia/registro",
+    "/ocorrencia/registro/<uuid:occurrence_hash>",
 )
 class OccurrenceController(Controller):
-    @user_auth_middleware.apply(None)
+    @user_auth_middleware.apply()
     @body_request_middleware.apply(occurrence_create_props)
     def post(
-        self, auth: User, body_request: OccurrenceCreationBodyRequest
+        self, auth: User, body_request: OccurrenceCreatePayload
     ) -> ResponseDefaultJSON:
-        occurrence_creation_service: IService[
-            OccurrenceCreationServiceProps, None
-        ] = OccurrenceCreationService()
 
-        occurrence_creation_service_props: OccurrenceCreationServiceProps = (
-            OccurrenceCreationServiceProps(
-                user=auth,
-                uuid_departament=body_request.uuid_departamento,
-                description=body_request.descricao,
-                obs=body_request.obs,
+        try:
+            created: datetime = DateUtils.parse_string_to_datetime(
+                body_request.created or ""
             )
+
+        except:
+            created: datetime = datetime.utcnow()
+
+        occurrence_creation_service: IService[None] = OccurrenceCreationService(
+            user_uuid=auth.id_uuid,
+            vehicle_uuid=body_request.vehicle_uuid,
+            attachments=body_request.attachments,
+            description=body_request.description,
+            lat=body_request.lat,
+            lon=body_request.lon,
+            created=created,
         )
 
-        occurrence_creation_service.execute(occurrence_creation_service_props)
+        occurrence_creation_service.execute()
 
         return ResponseSuccess()
 
-    @user_auth_middleware.apply(None)
-    @body_request_middleware.apply(occurrence_update_props)
-    def put(
-        self,
-        occurrence_hash: UUID,
-        auth: User,
-        body_request: OccurrenceUpdateBodyRequest,
-    ) -> ResponseDefaultJSON:
-        occurrence_update_service: IService[
-            OccurrenceUpdateServiceProps, None
-        ] = OccurrenceUpdateService()
-
-        occurrence_update_service_props: OccurrenceUpdateServiceProps = (
-            OccurrenceUpdateServiceProps(
-                uuid_occurrence=str(occurrence_hash),
-                description=body_request.descricao,
-                obs=body_request.obs,
-            )
+    @user_auth_middleware.apply()
+    def delete(self, occurrence_hash: UUID, auth: User) -> Response:
+        occurrence_exclusion_service: IService[None] = OccurrenceExclusionService(
+            str(occurrence_hash)
         )
 
-        occurrence_update_service.execute(occurrence_update_service_props)
+        occurrence_exclusion_service.execute()
 
         return ResponseSuccess()
 
-    @user_auth_middleware.apply(None)
-    def delete(self, occurrence_hash: UUID, auth: User) -> ResponseDefaultJSON:
-        occurrence_exclusion_service: IService[
-            OccurrenceExclusionServiceProps, None
-        ] = OccurrenceExclusionService()
 
-        occurrence_exclusion_service_props: OccurrenceExclusionServiceProps = (
-            OccurrenceExclusionServiceProps(uuid_occurrence=str(occurrence_hash))
-        )
-
-        occurrence_exclusion_service.execute(occurrence_exclusion_service_props)
-
-        return ResponseSuccess()
-
-    @user_auth_middleware.apply(None)
-    def get(self, auth: User) -> ResponseDefaultJSON:
+@App.http.add_controller("/ocorrencia/busca")
+class OccurrenceListController(Controller):
+    @user_auth_middleware.apply()
+    def get(self, auth: User) -> Response:
         occurrence_listing_service: IService[
-            OccurrenceListingServiceProps, List[Occurrence]
-        ] = OccurrenceListingService()
+            Collection[Mapping[str, Any]]
+        ] = OccurrenceListingService(auth)
 
-        occurrence_listing_service_props: OccurrenceListingServiceProps = (
-            OccurrenceListingServiceProps(user=auth)
-        )
+        occurrences: Collection[
+            Mapping[str, Any]
+        ] = occurrence_listing_service.execute()
 
-        occurrences: List[Occurrence] = occurrence_listing_service.execute(
-            occurrence_listing_service_props
-        )
+        return ResponseSuccess(data=occurrences)
 
-        response: List[Mapping[str, Any]] = [
-            {
-                "description": occurrence.descricao,
-                "obs": occurrence.obs,
-                "uuid": occurrence.id_uuid,
-            }
-            for occurrence in occurrences
-        ]
 
-        return ResponseSuccess(data=response)
+@App.http.add_controller("/ocorrencia/busca/<uuid:occurrence_hash>")
+class OccurrenceGetController(Controller):
+    @user_auth_middleware.apply()
+    def get(self, occurrence_hash: UUID, auth: User) -> Response:
+        occurrence_listing_service: IService[
+            Mapping[str, Any]
+        ] = OccurrenceGettingService(str(occurrence_hash))
+
+        occurrence: Mapping[str, Any] = occurrence_listing_service.execute()
+
+        return ResponseSuccess(data=occurrence)

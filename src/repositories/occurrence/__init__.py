@@ -3,11 +3,6 @@ from .occurrence_create_repository import (
     OccurrenceCreateRepositoryParams,
 )
 
-from .occurrence_delete_repository import (
-    OccurrenceDeleteRepository,
-    OccurrenceDeleteRepositoryParams,
-)
-
 from .occurrence_find_repository import (
     OccurrenceFindRepository,
     OccurrenceFindRepositoryParams,

@@ -1,4 +1,4 @@
-from typing import Mapping, Any
+from typing import IO
 from unittest import TestCase
 from unittest.mock import Mock
 from base64 import b64encode
@@ -25,14 +25,12 @@ class AttachmentServiceCase(TestCase):
 
         self.__attachment_payload.attachments = [
             {
-                "content": b64encode(
-                    "Estou apenas testando isso aqui".encode("utf-8")
-                ),
+                "content": b64encode("Estou apenas testando isso aqui".encode("utf-8")),
                 "type": "text/plain",
             }
         ]
 
-    def __test_creation(self) -> None:
+    def test_creation(self) -> None:
         attachment_creation_service: IService[None] = AttachmentCreationService(
             self.__occurrence_payload, *self.__attachment_payload.attachments
         )
@@ -40,11 +38,11 @@ class AttachmentServiceCase(TestCase):
         attachment_creation_service.execute()
 
     def test_getting(self) -> None:
-        attachment_getting_service: IService[
-            Mapping[str, Any]
-        ] = AttachmentGettingService(self.__attachment_payload.id_uuid)
+        attachment_getting_service: IService[IO] = AttachmentGettingService(
+            self.__attachment_payload.id_uuid
+        )
 
-        attachment_data: Mapping[str, Any] = attachment_getting_service.execute()
+        attachment_data: IO = attachment_getting_service.execute()
 
         pprint(f"=============> {attachment_data}")
 

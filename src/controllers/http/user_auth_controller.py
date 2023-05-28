@@ -28,7 +28,7 @@ body_request_props: BodyRequestValidationProps = BodyRequestValidationProps(
 
 
 @App.http.add_controller(
-    "/autenticacao/usuario",
+    "/usuario/autenticacao",
 )
 class UserAuthController(Controller):
     @body_request_middleware.apply(body_request_props)

@@ -65,7 +65,7 @@ body_request_middleware: BodyRequestValidationMiddleware = (
 user_auth_middleware: UserAuthenticationMiddleware = UserAuthenticationMiddleware()
 
 
-@App.http.add_controller("/usuario/crud", "/usuario/crud/<uuid:user_hash>")
+@App.http.add_controller("/usuario/registro", "/usuario/registro/<uuid:user_hash>")
 class UserController(Controller):
     @body_request_middleware.apply(BodyRequestValidationProps(UserCreateBody))
     def post(self, body_request: UserCreateBody) -> ResponseDefaultJSON:

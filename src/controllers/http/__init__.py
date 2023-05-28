@@ -1,4 +1,4 @@
-#from .occurrence_controller import OccurrenceController
+from .occurrence_controller import OccurrenceController
 from .user_controller import UserController
 from .user_auth_controller import UserAuthController
 from .attachment_controller import AttachmentController

@@ -17,7 +17,6 @@ class AttachmentFindProps:
     attachment_uuid: str
 
 
-
 class AttachmentGettingService:
     def __init__(self, attachment_uuid: str) -> None:
         self.__props: AttachmentFindRepositoryParams = AttachmentFindProps(
@@ -34,6 +33,9 @@ class AttachmentGettingService:
     def execute(self) -> IO:
         with App.databases.create_session() as session:
             attachment: Attachment = self.__get_attanchment(session)
+
+            if not attachment.caminho_interno:
+                raise Exception("Não existe caminho para localizar o arquivo!")
 
             with open(attachment.caminho_interno, "rb") as file:
                 new_file = BytesIO(file.read())

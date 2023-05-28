@@ -10,7 +10,7 @@ class AttachmentFindRepositoryParams(Protocol):
 
 
 class AttachmentFindRepository(BaseRepository):
-    def find_one(self, params: AttachmentFindRepositoryParams) -> None:
+    def find_one(self, params: AttachmentFindRepositoryParams) -> Attachment:
         attachment: Optional[Attachment] = (
             self.session.query(Attachment)
             .filter(Attachment.id_uuid == params.attachment_uuid)

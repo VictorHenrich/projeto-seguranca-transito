@@ -44,7 +44,9 @@ class ResponseDefaultJSON(ABC, Response):
             **(header or {}),
         }
 
-        super().__init__(json.dumps(response_data, cls=ResponseDefaultEncoder), status_code, header_)
+        super().__init__(
+            json.dumps(response_data, cls=ResponseDefaultEncoder), status_code, header_
+        )
 
 
 class ResponseSuccess(ResponseDefaultJSON):
@@ -93,31 +95,35 @@ class ResponseInauthorized(ResponseDefaultJSON):
 
 class ResponseIO(Response):
     def __init__(
-        self, 
+        self,
         filename: FileName,
         file_content: FileContent,
-        status_code: int = 200, 
-        header: Mapping[str, str] | None = None
+        status_code: int = 200,
+        header: Mapping[str, str] | None = None,
     ) -> None:
-        response: Union[str, bytes, FileCollection] = self.__get_file_content(file_content)
+        response: Union[str, bytes, FileCollection] = self.__get_file_content(
+            file_content
+        )
 
         file_type: str = self.__get_file_type(filename)
 
         headers = {
             "Content-Type": file_type,
             "Content-Disposition": f"attachment; filename='{filename}'",
-            **(header or {})
+            **(header or {}),
         }
 
         super().__init__(response, status_code, headers)
 
-    def __get_file_content(self, file_content: FileContent) -> Union[str, bytes, FileCollection]:
+    def __get_file_content(
+        self, file_content: FileContent
+    ) -> Union[str, bytes, FileCollection]:
         if isinstance(file_content, IOBase):
             return self.__handle_io(file_content)
-        
+
         elif isinstance(file_content, (str, bytes)):
             return file_content
-        
+
         else:
             raise Exception("Tipo de conteúdo do arquivo é inválido para a resposta!")
 
@@ -128,10 +134,10 @@ class ResponseIO(Response):
         file_content.seek(0)
 
         return file_content.readlines()
-    
+
     def __get_file_type(self, filename: FileName) -> str:
         try:
             return mimetypes.guess_type(filename)[0]
-        
+
         except IndexError:
             return "application/octet-stream"
