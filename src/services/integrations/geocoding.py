@@ -1,7 +1,11 @@
-from typing import Union, Mapping, Any, List
+from typing import Union, Mapping, Any, TypeAlias
 from decimal import Decimal
 from dataclasses import dataclass
-import requests
+from httpx import AsyncClient, Response
+import asyncio
+
+
+JsonType: TypeAlias = Mapping[str, Any]
 
 
 @dataclass
@@ -25,18 +29,28 @@ class GeocodingService:
 
         return f"{first_word[0]}{last_word[0]}".upper()
 
-    def execute(self) -> GeocodingPayload:
-        response: requests.Response = requests.get(
-            GeocodingService.__url,
-            params={"lat": str(self.__lat), "lon": str(self.__lon), "format": "jsonv2"},
-        )
-
-        if response.status_code >= 400:
-            raise Exception(
-                "Falha ao localiar endereço!\n", f"RESPONSE: {response.content}"
+    async def __find_address(self) -> JsonType:
+        async with AsyncClient() as client:
+            response: Response = await client.get(
+                GeocodingService.__url,
+                params={
+                    "lat": str(self.__lat),
+                    "lon": str(self.__lon),
+                    "format": "jsonv2",
+                },
             )
 
-        address_data: Mapping[str, Any] = response.json()
+            if response.status_code >= 400:
+                raise Exception(
+                    "Falha ao localiar endereço!\n", f"RESPONSE: {response.content}"
+                )
+
+            return response.json()
+
+    def execute(self) -> GeocodingPayload:
+        event_loop: asyncio.AbstractEventLoop = asyncio.new_event_loop()
+
+        address_data: JsonType = event_loop.run_until_complete(self.__find_address())
 
         return GeocodingPayload(
             address_data["address"]["postcode"],

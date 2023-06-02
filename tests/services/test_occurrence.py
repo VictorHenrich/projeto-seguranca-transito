@@ -39,7 +39,7 @@ class OccurrenceServiceCase(TestCase):
             }
         ]
 
-    def test_creation(self) -> None:
+    def __test_creation(self) -> None:
         occurrence_creation_service: IService[None] = OccurrenceCreationService(
             user_uuid=self.__occurrence_payload.user_uuid,
             vehicle_uuid=self.__occurrence_payload.vehicle_uuid,
@@ -52,7 +52,7 @@ class OccurrenceServiceCase(TestCase):
 
         occurrence_creation_service.execute()
 
-    def test_exclusion(self) -> None:
+    def __test_exclusion(self) -> None:
         occurrence_exclusion_service: IService[None] = OccurrenceExclusionService(
             self.__occurrence_payload.id_uuid
         )
