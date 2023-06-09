@@ -5,11 +5,9 @@
 
 ## Descrição
 
-Este projeto tem como foco o desenvolvimento de uma aplicação web com intuito de facilitar, auxiliar e gerenciar acidentes que acontecem todos os dias em nosso trânsito. Inicialmente este projeto terá como foco principal auxiliar pessoas que acabaram de sofrer um acidente, muitas vezes delas ficam desatentas a certos requisitos necessários  / importantes para uma esta situação, como por exemplo conseguir identificar sua localização, colocar sinalizações, etc...
+Este é meu projeto de TCC: um sistema web com foco em auxiliar as pessoas em casos de acidentes de trânsito. O objetivo principal é fornecer informações sobre os protocolos corretos a serem seguidos, além de facilitar o registro de boletins de ocorrência para possíveis ações jurídicas no futuro. O sistema será acessado por meio de um aplicativo para dispositivos móveis, considerado hoje um dos itens essenciais para a maioria das pessoas. Essa abordagem permitirá que tudo seja feito de forma prática e conveniente, utilizando apenas o celular, como é comum nos dias de hoje.
 
-Para atender as expectativas do projeto será desenvolvido um aplicativo *mobile* que será utilizado pela pessoa, ali será mostrado um guia do que se deve fazer em cada situação como também terá um suporte de conexão direta com a central, que é a responsável por gerenciar os usuários e assim solicitar atendimento as autoridades competentes caso necessário.
-
-Por outra ponta será desenvolvido um sistema web acessado pelo navegador para o gerenciamento desses acidentes, como os usuários cadastraram com suas informações pessoais será utilizado elas para identificação, também terá sua localização compartilhada  através do gps no celular. Tudo isso será nencessário para agilizar os processos que envolvem chamadas.
+A documentação aqui apresentada abrange as funcionalidades oferecidas por meio de rotas via API. Essas rotas possibilitarão a realização da maior parte do gerenciamento realizado pelo aplicativo, desde a autenticação até o controle das ocorrências já criadas ou que ainda serão criadas.
 
 <br>
 <br>
@@ -17,24 +15,12 @@ Por outra ponta será desenvolvido um sistema web acessado pelo navegador para o
 
 ## Autenticação
 
-Cada tipo de usuários existentes no sistema terá sua própria rota, afim de ogrnização. Qualquer um dos casos será retornado um *hash* do tipo Bearer
+A autenticação do usuário é realizada por meio do seu e-mail e senha previamente cadastrados. Caso você ainda não tenha uma conta, utilize a rota de cadastro de usuário para prosseguir.
 
-Nesta API será possível realizar dois tipos de autenticação:
-
-* **Usuário Comum**
-* **Usuário dos Departamentos**
-
-<br>
-<br>
-<br>
-<br>
 <br>
 <br>
 
 > ## (POST) /autenticacao/usuario
-
-
-Nesta autenticação o usuário será necessario inserir seu email e senha de cadastro, caso não possuir deverá se registrar ao sistema para conseguir logar.
 <br>
 <br>
 
@@ -92,15 +78,15 @@ Nesta autenticação o usuário será necessario inserir seu email e senha de ca
 <br>
 <br>
 <br>
+
+## Cadastro de usuário
+
+Esta rota tem a responsabilidade de cadastrar um usuário e gerar sua conta de acesso. Para isso, serão necessárias algumas informações pessoais do usuário. Além disso, é obrigatório cadastrar pelo menos um veículo.
+
 <br>
 <br>
-<br>
 
-
-
-> ## (POST) /autenticacao/departamento
-
-Essa será a autenticação que será responsável por gerenciar o fluxo de ocorrencias criadas pelos outros usuários. Futuramente será implementado permissões e bloqueios através dos vinculos de tipos de usuários ou diretamente pelo cadastro.
+> ## (POST) /usuario/registro
 
 <br>
 <br>
@@ -111,167 +97,40 @@ Essa será a autenticação que será responsável por gerenciar o fluxo de ocor
 
 <br>
 
-### BODY
+### BODY USER
 <br>
 
 | Campo | Tipo | Requisito |
 | :----- | :----: | :----: |
 | email | **String** | True |
 | senha | **String** | True |
-| departamento | **String** | True |
-
-<br>
-
-> ### Exemplo de corpo da requisição
-
-```
-{
-	"usuario": "nome_usuario",
-	"senha": "*****",
-	"departamento": "****"
-}
-```
-
-<br>
-
-> ### (200) Exemplo retorno de sucesso
-
-```
-{
-	"status": 200,
-	"message": "OK",
-	"data": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkX3VzZXIiOiJmZWZlNWUxZS00ZDMwLTRhODktOTZlYS0xNDc0ODVlYTMxZjYiLCJleHBpcmVkIjoxNjY4Mjg3MTkwLjAxNzg3N30.28tGxe20KGhJnbPQUCxOkMtYWDSTh5MWsEeBTYdknkg"
-}
-
-```
-
-<br>
-
-
-> ### (401) Exemplo retorno de erro / falha
-
-```
-{
-	"status": 401,
-	"message": "INAUTHORIZED",
-	"data": "Usuário não localizado!"
-}
-```
-
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-
-### CRUDs
-
-<br>
-
-São as 4 operacçoes básicas utilizadas em conceitos de bando de dados para realizar comandos de leitura, escrita, sobrescrita e exclusão, aqui utilizamos isso como um dos módulos existentes em nossa rotas onde muitas delas serão utilizadas para cadastros simples e necessárias para nosso banco e construção de utilitários.
-
-<br>
-<br>
-<br>
-
-> ## /usuario/crud
-
-<br>
-
-Rota *CRUD* resposável por cadastrar os novos usuários comuns. Algumas rotas não serão necessárias ser autenticadas, mas nestes casos a informação de autorização não estará presente no cabeçalho.
-
-<br>
-<br>
-<br>
-<br>
-
-> ### (POST) Cadastrar novo usuário comum
-<br>
-
-#### HEADER
-
-* **Content-Type: application/json**
-
-<br>
-<br>
-
-#### BODY
-
-| Campo | Tipo | Requisito |
-| :----- | :----: | :----: |
-| nome | **String** | True |
-| email | **String** | True |
 | cpf | **String** | True |
-| senha | **String** | True |
-| data_nascimento | **String** | False |
+| rg | **String** | True |
+| estado_emissor | **String** | True |
+| telefone | **String** | True |
+| data_nascimento | **DateString** | True |
+| endereco_uf | **String** | True |
+| endereco_cidade | **String** | True |
+| endereco_bairro | **String** | True |
+| endereco_logradouro | **String** | True |
+| endereco_numero | **String** | True |
+| veiculos | **Array<Vehicle>** | True |
 
+
+### BODY VEHICLE
 <br>
-
-> ### Exemplo de corpo da requisição
-
-```
-{
-	"nome": "Fulano",
-	"email": "fulano@email.com",
-	"cpf": "1111111111111",
-	"senha": "1234",
-	"data_nascimento": null
-}
-```
-
-<br>
-
-> ### (200) Exemplo retorno de sucesso
-
-```
-{
-	"status": 200,
-	"message": "OK"
-}
-
-```
-
-<br>
-
-
-> ### (401) Exemplo retorno de erro / falha
-
-```
-{
-	"status": 401,
-	"message": "INAUTHORIZED",
-	"data": "Token expirado!"
-}
-```
-
-
-<br>
-<br>
-<br>
-<br>
-
-
-> ### (PUT) Alterar um usuário comum
-<br>
-
-#### HEADER
-
-* **Content-Type: application/json**
-* **Authorization: Bearer <token>**
-
-<br>
-<br>
-
-#### BODY
 
 | Campo | Tipo | Requisito |
 | :----- | :----: | :----: |
-| nome | **String** | True |
-| email | **String** | True |
-| cpf | **String** | True |
-| senha | **String** | True |
-| data_nascimento | **String** | False |
+| placa | **String** | True |
+| renavam | **String** | True |
+| tipo_veiculo | **LiteralString<"CARRO", "MOTO">** | True |
+| marca | **String** | False |
+| chassi | **String** | False |
+| cor | **String** | False |
+| ano | **String | Number** | False |
+| possui_seguro | **Boolean** | False |
+
 
 <br>
 
@@ -279,11 +138,30 @@ Rota *CRUD* resposável por cadastrar os novos usuários comuns. Algumas rotas n
 
 ```
 {
-	"nome": "Fulano",
-	"email": "fulano@email.com",
-	"cpf": "1111111111111",
-	"senha": "1234",
-	"data_nascimento": null
+	"email": "usuario@email.com",
+	"senha": "****",
+	"cpf": "XXX.XXX.XXX-XX",
+	"rg": "YYYYYYYYYY",
+	"telefone": "48999999999",
+	"data_nascimento": "1998-05-27",
+	"estado_emissor": "SANTA CATARINA",
+	"endereco_uf": "SC",
+	"endereco_cidade": "Tubarão",
+	"endereco_bairro": "Andrino",
+	"endereco_logradouro": "Minha rua é",
+	"endereco_numero": "S/N",
+	"veiculos": [
+		{
+			"placa": "XXXXXX-XXXX",
+			"renavam": "IIIIIIIII",
+			"tipo_veiculo": "CARRO"
+		},
+		{
+			"placa": "ZZZZZZZ-XXXX",
+			"renavam": "UUUUUUUU",
+			"tipo_veiculo": "MOTO"
+		}
+	]
 }
 ```
 
@@ -297,56 +175,4 @@ Rota *CRUD* resposável por cadastrar os novos usuários comuns. Algumas rotas n
 	"message": "OK"
 }
 
-```
-
-<br>
-
-
-> ### (401) Exemplo retorno de erro / falha
-
-```
-{
-	"status": 401,
-	"message": "INAUTHORIZED",
-	"data": "Usuário não localizado!"
-}
-```
-
-<br>
-<br>
-<br>
-<br>
-
-
-> ### (DELETE) Excluir um usuário comum
-<br>
-
-#### HEADER
-
-* **Authorization: Bearer <token>**
-
-<br>
-<br>
-
-> ### (200) Exemplo retorno de sucesso
-
-```
-{
-	"status": 200,
-	"message": "OK"
-}
-
-```
-
-<br>
-
-
-> ### (401) Exemplo retorno de erro / falha
-
-```
-{
-	"status": 401,
-	"message": "INAUTHORIZED",
-	"data": "Usuário não localizado!"
-}
 ```
