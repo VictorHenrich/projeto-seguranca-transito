@@ -20,7 +20,7 @@ A autenticação do usuário é realizada por meio do seu e-mail e senha previam
 <br>
 <br>
 
-> ## (POST) /autenticacao/usuario
+> ## (POST) /usuario/autenticacao
 <br>
 <br>
 
