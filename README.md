@@ -128,7 +128,7 @@ Esta rota tem a responsabilidade de cadastrar um usuário e gerar sua conta de a
 | marca | **String** | False |
 | chassi | **String** | False |
 | cor | **String** | False |
-| ano | **String | Number** | False |
+| ano | **Union<String, Number>** | False |
 | possui_seguro | **Boolean** | False |
 
 
