@@ -76,6 +76,25 @@ class UserController(Controller):
 
         except:
             return ResponseFailure(data="Data passada é inválida!")
+        
+
+        try:
+            vehicles: Collection[Mapping[str, Any]] = [
+                {
+                    "plate": v["placa"],
+                    "renavam": v["renavam"],
+                    "vehicle_type": v["tipo_veiculo"],
+                    "model": v.get("modelo"),
+                    "color": v.get("color"),
+                    "year": v.get("year"),
+                    "brand": v.get("marca"),
+                    "have_safe": v.get("possui_seguro")
+                }
+                for v in body_request.veiculos
+            ]
+
+        except KeyError:
+            return ResponseFailure(data="Lista de veículos passados é inválido!")
 
         service: IService[User] = UserCreationService(
             name=body_request.nome,
@@ -91,7 +110,7 @@ class UserController(Controller):
             address_district=body_request.endereco_bairro,
             address_street=body_request.endereco_logradouro,
             address_number=body_request.endereco_numero,
-            vehicles=body_request.veiculos,
+            vehicles=vehicles,
         )
 
         service.execute()
