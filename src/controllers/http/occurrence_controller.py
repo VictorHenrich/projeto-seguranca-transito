@@ -1,4 +1,4 @@
-from typing import Mapping, Any, Collection, Optional
+from typing import Mapping, Any, Optional, Collection
 from dataclasses import dataclass
 from uuid import UUID
 from datetime import datetime
@@ -30,7 +30,7 @@ class OccurrenceCreatePayload:
     description: str
     lat: str
     lon: str
-    attachments: Collection[Mapping[str, Any]] = []
+    attachments: Collection[Mapping[str, Any]]
     created: Optional[str] = None
 
 

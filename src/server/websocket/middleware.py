@@ -1,5 +1,7 @@
-from typing import Any, Mapping, Optional, Callable, TypeAlias, TypeVar, Generic
+from typing import Any, Mapping, Optional, Callable, TypeAlias, TypeVar, Generic, Optional
 from abc import ABC, abstractmethod
+
+from exceptions import MiddlewareErrorValue
 
 
 T = TypeVar("T")
@@ -11,13 +13,13 @@ Decorator: TypeAlias = Callable[[Method], Method]
 
 class SocketMiddleware(ABC, Generic[T]):
     @abstractmethod
-    def handle(self, props: T) -> HandlerReturn:
+    def handle(self, props: Optional[T]) -> HandlerReturn:
         ...
 
     def catch(self, exception: Exception) -> None:
         raise exception
 
-    def apply(self, props: T) -> Decorator:
+    def apply(self, props: Optional[T] = None) -> Decorator:
         def decorator(target: Method) -> Method:
             def wrapper(*args: Any, **kwargs: Any) -> Any:
                 try:

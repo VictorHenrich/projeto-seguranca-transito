@@ -61,9 +61,6 @@ class AMQPServer:
                 connection or self.__default_connection
             )
 
-            if not connection_:
-                raise ConnectionAMQPNotDefined()
-
             consumer: AMQPConsumer = cls(
                 consumer_name, connection_, queue_name, ack, arguments
             )

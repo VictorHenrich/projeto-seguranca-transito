@@ -25,9 +25,6 @@ class HttpMiddleware(ABC, Generic[T]):
         def decorator(target: Target) -> Wrapper:
             def wrapper(*args: Any, **kwargs: Any) -> Response:
                 try:
-                    if type(props) is not T:
-                        raise MiddlewareErrorValue()
-
                     handler_return: HandlerReturn = self.handle(props)
 
                 except Exception as error:

@@ -1,4 +1,4 @@
-from typing import Mapping, Any, Optional
+from typing import Mapping, Any, Optional, TypeAlias
 from abc import ABC, abstractmethod
 from pika import ConnectionParameters
 from pika.adapters.blocking_connection import BlockingChannel
@@ -6,13 +6,18 @@ from pika.spec import Basic, BasicProperties
 import logging
 
 from .abstract_amqp import AbstractAMQP
+from exceptions import ConnectionAMQPNotDefined
+
+
+
+ConnectionParamsOptional: TypeAlias = Optional[ConnectionParameters]
 
 
 class AMQPConsumer(AbstractAMQP, ABC):
     def __init__(
         self,
         consumer_name: str,
-        connection: ConnectionParameters,
+        connection: ConnectionParamsOptional,
         queue_name: str,
         ack: bool,
         arguments: Optional[Mapping[str, Any]],
@@ -29,6 +34,13 @@ class AMQPConsumer(AbstractAMQP, ABC):
         return self.__name
 
     def start(self) -> None:
+        connection: ConnectionParamsOptional = self.__connection
+
+        if not connection:
+            raise ConnectionAMQPNotDefined()
+
+        self.on_start()
+
         channel: BlockingChannel = self.get_channel()
 
         channel.basic_consume(
@@ -39,7 +51,7 @@ class AMQPConsumer(AbstractAMQP, ABC):
         )
 
         logging.info(
-            f"Consumer {self.__name} running in {self.connection.host}:{self.connection.port}"
+            f"Consumer {self.__name} running in {connection.host}:{connection.port}"
         )
 
         channel.start_consuming()
@@ -58,6 +70,10 @@ class AMQPConsumer(AbstractAMQP, ABC):
         }
 
         self.on_message_queue(body, **options)
+
+    @abstractmethod
+    def on_start(self) -> None:
+        pass
 
     @abstractmethod
     def on_message_queue(self, body: bytes, **kwargs: Any) -> None:

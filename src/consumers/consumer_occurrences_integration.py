@@ -30,6 +30,7 @@ class ConsumerOccurrencesIntegration(AMQPConsumer):
     ) -> None:
         super().__init__(consumer_name, connection, queue_name, ack, arguments)
 
+    def on_start(self) -> None:
         channel: BlockingChannel = self.get_channel()
 
         channel.exchange_declare(

@@ -7,7 +7,7 @@ from services.user import VerifyUserAuthService
 from server import App
 
 
-class UserAuthenticationMiddleware(SocketMiddleware[None]):
+class UserAuthenticationMiddleware(SocketMiddleware):
     def handle(self, props: None) -> Mapping[str, User]:
         token: str = App.websocket.global_request.headers.get("Authorization") or ""
 

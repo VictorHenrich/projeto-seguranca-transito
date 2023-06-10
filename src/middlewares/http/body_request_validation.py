@@ -13,19 +13,19 @@ ParamsData: TypeAlias = Mapping[str, T]
 
 @dataclass
 class BodyRequestValidationProps:
-    class_: Type[Any]
+    cls: Type[Any]
 
 
 class BodyRequestValidationMiddleware(HttpMiddleware[BodyRequestValidationProps]):
     def handle(self, props: BodyRequestValidationProps) -> ParamsData:
         dados_json: JsonData = App.http.global_request.get_json()
 
-        dados_corpo: Any = props.class_(**dados_json)
+        dados_corpo: Any = props.cls(**dados_json)
 
         return {"body_request": dados_corpo}
 
     def catch(self, exception: Exception) -> ResponseDefaultJSON:
-        if TypeError:
+        if isinstance(exception, TypeError):
             return ResponseFailure(data="Corpo da requisição é inválido!")
 
         raise exception
