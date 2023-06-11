@@ -76,7 +76,6 @@ class UserController(Controller):
 
         except:
             return ResponseFailure(data="Data passada é inválida!")
-        
 
         try:
             vehicles: Collection[Mapping[str, Any]] = [
@@ -88,7 +87,7 @@ class UserController(Controller):
                     "color": v.get("color"),
                     "year": v.get("year"),
                     "brand": v.get("marca"),
-                    "have_safe": v.get("possui_seguro")
+                    "have_safe": v.get("possui_seguro"),
                 }
                 for v in body_request.veiculos
             ]
