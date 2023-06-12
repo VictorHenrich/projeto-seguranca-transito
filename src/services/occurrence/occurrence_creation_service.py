@@ -16,6 +16,7 @@ from repositories.user import UserFindRepository, UserFindRepositoryParams
 from repositories.vehicle import VehicleFindRepository, VehicleFindRepositoryParams
 from services.integrations import GeocodingService, GeocodingPayload
 from services.attachment import AttachmentCreationService
+from services.attachment.attachment_creation_service import LiteralKeyAttachment
 from consumers.consumer_occurrences_integration import (
     EXCHANGE_OCCURRENCE_INTEGRATION_NAME,
     ROUTING_KEY_OCCURRENCE_INTEGRATION_NAME,
@@ -57,7 +58,7 @@ class OccurrenceCreationService:
         lat: str,
         lon: str,
         created: datetime,
-        attachments: Collection[Mapping[str, Any]],
+        attachments: Collection[Mapping[LiteralKeyAttachment, Any]],
     ) -> None:
         self.__user_uuid: str = user_uuid
         self.__vehicle_uuid: str = vehicle_uuid
@@ -65,7 +66,7 @@ class OccurrenceCreationService:
         self.__lat: str = lat
         self.__lon: str = lon
         self.__created: datetime = created
-        self.__attachments: Collection[Mapping[str, Any]] = attachments
+        self.__attachments: Collection[Mapping[LiteralKeyAttachment, Any]] = attachments
 
     def __find_user(self, session: Session) -> User:
         user_find_repository: IFindRepository[

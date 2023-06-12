@@ -1,4 +1,4 @@
-from typing import Mapping, Any, Optional, Collection
+from typing import Mapping, Any, Optional, Collection, Literal
 from dataclasses import dataclass
 from uuid import UUID
 from datetime import datetime
@@ -13,7 +13,7 @@ from middlewares.http import (
     BodyRequestValidationProps,
     UserAuthenticationMiddleware,
 )
-from models import User, Occurrence
+from models import User
 from services.occurrence import (
     OccurrenceCreationService,
     OccurrenceExclusionService,
@@ -25,13 +25,12 @@ from utils import DateUtils
 
 @dataclass
 class OccurrenceCreatePayload:
-    user_uuid: str
-    vehicle_uuid: str
-    description: str
-    lat: str
-    lon: str
-    attachments: Collection[Mapping[str, Any]]
-    created: Optional[str] = None
+    veiculo_uuid: str
+    descricao: str
+    latitude: str
+    longitude: str
+    anexos: Collection[Mapping[Literal["conteudo", "tipo_conteudo"], Any]]
+    data_criacao: Optional[str] = None
 
 
 @dataclass
@@ -63,22 +62,26 @@ class OccurrenceController(Controller):
     def post(
         self, auth: User, body_request: OccurrenceCreatePayload
     ) -> ResponseDefaultJSON:
-
         try:
             created: datetime = DateUtils.parse_string_to_datetime(
-                body_request.created or ""
+                body_request.data_criacao or ""
             )
 
         except:
             created: datetime = datetime.utcnow()
 
+        attachments: Collection[Mapping[Literal["content", "type"], Any]] = [
+            {"content": attachment["conteudo"], "type": attachment["tipo_conteudo"]}
+            for attachment in body_request.anexos
+        ]
+
         occurrence_creation_service: IService[None] = OccurrenceCreationService(
             user_uuid=auth.id_uuid,
-            vehicle_uuid=body_request.vehicle_uuid,
-            attachments=body_request.attachments,
-            description=body_request.description,
-            lat=body_request.lat,
-            lon=body_request.lon,
+            vehicle_uuid=body_request.veiculo_uuid,
+            attachments=attachments,
+            description=body_request.descricao,
+            lat=body_request.latitude,
+            lon=body_request.longitude,
             created=created,
         )
 

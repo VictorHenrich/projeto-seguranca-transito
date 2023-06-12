@@ -9,7 +9,6 @@ from .abstract_amqp import AbstractAMQP
 from exceptions import ConnectionAMQPNotDefined
 
 
-
 ConnectionParamsOptional: TypeAlias = Optional[ConnectionParameters]
 
 

@@ -32,7 +32,6 @@ class AttachmentPayload:
 
 
 class AttachmentCreationService:
-
     __INTERNAL_PATH: Path = Path.cwd() / "Objects" / "Occurrences"
 
     def __init__(
