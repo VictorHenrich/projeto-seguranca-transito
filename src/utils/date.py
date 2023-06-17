@@ -7,4 +7,8 @@ class DateUtils:
         try:
             return datetime.strptime(date_string, "%Y-%m-%d")
         except:
-            return datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S")
+            try:
+                return datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%S.%fZ")
+            
+            except:
+                return datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S")
