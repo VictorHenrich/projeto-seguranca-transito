@@ -19,10 +19,7 @@ class UserAuthenticationProps:
 
 class UserAuthenticationService:
     def __init__(
-        self, 
-        email: str, 
-        password: str,
-        session: Optional[Session] = None
+        self, email: str, password: str, session: Optional[Session] = None
     ) -> None:
         self.__props: UserAuthenticationProps = UserAuthenticationProps(email, password)
         self.__session: Optional[Session] = session
@@ -43,7 +40,6 @@ class UserAuthenticationService:
         token: str = JWTUtils.encode(payload.__dict__, App.http.configs.secret_key)
 
         return f"Bearer {token}"
-
 
     def execute(self) -> str:
         if self.__session:

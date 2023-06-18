@@ -5,11 +5,7 @@ from datetime import datetime
 from base64 import b64encode
 from pprint import pprint
 
-from ..util import TestUtil
 
-TestUtil.load_modules()
-
-import src.main
 from src.patterns.service import IService
 from src.services.occurrence import (
     OccurrenceCreationService,

@@ -3,12 +3,6 @@ from unittest import TestCase
 from unittest.mock import Mock
 from pprint import pprint
 
-from ..util import TestUtil
-
-
-TestUtil.load_modules()
-
-import src.main
 from src.server import App
 from src.models import Vehicle
 from src.patterns.repository import (

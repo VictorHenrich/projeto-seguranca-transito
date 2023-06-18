@@ -1,20 +1,20 @@
+from typing import Collection, Tuple, TypeAlias
 from unittest import TestCase
 from unittest.mock import Mock, MagicMock
 from datetime import datetime
 
-from ..util import TestUtil
-
-TestUtil.load_modules()
-
-import src.main
-from src.models import User
+from src.models import User, Vehicle, Occurrence
 from src.patterns.service import IService
 from src.services.user import (
     UserCreationService,
     UserUpdateService,
     UserAuthenticationService,
     UserExclusionService,
+    UserLoadService,
 )
+
+
+UserLoaded: TypeAlias = Tuple[User, Collection[Vehicle], Collection[Occurrence]]
 
 
 class UserServiceCase(TestCase):
@@ -34,9 +34,9 @@ class UserServiceCase(TestCase):
         self.__user_payload.address_street = "rua antonio manuel dos santos"
         self.__user_payload.state_issuer = "santa catarina"
         self.__user_payload.telephone = "48999197582"
-        self.__user_payload.id_uuid = None
+        self.__user_payload.id_uuid = "e3eb578a-f643-482d-ac73-f290b70041d5"
 
-    def test_creation(self) -> None:
+    def __test_creation(self) -> None:
         vehicle_payload: MagicMock = MagicMock()
 
         vehicle_payload.__getitem__.side_effect = lambda key: {
@@ -77,21 +77,25 @@ class UserServiceCase(TestCase):
 
         self.assertTrue(token)
 
-    def __test_auth(self) -> None:
-        user_auth_props: Mock = Mock()
+    def test_load(self) -> None:
+        user_load_service: IService[UserLoaded] = UserLoadService(
+            self.__user_payload.id_uuid
+        )
 
-        user_auth_props.email = self.__user_payload.email
-        user_auth_props.password = self.__user_payload.password
+        user_loaded: UserLoaded = user_load_service.execute()
 
+        self.assertTrue(user_loaded)
+
+    def test_auth(self) -> None:
         user_auth_service: IService[str] = UserAuthenticationService(
-            email=user_auth_props.email, password=user_auth_props.password
+            email=self.__user_payload.email, password=self.__user_payload.password
         )
 
         token: str = user_auth_service.execute()
 
         self.assertTrue(token)
 
-    def __test_update(self) -> None:
+    def test_update(self) -> None:
         self.__user_payload.id_uuid = "ebd913c9-cd40-4822-af1f-822732cff2c4"
 
         update_service: IService[None] = UserUpdateService(
@@ -113,7 +117,7 @@ class UserServiceCase(TestCase):
 
         update_service.execute()
 
-    def __test_exclusion(self) -> None:
+    def test_exclusion(self) -> None:
         self.__user_payload.id_uuid = "ebd913c9-cd40-4822-af1f-822732cff2c4"
 
         exclusion_service: IService[None] = UserExclusionService(

@@ -8,3 +8,7 @@ from .user_find_and_update_repository import (
 )
 from .user_find_repository import UserFindRepository, UserFindRepositoryParams
 from .user_auth_repository import UserAuthRepository, UserAuthRepositoryParams
+from .user_aggregate_repository import (
+    UserAggregateRepository,
+    UserAggregateRepositoryParams,
+)

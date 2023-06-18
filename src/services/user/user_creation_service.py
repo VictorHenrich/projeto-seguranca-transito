@@ -110,9 +110,7 @@ class UserCreationService:
 
     def __authenticate(self, session: Session, user: User) -> str:
         user_auth_service: IService[str] = UserAuthenticationService(
-            email=user.email,
-            password=user.senha,
-            session=session
+            email=user.email, password=user.senha, session=session
         )
 
         return user_auth_service.execute()

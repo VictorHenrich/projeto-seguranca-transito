@@ -1,11 +1,6 @@
 from unittest import TestCase
 from unittest.mock import Mock
 
-from ..util import TestUtil
-
-TestUtil.load_modules()
-
-import src.main
 from src.patterns.service import IService
 from src.services.integrations import GeocodingService, GeocodingPayload
 
