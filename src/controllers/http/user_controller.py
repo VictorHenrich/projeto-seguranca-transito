@@ -95,7 +95,7 @@ class UserController(Controller):
         except KeyError:
             return ResponseFailure(data="Lista de veículos passados é inválido!")
 
-        service: IService[User] = UserCreationService(
+        service: IService[str] = UserCreationService(
             name=body_request.nome,
             email=body_request.email,
             password=body_request.senha,
@@ -112,9 +112,9 @@ class UserController(Controller):
             vehicles=vehicles,
         )
 
-        service.execute()
+        token: str = service.execute()
 
-        return ResponseSuccess()
+        return ResponseSuccess(data=token)
 
     @user_auth_middleware.apply()
     @body_request_middleware.apply(BodyRequestValidationProps(UserUpdateBody))

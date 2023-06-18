@@ -2,10 +2,13 @@ from typing import Optional, Collection, Mapping, Any, Literal
 from datetime import date
 from dataclasses import dataclass
 from sqlalchemy.orm import Session
+import logging
 
 from server import App
 from models import User
 from patterns.repository import ICreateRepository
+from patterns.service import IService
+from .user_authentication_service import UserAuthenticationService
 from repositories.user import UserCreateRepository, UserCreateRepositoryParams
 from repositories.vehicle import VehicleCreateRepository, VehicleCreateRepositoryParams
 
@@ -105,12 +108,27 @@ class UserCreationService:
 
             vehicle_create_repository.create(vehicle_create_props)
 
-    def execute(self) -> User:
+    def __authenticate(self, session: Session, user: User) -> str:
+        user_auth_service: IService[str] = UserAuthenticationService(
+            email=user.email,
+            password=user.senha,
+            session=session
+        )
+
+        return user_auth_service.execute()
+
+    def execute(self) -> str:
         with App.databases.create_session() as session:
             new_user: User = self.__create_user(session)
 
+            logging.info(f"USUÁRIO CRIADO: {new_user.id_uuid}")
+
             self.__create_vehicles(session, new_user)
+
+            token: str = self.__authenticate(session, new_user)
+
+            logging.info(f"TOKEN CRIADO: {token}")
 
             session.commit()
 
-            return new_user
+            return token
