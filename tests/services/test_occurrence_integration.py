@@ -1,12 +1,7 @@
 from unittest import TestCase
-from unittest.mock import Mock
+from unittest.mock import Mock, MagicMock
 from datetime import datetime
 
-from ..util import TestUtil
-
-TestUtil.load_modules()
-
-import src.main
 from src.patterns.service import IService
 from src.services.integrations import OccurrenceIntegrationCreationService
 
@@ -16,6 +11,7 @@ class OccurrenceIntegrationServiceCase(TestCase):
         user_payload: Mock = Mock()
         occurrence_payload: Mock = Mock()
         vehicle_payload: Mock = Mock()
+        attachments_payload: MagicMock = MagicMock()
 
         user_payload.email = "victorhenrich993@gmail.com"
         user_payload.nome = "victor henrich"
@@ -53,7 +49,10 @@ class OccurrenceIntegrationServiceCase(TestCase):
         vehicle_payload.possui_seguro = False
 
         service: IService[None] = OccurrenceIntegrationCreationService(
-            occurrence=occurrence_payload, user=user_payload, vehicle=vehicle_payload
+            occurrence=occurrence_payload,
+            user=user_payload,
+            vehicle=vehicle_payload,
+            attachments=attachments_payload,
         )
 
         service.execute()

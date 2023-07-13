@@ -4,7 +4,7 @@ from utils import EnvUtils
 env_value = EnvUtils.get_values()
 
 
-CLI = {
+CLI_CONFIG = {
     "name": "CLI PROJETO SEGURANÇA",
     "description": "Sistema CLI resposável pela execução de linhas de comando para tarefas distintas",
     "version": 1.0,

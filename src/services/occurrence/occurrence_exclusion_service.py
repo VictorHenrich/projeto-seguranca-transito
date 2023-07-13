@@ -2,7 +2,7 @@ from typing import Collection
 from dataclasses import dataclass
 from sqlalchemy.orm import Session
 
-from server import App
+from server import App, Databases
 from patterns.repository import IFindRepository, IFindManyRepository
 from patterns.service import IService
 from repositories.occurrence import (
@@ -58,7 +58,7 @@ class OccurrenceExclusionService:
             attachment_exclusion_service.execute()
 
     def execute(self) -> None:
-        with App.databases.create_session() as session:
+        with Databases.create_session() as session:
             occurrence: Occurrence = self.__get_occurrence(session)
 
             attachments: Collection[Attachment] = self.__get_attachments(

@@ -1,7 +1,7 @@
 from typing import Collection
 from dataclasses import dataclass
 
-from server import App
+from server import App, Databases
 from patterns.repository import IFindManyRepository, IFindRepository
 from models import User, Vehicle
 from repositories.user import UserFindRepository, UserFindRepositoryParams
@@ -26,7 +26,7 @@ class UserExclusionService:
         self.__user_uuid: str = user_uuid
 
     def execute(self) -> None:
-        with App.databases.create_session() as session:
+        with Databases.create_session() as session:
             user_find_repo: IFindRepository[
                 UserFindRepositoryParams, User
             ] = UserFindRepository(session)

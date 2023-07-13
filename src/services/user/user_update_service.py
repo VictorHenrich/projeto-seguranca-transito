@@ -1,8 +1,7 @@
-from typing import Optional
 from dataclasses import dataclass
 from datetime import date
 
-from server import App
+from server import App, Databases
 from models import User
 from patterns.repository import IUpdateRepository
 from repositories.user import (
@@ -65,7 +64,7 @@ class UserUpdateService:
         )
 
     def execute(self) -> None:
-        with App.databases.create_session() as session:
+        with Databases.create_session() as session:
             repository: IUpdateRepository[
                 UserFindAndUpdateRepositoryParams, User
             ] = UserFindAndUpdateRepository(session)

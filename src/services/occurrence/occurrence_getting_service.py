@@ -1,7 +1,7 @@
 from typing import Mapping, Any
 from dataclasses import dataclass
 
-from server import App
+from server import App, Databases
 from patterns.repository import IFindRepository
 from models import Occurrence
 from repositories.occurrence import (
@@ -20,7 +20,7 @@ class OccurrenceGettingService:
         self.__props: OccurrenceFindProps = OccurrenceFindProps(occurrence_uuid)
 
     def execute(self) -> Mapping[str, Any]:
-        with App.databases.create_session() as session:
+        with Databases.create_session() as session:
             getting_repository: IFindRepository[
                 OccurrenceFindRepositoryParams, Occurrence
             ] = OccurrenceFindRepository(session)

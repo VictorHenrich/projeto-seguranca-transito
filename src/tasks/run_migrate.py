@@ -1,10 +1,10 @@
-from server import App
+from server import Databases, CLI
 from server.cli import Task
 
 
-@App.cli.add_task("database", "migrate", "m", "Inicializa a migração do banco de dados")
+@CLI.add_task("database", "migrate", "m", "Inicializa a migração do banco de dados")
 class RunMigrate(Task):
     def run(self) -> None:
         import models
 
-        App.databases.migrate(True)
+        Databases.migrate(True)

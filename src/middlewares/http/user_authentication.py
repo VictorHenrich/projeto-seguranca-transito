@@ -1,4 +1,4 @@
-from server import App
+from server import App, HttpServer
 from server.http import HttpMiddleware, ResponseInauthorized
 from patterns.service import IService
 from models import User
@@ -13,7 +13,7 @@ from exceptions import (
 
 class UserAuthenticationMiddleware(HttpMiddleware[None]):
     def handle(self, props: None):
-        token: str = App.http.global_request.headers.get("Authorization") or ""
+        token: str = HttpServer.global_request.headers.get("Authorization") or ""
 
         verify_user_auth_service: IService[User] = VerifyUserAuthService(token)
 

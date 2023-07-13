@@ -5,7 +5,7 @@ from datetime import datetime
 
 from flask import Response
 
-from server import App
+from server import App, HttpServer
 from patterns.service import IService
 from server.http import Controller, ResponseDefaultJSON, ResponseSuccess
 from middlewares.http import (
@@ -52,7 +52,7 @@ occurrence_create_props: BodyRequestValidationProps = BodyRequestValidationProps
 )
 
 
-@App.http.add_controller(
+@HttpServer.add_controller(
     "/ocorrencia/registro",
     "/ocorrencia/registro/<uuid:occurrence_hash>",
 )
@@ -100,7 +100,7 @@ class OccurrenceController(Controller):
         return ResponseSuccess()
 
 
-@App.http.add_controller("/ocorrencia/busca")
+@HttpServer.add_controller("/ocorrencia/busca")
 class OccurrenceListController(Controller):
     @user_auth_middleware.apply()
     def get(self, auth: User) -> Response:
@@ -115,7 +115,7 @@ class OccurrenceListController(Controller):
         return ResponseSuccess(data=occurrences)
 
 
-@App.http.add_controller("/ocorrencia/busca/<uuid:occurrence_hash>")
+@HttpServer.add_controller("/ocorrencia/busca/<uuid:occurrence_hash>")
 class OccurrenceGetController(Controller):
     @user_auth_middleware.apply()
     def get(self, occurrence_hash: UUID, auth: User) -> Response:

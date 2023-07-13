@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from server import App
+from server import App, HttpServer
 from middlewares.http import BodyRequestValidationMiddleware, BodyRequestValidationProps
 from patterns.service import IService
 from exceptions import UserNotFoundError
@@ -27,7 +27,7 @@ body_request_props: BodyRequestValidationProps = BodyRequestValidationProps(
 )
 
 
-@App.http.add_controller(
+@HttpServer.add_controller(
     "/usuario/autenticacao",
 )
 class UserAuthController(Controller):

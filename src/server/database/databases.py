@@ -1,44 +1,43 @@
-from __future__ import annotations
-from typing import Mapping, Any, Optional
+from typing import Any, Collection, Optional, List
 from sqlalchemy.orm.session import Session
 from .database import Database
 from exceptions import DatabaseNotFoundError
 
 
 class Databases:
-    def __init__(self) -> None:
-        self.__bases: Mapping[str, Database] = {}
+    __bases: List[Database] = []
 
-    @property
-    def bases(self) -> Mapping[str, Database]:
-        return self.__bases
+    @classmethod
+    def get_all(cls) -> Collection[Database]:
+        return cls.__bases
 
-    def get_database(self, database_name: Optional[str] = None) -> Database:
+    @classmethod
+    def get_database(cls, database_name: str = "main") -> Database:
+        if not cls.__bases:
+            raise DatabaseNotFoundError(empty=True)
+
         try:
-            if not database_name:
-                return list(self.__bases.values())[0]
-
-            else:
-                return self.__bases[database_name]
-
-        except KeyError:
-            raise DatabaseNotFoundError()
+            return [
+                database for database in cls.__bases if database.name == database_name
+            ][0]
 
         except IndexError:
-            raise Exception("Databases is Empty!")
+            raise DatabaseNotFoundError()
 
-    def create_session(
-        self, database_name: Optional[str] = None, **options: Any
-    ) -> Session:
-        return self.get_database(database_name).create_session(**options)
+    @classmethod
+    def create_session(cls, database_name: str = "main", **options: Any) -> Session:
+        return cls.get_database(database_name).create_session(**options)
 
-    def migrate(self, drop_tables: bool, database_name: Optional[str] = None) -> None:
-        self.get_database(database_name).migrate(drop_tables)
+    @classmethod
+    def migrate(cls, drop_tables: bool, database_name: str = "main") -> None:
+        cls.get_database(database_name).migrate(drop_tables)
 
-    def migrate_all(self, drop_tables: bool) -> None:
-        for base_name in self.__bases.keys():
-            self.migrate(drop_tables, base_name)
+    @classmethod
+    def migrate_all(cls, drop_tables: bool) -> None:
+        for database in cls.__bases:
+            cls.migrate(drop_tables, database.name)
 
-    def append_databases(self, *databases: Database) -> None:
+    @classmethod
+    def append_databases(cls, *databases: Database) -> None:
         for database in databases:
-            self.__bases[database.name] = database
+            cls.__bases.append(database)

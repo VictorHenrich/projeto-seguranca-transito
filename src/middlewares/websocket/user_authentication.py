@@ -4,12 +4,12 @@ from server.websocket import SocketMiddleware
 from patterns.service import IService
 from models import User
 from services.user import VerifyUserAuthService
-from server import App
+from server import SocketServer
 
 
 class UserAuthenticationMiddleware(SocketMiddleware):
     def handle(self, props: None) -> Mapping[str, User]:
-        token: str = App.websocket.global_request.headers.get("Authorization") or ""
+        token: str = SocketServer.global_request.headers.get("Authorization") or ""
 
         verify_user_auth_service: IService[User] = VerifyUserAuthService(token)
 

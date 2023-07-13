@@ -2,11 +2,6 @@ from unittest import TestCase
 from unittest.mock import Mock, MagicMock
 from datetime import datetime
 
-from ..util import TestUtil
-
-TestUtil.load_modules()
-
-import src.main
 from src.models import User
 from src.patterns.service import IService
 from src.services.user import (

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from server import App
+from server import App, Databases, HttpServer
 from utils.jwt import JWTUtils
 from utils import JWTUtils
 from utils.entities import PayloadUserJWT
@@ -39,13 +39,13 @@ class VerifyUserAuthService:
         token = self.__props.token.replace("Bearer ", "")
 
         payload: PayloadUserJWT = JWTUtils.decode(
-            token, App.http.configs.secret_key, class_=PayloadUserJWT
+            token, HttpServer.config.secret_key, class_=PayloadUserJWT
         )
 
         if payload.expired <= datetime.now().timestamp():
             raise ExpiredTokenError()
 
-        with App.databases.create_session() as session:
+        with Databases.create_session() as session:
             user_find: IFindRepository[
                 UserFindRepositoryParams, User
             ] = UserFindRepository(session)

@@ -1,4 +1,4 @@
-from server import App
+from server import App, SocketServer
 from server.websocket import Controller, ConnectionController
 from models import User
 from server.websocket import SocketMiddleware
@@ -18,7 +18,7 @@ class ConnectionUser(ConnectionController):
 autentication_middleware: SocketMiddleware[None] = UserAuthenticationMiddleware()
 
 
-@App.websocket.add_controller("/usuario")
+@SocketServer.add_controller("/usuario")
 class UserController(Controller[ConnectionUser]):
     autentication_middleware.apply()
 

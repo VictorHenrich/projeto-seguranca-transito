@@ -5,13 +5,12 @@ from typing import (
     Type,
     Callable,
     TypeAlias,
-    Protocol,
     Collection,
-    Optional,
 )
 from flask import Flask, Request, request
 from flask_cors import CORS
 from flask_restful import Api
+from dataclasses import dataclass
 
 from .controller import Controller
 
@@ -19,56 +18,61 @@ from .controller import Controller
 Kwargs: TypeAlias = Mapping[str, Any]
 
 
-class HttpServerConfig(Protocol):
+@dataclass
+class HttpServerConfig:
     host: str
     port: Union[str, int]
     secret_key: str
     debug: bool
 
 
-class HttpServer(Api):
-    def __init__(self, config: HttpServerConfig):
-        self.__configs: HttpServerConfig = config
+class HttpServer:
+    __app: Flask = Flask(__name__)
 
-        self.__application: Flask = Flask(__name__)
+    __api: Api = Api(__app)
 
-        self.__cors: CORS = CORS(self.__application)
+    __cors: CORS = CORS(__app)
 
-        self.__global_request: Request = request
+    __global_request: Request = request
 
-        self.__application.secret_key = self.__configs.secret_key
+    __config: HttpServerConfig = HttpServerConfig(
+        host="localhost", port=3000, secret_key="", debug=True
+    )
 
-        super().__init__(self.__application)
-
+    @classmethod
     @property
-    def configs(self) -> HttpServerConfig:
-        return self.__configs
+    def config(cls) -> HttpServerConfig:
+        return cls.__config
 
+    @classmethod
     @property
-    def application(self) -> Flask:
-        return self.__application
+    def cors(cls) -> CORS:
+        return cls.__cors
 
+    @classmethod
     @property
-    def cors(self) -> CORS:
-        return self.__cors
+    def global_request(cls) -> Request:
+        return cls.__global_request
 
-    @property
-    def global_request(self) -> Request:
-        return self.__global_request
-
-    def run(self) -> None:
-        self.__application.run(
-            host=self.__configs.host,
-            port=int(self.__configs.port),
-            debug=self.__configs.debug,
+    @classmethod
+    def run(cls) -> None:
+        cls.__app.run(
+            host=cls.__config.host,
+            port=int(cls.__config.port),
+            debug=cls.__config.debug,
         )
 
+    @classmethod
     def add_controller(
-        self, *urls: Collection[str], **kwargs: Kwargs
+        cls, *urls: Collection[str], **kwargs: Kwargs
     ) -> Callable[[Type[Controller]], Type[Controller]]:
-        def wrapper(cls: Type[Controller]) -> Type[Controller]:
-            self.add_resource(cls, *urls, **kwargs)
+        def wrapper(c: Type[Controller]) -> Type[Controller]:
+            cls.__api.add_resource(c, *urls, **kwargs)
 
-            return cls
+            return c
 
         return wrapper
+
+    @classmethod
+    def set_config(cls, config: HttpServerConfig) -> None:
+        cls.__config = config

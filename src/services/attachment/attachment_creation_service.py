@@ -6,7 +6,7 @@ from base64 import b64decode
 from sqlalchemy.orm import Session
 import mimetypes
 
-from server import App
+from server.database import Databases
 from patterns.repository import ICreateRepository
 from repositories.attachment import (
     AttachmentCreateRepository,
@@ -97,5 +97,5 @@ class AttachmentCreationService:
             self.__run(self.__session)
 
         else:
-            with App.databases.create_session() as session:
+            with Databases.create_session() as session:
                 self.__run(session)

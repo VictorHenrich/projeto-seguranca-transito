@@ -5,7 +5,7 @@ import json
 import logging
 
 
-from server import App
+from server import AMQPServer
 from server.amqp import AMQPConsumer
 from services.integrations import OccurrenceIntegrationProcessService
 from patterns.service import IService
@@ -16,7 +16,7 @@ EXCHANGE_OCCURRENCE_INTEGRATION_NAME: str = "exchange_occurrence_integration"
 ROUTING_KEY_OCCURRENCE_INTEGRATION_NAME: str = "occurrence_integration"
 
 
-@App.amqp.add_consumer(
+@AMQPServer.add_consumer(
     "occurrences_integration", QUEUE_OCCURRENCE_INTEGRATION_NAME, ack=True
 )
 class ConsumerOccurrencesIntegration(AMQPConsumer):

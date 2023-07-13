@@ -2,6 +2,7 @@ from typing import Protocol, Literal, Optional
 
 from patterns.repository import BaseRepository, IFindRepository
 from models import Vehicle, User
+from .vehicle_types import VehicleTypes
 from .vehicle_find_repository import VehicleFindRepository, VehicleFindRepositoryParams
 
 
@@ -10,7 +11,7 @@ class VehicleUpdateRepositoryParams(Protocol):
     user: User
     plate: str
     renavam: str
-    vehicle_type: Literal["AUTOMOVEL", "MOTOCICLETA"]
+    vehicle_type: VehicleTypes
     brand: Optional[str] = None
     model: Optional[str] = None
     color: Optional[str] = None

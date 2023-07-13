@@ -15,3 +15,4 @@ from .vehicle_update_repository import (
     VehicleUpdateRepository,
     VehicleUpdateRepositoryParams,
 )
+from .vehicle_types import VehicleTypes

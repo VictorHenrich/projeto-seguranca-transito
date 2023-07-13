@@ -1,10 +1,8 @@
-from typing import Protocol, Literal, TypeAlias
+from typing import Protocol
 
 from patterns.repository import BaseRepository
 from models import Occurrence
-
-
-OccurrenceStatus: TypeAlias = Literal["ANDAMENTO", "PROCESSO", "FALHA", "SUCESSO"]
+from .occurrence_status import OccurrenceStatus
 
 
 class OccurrenceUpdateStatusRepositoryParams(Protocol):
@@ -16,6 +14,6 @@ class OccurrenceUpdateStatusRepository(BaseRepository):
     def update(self, params: OccurrenceUpdateStatusRepositoryParams) -> None:
         occurrence: Occurrence = params.occurrence
 
-        occurrence.status = params.status
+        occurrence.status = params.status.value
 
         self.session.add(occurrence)

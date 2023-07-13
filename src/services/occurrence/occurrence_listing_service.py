@@ -1,7 +1,7 @@
 from typing import Collection, Mapping, Any
 from dataclasses import dataclass
 
-from server import App
+from server import App, Databases
 from patterns.repository import IFindManyRepository
 from models import User, Occurrence
 from repositories.occurrence import (
@@ -20,7 +20,7 @@ class OccurrenceListingService:
         self.__props: OccurrenceFindManyProps = OccurrenceFindManyProps(user)
 
     def execute(self) -> Collection[Mapping[str, Any]]:
-        with App.databases.create_session() as session:
+        with Databases.create_session() as session:
             listing_repository: IFindManyRepository[
                 OccurrenceFindManyRepositoryParams, Occurrence
             ] = OccurrenceFindManyRepository(session)

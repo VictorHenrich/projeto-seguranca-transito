@@ -1,4 +1,4 @@
-from typing import Any, Mapping, Optional, Type
+from typing import Any, Optional, Type
 from sqlalchemy.engine import create_engine, Engine
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm.session import Session
@@ -14,6 +14,9 @@ class Database:
         self.__name: str = name or "main"
         self.__engine: Engine = create_engine(connection_url, echo=debug)
         self.__Base: Type[DeclarativeBase] = self.__create_base()
+
+    def __repr__(self) -> str:
+        return f"<Database name='{self.__name}' engine={self.__engine} />"
 
     @property
     def engine(self) -> Engine:
@@ -33,7 +36,7 @@ class Database:
 
         return Base
 
-    def create_session(self, **options: Mapping[str, Any]) -> Session:
+    def create_session(self, **options: Any) -> Session:
         return Session(self.__engine, autoflush=True, **options)
 
     def migrate(self, drop_tables: bool = False) -> None:

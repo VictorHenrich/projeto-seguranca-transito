@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from datetime import datetime
 import json
 
-from server import App
+from server import Databases, AMQPServer
 from patterns.repository import ICreateRepository, IFindRepository
 from patterns.service import IService
 from models import User, Vehicle, Occurrence
@@ -124,7 +124,7 @@ class OccurrenceCreationService:
     def execute(self) -> None:
         occurrence: Optional[Occurrence] = None
 
-        with App.databases.create_session() as session:
+        with Databases.create_session() as session:
             user: User = self.__find_user(session)
 
             vehicle: Vehicle = self.__find_vehicle(session, user)
@@ -146,7 +146,7 @@ class OccurrenceCreationService:
                 "occurrence_uuid": occurrence.id_uuid,
             }
 
-            App.amqp.create_publisher(
+            AMQPServer.create_publisher(
                 "publisher_occurrence_integration",
                 exchange=EXCHANGE_OCCURRENCE_INTEGRATION_NAME,
                 routing_key=ROUTING_KEY_OCCURRENCE_INTEGRATION_NAME,

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from sqlalchemy.orm import Session
 from io import BytesIO
 
-from server import App
+from server.database import Databases
 from patterns.repository import IFindRepository
 from repositories.attachment import (
     AttachmentFindRepository,
@@ -31,7 +31,7 @@ class AttachmentGettingService:
         return attachment_find_repo.find_one(self.__props)
 
     def execute(self) -> IO:
-        with App.databases.create_session() as session:
+        with Databases.create_session() as session:
             attachment: Attachment = self.__get_attanchment(session)
 
             if not attachment.caminho_interno:

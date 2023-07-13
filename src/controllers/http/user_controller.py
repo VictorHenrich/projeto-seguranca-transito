@@ -2,7 +2,7 @@ from typing import Mapping, Any, Collection
 from dataclasses import dataclass
 from datetime import date
 
-from server import App
+from server import App, HttpServer
 from server.http import (
     Controller,
     ResponseDefaultJSON,
@@ -65,7 +65,7 @@ body_request_middleware: BodyRequestValidationMiddleware = (
 user_auth_middleware: UserAuthenticationMiddleware = UserAuthenticationMiddleware()
 
 
-@App.http.add_controller("/usuario/registro", "/usuario/registro/<uuid:user_hash>")
+@HttpServer.add_controller("/usuario/registro", "/usuario/registro/<uuid:user_hash>")
 class UserController(Controller):
     @body_request_middleware.apply(BodyRequestValidationProps(UserCreateBody))
     def post(self, body_request: UserCreateBody) -> ResponseDefaultJSON:

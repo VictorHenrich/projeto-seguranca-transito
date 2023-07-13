@@ -3,6 +3,7 @@ from datetime import datetime
 
 from models import User, Occurrence, Vehicle
 from patterns.repository import BaseRepository
+from .occurrence_status import OccurrenceStatus
 
 
 class OccurrenceCreateRepositoryParams(Protocol):
@@ -34,7 +35,7 @@ class OccurrenceCreateRepository(BaseRepository):
         occurrence.latitude = params.lat
         occurrence.longitude = params.lon
         occurrence.data_cadastro = params.created
-        occurrence.status = "ANDAMENTO"
+        occurrence.status = OccurrenceStatus.PROGRESS.value
 
         self.session.add(occurrence)
         self.session.flush()

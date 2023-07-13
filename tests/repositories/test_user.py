@@ -3,13 +3,8 @@ from unittest.mock import Mock
 from pprint import pprint
 from datetime import datetime
 
-from ..util import TestUtil
-
-
-TestUtil.load_modules()
-
-import src.main
-from src.server import App
+from src.server.database import Database
+from src.server.database.dialects import Postgres
 from src.models import User
 from src.patterns.repository import (
     IAuthRepository,
@@ -31,6 +26,15 @@ from src.repositories.user import (
 
 class UserRepositoryCase(TestCase):
     def setUp(self) -> None:
+        self.__database: Database = (
+            Postgres()
+            .set_dbname("projeto_seguranca_transito")
+            .set_host("localhost")
+            .set_credentials("postgres", "1234")
+            .set_debug(True)
+            .build()
+        )
+
         self.__user_payload: Mock = Mock()
 
         self.__user_payload.email = "pessoinha123@gmail.com"
@@ -49,7 +53,7 @@ class UserRepositoryCase(TestCase):
         self.__user_payload.birthday = datetime.now().date()
 
     def test_create(self) -> None:
-        with App.databases.create_session() as session:
+        with self.__database.create_session() as session:
             user_repository: ICreateRepository[
                 UserCreateRepositoryParams, User
             ] = UserCreateRepository(session)
@@ -61,7 +65,7 @@ class UserRepositoryCase(TestCase):
             self.assertTrue(user_created)
 
     def test_auth(self) -> None:
-        with App.databases.create_session() as session:
+        with self.__database.create_session() as session:
             user_repository: IAuthRepository[
                 UserAuthRepositoryParams, User
             ] = UserAuthRepository(session)
@@ -73,7 +77,7 @@ class UserRepositoryCase(TestCase):
             self.assertTrue(user)
 
     def test_find(self) -> None:
-        with App.databases.create_session() as session:
+        with self.__database.create_session() as session:
             user_repository: IFindRepository[
                 UserFindRepositoryParams, User
             ] = UserFindRepository(session)
@@ -85,7 +89,7 @@ class UserRepositoryCase(TestCase):
             self.assertTrue(user_finded)
 
     def test_update(self) -> None:
-        with App.databases.create_session() as session:
+        with self.__database.create_session() as session:
             user_repository: IUpdateRepository[
                 UserFindAndUpdateRepositoryParams, User
             ] = UserFindAndUpdateRepository(session)

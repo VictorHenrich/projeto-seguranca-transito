@@ -1,13 +1,15 @@
-from typing import Optional, Collection, Mapping, Any, Literal
+from typing import Collection, Mapping, Any
 from datetime import date
 from dataclasses import dataclass
 from sqlalchemy.orm import Session
 
-from server import App
+from server import App, Databases
 from models import User
 from patterns.repository import ICreateRepository
+from patterns.service import IService
 from repositories.user import UserCreateRepository, UserCreateRepositoryParams
-from repositories.vehicle import VehicleCreateRepository, VehicleCreateRepositoryParams
+from repositories.vehicle import VehicleTypes
+from services.vehicle import VehicleCreationService
 
 
 @dataclass
@@ -25,20 +27,6 @@ class UserCreateProps:
     address_street: str
     address_number: str
     birthday: date
-
-
-@dataclass
-class VehicleCreateProps:
-    user: User
-    plate: str
-    renavam: str
-    vehicle_type: Literal["CARRO", "MOTO"]
-    brand: Optional[str] = None
-    model: Optional[str] = None
-    color: Optional[str] = None
-    year: Optional[int] = None
-    chassi: Optional[str] = None
-    have_safe: bool = False
 
 
 class UserCreationService:
@@ -86,27 +74,26 @@ class UserCreationService:
 
     def __create_vehicles(self, session: Session, user: User) -> None:
         for vehicle in self.__vehicle_create_props:
-            vehicle_create_props: VehicleCreateProps = VehicleCreateProps(
+            vehicle_type: VehicleTypes = VehicleTypes(vehicle["vehicle_type"].upper())
+
+            vehicle_creation_service: IService[None] = VehicleCreationService(
                 user=user,
                 plate=vehicle["plate"],
                 renavam=vehicle["renavam"],
-                vehicle_type=vehicle["vehicle_type"],
+                vehicle_type=vehicle_type,
                 brand=vehicle.get("brand"),
                 chassi=vehicle.get("chassi"),
                 color=vehicle.get("color"),
                 model=vehicle.get("model"),
                 have_safe=vehicle.get("have_safe") or False,
                 year=vehicle.get("year"),
+                session=session,
             )
 
-            vehicle_create_repository: ICreateRepository[
-                VehicleCreateRepositoryParams, None
-            ] = VehicleCreateRepository(session)
-
-            vehicle_create_repository.create(vehicle_create_props)
+            vehicle_creation_service.execute()
 
     def execute(self) -> User:
-        with App.databases.create_session() as session:
+        with Databases.create_session() as session:
             new_user: User = self.__create_user(session)
 
             self.__create_vehicles(session, new_user)

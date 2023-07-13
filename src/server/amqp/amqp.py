@@ -1,4 +1,4 @@
-from typing import Mapping, Optional, Any, Callable, TypeAlias, List, Type
+from typing import Mapping, Optional, Any, Callable, TypeAlias, List
 from threading import Thread
 from pika import ConnectionParameters
 
@@ -13,16 +13,17 @@ ConnectionParametersOptional: TypeAlias = Optional[ConnectionParameters]
 
 
 class AMQPServer:
-    def __init__(self, default_connection: ConnectionParametersOptional) -> None:
-        self.__consumers: Mapping[str, AMQPConsumer] = {}
-        self.__default_connection: ConnectionParametersOptional = default_connection
+    __consumers: List[AMQPConsumer] = []
 
-    @property
-    def default_connection(self) -> ConnectionParametersOptional:
-        return self.__default_connection
+    __default_connection: ConnectionParametersOptional = None
 
+    @classmethod
+    def set_default_connection(cls, connection: ConnectionParameters) -> None:
+        cls.__default_connection = connection
+
+    @classmethod
     def create_publisher(
-        self,
+        cls,
         publisher_name: str,
         exchange: str,
         body: bytes,
@@ -31,13 +32,13 @@ class AMQPServer:
         properties: Mapping[str, Any] = {"delivery_mode": 2},
     ) -> None:
         connection_: Optional[ConnectionParameters] = (
-            connection or self.__default_connection
+            connection or cls.__default_connection
         )
 
         if not connection_:
             raise ConnectionAMQPNotDefined()
 
-        publiser: AMQPPublisher = AMQPPublisher(
+        publisher: AMQPPublisher = AMQPPublisher(
             publisher_name,
             connection_,
             exchange,
@@ -46,34 +47,36 @@ class AMQPServer:
             properties,
         )
 
-        publiser.start()
+        publisher.start()
 
+    @classmethod
     def add_consumer(
-        self,
+        cls,
         consumer_name: str,
         queue_name: str,
         ack: bool = True,
         connection: ConnectionParametersOptional = None,
         arguments: Optional[Mapping[str, Any]] = None,
     ) -> ReturnDecoratorAddConsumer:
-        def decorator(cls: TypeAMQPConsumer) -> TypeAMQPConsumer:
+        def decorator(c: TypeAMQPConsumer) -> TypeAMQPConsumer:
             connection_: Optional[ConnectionParameters] = (
-                connection or self.__default_connection
+                connection or cls.__default_connection
             )
 
-            consumer: AMQPConsumer = cls(
+            consumer: AMQPConsumer = c(
                 consumer_name, connection_, queue_name, ack, arguments
             )
 
-            self.__consumers[consumer.name] = consumer
+            cls.__consumers.append(consumer)
 
-            return cls
+            return c
 
         return decorator
 
-    def start_consumers(self) -> None:
+    @classmethod
+    def start_consumers(cls) -> None:
         threads: List[Thread] = [
-            Thread(target=consumer.start) for consumer in self.__consumers.values()
+            Thread(target=consumer.start) for consumer in cls.__consumers
         ]
 
         [thread.start() for thread in threads]

@@ -1,7 +1,7 @@
 from typing import Type, TypeAlias, TypeVar, Mapping, Any
 from dataclasses import dataclass
 
-from server import App
+from server import App, HttpServer
 from server.http import HttpMiddleware, ResponseDefaultJSON, ResponseFailure
 
 
@@ -18,7 +18,7 @@ class BodyRequestValidationProps:
 
 class BodyRequestValidationMiddleware(HttpMiddleware[BodyRequestValidationProps]):
     def handle(self, props: BodyRequestValidationProps) -> ParamsData:
-        dados_json: JsonData = App.http.global_request.get_json()
+        dados_json: JsonData = HttpServer.global_request.get_json()
 
         dados_corpo: Any = props.cls(**dados_json)
 

@@ -25,3 +25,4 @@ from .occurrence_aggregate_repository import (
     OccurrenceAggregateRepository,
     OccurrenceAggregateRepositoryParams,
 )
+from .occurrence_status import OccurrenceStatus

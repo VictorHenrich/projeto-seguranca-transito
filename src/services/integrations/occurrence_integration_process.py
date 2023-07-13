@@ -1,9 +1,9 @@
-from typing import Tuple, TypeAlias, Literal, Collection
+from typing import Tuple, TypeAlias, Collection
 from dataclasses import dataclass
 from sqlalchemy.orm import Session
 import logging
 
-from server import App
+from server.database import Databases
 from patterns.repository import (
     IAggregateRepository,
     IUpdateRepository,
@@ -14,6 +14,7 @@ from repositories.occurrence import (
     OccurrenceAggregateRepositoryParams,
     OccurrenceUpdateStatusRepository,
     OccurrenceUpdateStatusRepositoryParams,
+    OccurrenceStatus,
 )
 from repositories.attachment import (
     AttachmentFindManyRepository,
@@ -25,8 +26,6 @@ from .occurrence_integration_creation import OccurrenceIntegrationCreationServic
 
 
 OccurrenceLoad: TypeAlias = Tuple[Occurrence, User, Vehicle]
-
-OccurrenceStatus: TypeAlias = Literal["ANDAMENTO", "PROCESSO", "FALHA", "SUCESSO"]
 
 
 @dataclass
@@ -95,8 +94,10 @@ class OccurrenceIntegrationProcessService:
 
         occurrence_integration_service.execute()
 
-    def execute(self) -> None:
-        with App.databases.create_session() as session:
+    def __init_occurrence_integration(
+        self,
+    ) -> Tuple[User, Occurrence, Vehicle, Collection[Attachment]]:
+        with Databases.create_session() as session:
             occurrence, user, vehicle = self.__aggregate_occurrence(session)
 
             attachments: Collection[Attachment] = self.__find_attachments(
@@ -105,8 +106,16 @@ class OccurrenceIntegrationProcessService:
 
             logging.info(f"Dados de ocorrência localizados em: {occurrence.id_uuid}")
 
-            self.__update_occurrence_status(session, occurrence, "PROCESSO")
+            self.__update_occurrence_status(
+                session, occurrence, OccurrenceStatus.PROCESS
+            )
 
+            return user, occurrence, vehicle, attachments
+
+    def execute(self) -> None:
+        user, occurrence, vehicle, attachments = self.__init_occurrence_integration()
+
+        with Databases.create_session() as session:
             try:
                 logging.info("Inicializando processamento de integração de ocorrência!")
 
@@ -117,13 +126,17 @@ class OccurrenceIntegrationProcessService:
                     f"Falha ao realizar o processamento de integração de ocorrência: \n{error}"
                 )
 
-                self.__update_occurrence_status(session, occurrence, "FALHA")
+                self.__update_occurrence_status(
+                    session, occurrence, OccurrenceStatus.ERROR
+                )
 
             else:
                 logging.info(
                     "Processamento de integração de ocorrência feita com sucesso!"
                 )
 
-                self.__update_occurrence_status(session, occurrence, "SUCESSO")
+                self.__update_occurrence_status(
+                    session, occurrence, OccurrenceStatus.SUCCESS
+                )
 
             session.commit()

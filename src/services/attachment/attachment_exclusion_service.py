@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from sqlalchemy.orm import Session
 
-from server import App
+from server.database import Databases
 from models import Attachment
 
 
@@ -40,7 +40,7 @@ class AttachmentExclusionService:
             self.__delete_attachment(self.__session)
 
         else:
-            with App.databases.create_session() as session:
+            with Databases.create_session() as session:
                 self.__delete_attachment(session)
 
                 session.commit()
