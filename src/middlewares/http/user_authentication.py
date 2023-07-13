@@ -1,4 +1,4 @@
-from server import App, HttpServer
+from server import HttpServer
 from server.http import HttpMiddleware, ResponseInauthorized
 from patterns.service import IService
 from models import User

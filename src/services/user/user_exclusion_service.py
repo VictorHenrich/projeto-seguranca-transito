@@ -1,7 +1,7 @@
 from typing import Collection
 from dataclasses import dataclass
 
-from server import App, Databases
+from server import Databases
 from patterns.repository import IFindManyRepository, IFindRepository
 from models import User, Vehicle
 from repositories.user import UserFindRepository, UserFindRepositoryParams

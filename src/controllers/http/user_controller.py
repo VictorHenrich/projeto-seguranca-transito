@@ -2,7 +2,7 @@ from typing import Mapping, Any, Collection
 from dataclasses import dataclass
 from datetime import date
 
-from server import App, HttpServer
+from server import HttpServer
 from server.http import (
     Controller,
     ResponseDefaultJSON,

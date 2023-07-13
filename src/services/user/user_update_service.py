@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import date
 
-from server import App, Databases
+from server import Databases
 from models import User
 from patterns.repository import IUpdateRepository
 from repositories.user import (

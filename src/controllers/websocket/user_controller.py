@@ -1,4 +1,4 @@
-from server import App, SocketServer
+from server import SocketServer
 from server.websocket import Controller, ConnectionController
 from models import User
 from server.websocket import SocketMiddleware

@@ -3,7 +3,7 @@ from datetime import date
 from dataclasses import dataclass
 from sqlalchemy.orm import Session
 
-from server import App, Databases
+from server import Databases
 from models import User
 from patterns.repository import ICreateRepository
 from patterns.service import IService

@@ -5,7 +5,7 @@ from datetime import datetime
 
 from flask import Response
 
-from server import App, HttpServer
+from server import HttpServer
 from patterns.service import IService
 from server.http import Controller, ResponseDefaultJSON, ResponseSuccess
 from middlewares.http import (

@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from dataclasses import dataclass
 
-from server import App, Databases, HttpServer
+from server import Databases, HttpServer
 from patterns.repository import IAuthRepository
 from repositories.user import UserAuthRepository, UserAuthRepositoryParams
 from utils import JWTUtils, ConstantsUtils

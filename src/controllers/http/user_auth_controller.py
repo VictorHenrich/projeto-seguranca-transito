@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from server import App, HttpServer
+from server import HttpServer
 from middlewares.http import BodyRequestValidationMiddleware, BodyRequestValidationProps
 from patterns.service import IService
 from exceptions import UserNotFoundError

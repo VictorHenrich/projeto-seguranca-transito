@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from server import App, Databases
+from server import Databases
 from models import Vehicle
 from patterns.repository import IUpdateRepository
 from repositories.occurrence import (

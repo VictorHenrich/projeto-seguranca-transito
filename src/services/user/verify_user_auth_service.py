@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from server import App, Databases, HttpServer
+from server import Databases, HttpServer
 from utils.jwt import JWTUtils
 from utils import JWTUtils
 from utils.entities import PayloadUserJWT

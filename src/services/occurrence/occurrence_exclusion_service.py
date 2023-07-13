@@ -2,7 +2,7 @@ from typing import Collection
 from dataclasses import dataclass
 from sqlalchemy.orm import Session
 
-from server import App, Databases
+from server import Databases
 from patterns.repository import IFindRepository, IFindManyRepository
 from patterns.service import IService
 from repositories.occurrence import (

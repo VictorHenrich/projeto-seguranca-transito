@@ -1,7 +1,7 @@
 from typing import Collection, Mapping, Any
 from dataclasses import dataclass
 
-from server import App, Databases
+from server import Databases
 from patterns.repository import IFindManyRepository
 from models import User, Occurrence
 from repositories.occurrence import (

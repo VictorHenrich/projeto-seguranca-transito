@@ -1,7 +1,7 @@
 from typing import Type, TypeAlias, TypeVar, Mapping, Any
 from dataclasses import dataclass
 
-from server import App, HttpServer
+from server import HttpServer
 from server.http import HttpMiddleware, ResponseDefaultJSON, ResponseFailure
 
 
