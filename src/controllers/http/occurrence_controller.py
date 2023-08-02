@@ -18,7 +18,7 @@ from services.occurrence import (
     OccurrenceCreationService,
     OccurrenceExclusionService,
     OccurrenceGettingService,
-    OccurrenceListingService,
+    OccurrenceAggregationService,
 )
 from utils import DateUtils
 
@@ -106,7 +106,7 @@ class OccurrenceListController(Controller):
     def get(self, auth: User) -> Response:
         occurrence_listing_service: IService[
             Collection[Mapping[str, Any]]
-        ] = OccurrenceListingService(auth)
+        ] = OccurrenceAggregationService(auth)
 
         occurrences: Collection[
             Mapping[str, Any]

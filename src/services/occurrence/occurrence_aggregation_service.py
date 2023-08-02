@@ -34,8 +34,16 @@ class OccurrenceAggregationService:
                 "number": occurrence.endereco_numero
             },
             "vehicle": {
+                "uuid": vehicle.id_uuid,
                 "plate": vehicle.placa,
-                "renavam": vehicle.renavam
+                "renavam": vehicle.renavam,
+                "type": vehicle.tipo_veiculo,
+                "color": vehicle.cor,
+                "brand": vehicle.marca,
+                "model": vehicle.modelo,
+                "year": vehicle.ano,
+                "chassi": vehicle.chassi,
+                "have_sefe": vehicle.possui_seguro
             }
         }
 
