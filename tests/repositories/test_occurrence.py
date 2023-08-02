@@ -9,7 +9,6 @@ from src.server.database.dialects import Postgres
 from src.models import Occurrence, User, Vehicle
 from src.patterns.repository import (
     ICreateRepository,
-    IAggregateRepository,
     IFindRepository,
     IFindManyRepository,
     IUpdateRepository,
@@ -47,7 +46,7 @@ class OccurrenceRepositoryCase(TestCase):
 
         self.__vehicle_payload: Mock = Mock()
 
-        self.__user_payload.id = 1
+        self.__user_payload.id = 8
 
         self.__vehicle_payload.id = 1
 
@@ -63,6 +62,7 @@ class OccurrenceRepositoryCase(TestCase):
         self.__occurrence_payload.lon = "2.00000"
         self.__occurrence_payload.created = datetime.now()
         self.__occurrence_payload.occurrence_uuid = ""
+        self.__occurrence_payload.obs = "ISTO É APENAS UM TESTE"
 
     def test_create(self) -> None:
         with self.__database.create_session() as session:
@@ -73,6 +73,8 @@ class OccurrenceRepositoryCase(TestCase):
             occurrence_created: Occurrence = occurrence_repository.create(
                 self.__occurrence_payload
             )
+
+            session.commit()
 
             pprint(f"OCCURRENCE CREATED ====> {occurrence_created}")
 
@@ -99,7 +101,7 @@ class OccurrenceRepositoryCase(TestCase):
             ] = OccurrenceFindManyRepository(session)
 
             occurrences: Collection[Occurrence] = occurrence_repository.find_many(
-                self.__user_payload
+                self.__occurrence_payload
             )
 
             pprint(f"OCCURRENCES FINDED ====> {occurrences}")
@@ -108,13 +110,13 @@ class OccurrenceRepositoryCase(TestCase):
 
     def test_aggregate(self) -> None:
         with self.__database.create_session() as session:
-            occurrence_repository: IAggregateRepository[
-                OccurrenceAggregateRepositoryParams, Tuple[Occurrence, User, Vehicle]
+            occurrence_repository: IFindManyRepository[
+                OccurrenceAggregateRepositoryParams, Tuple[Occurrence, Vehicle]
             ] = OccurrenceAggregateRepository(session)
 
-            occurrence_aggregated: Tuple[
-                Occurrence, User, Vehicle
-            ] = occurrence_repository.aggregate(self.__occurrence_payload)
+            occurrence_aggregated: Collection[
+                Tuple[Occurrence, Vehicle]
+            ] = occurrence_repository.find_many(self.__occurrence_payload)
 
             pprint(f"OCCURRENCE FINDED ====> {occurrence_aggregated}")
 

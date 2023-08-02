@@ -1,29 +1,24 @@
-from typing import Protocol, Optional, Tuple, TypeAlias, Collection
-from sqlalchemy import Row
+from typing import Protocol, Tuple, TypeAlias, Collection
 
 from patterns.repository import BaseRepository
-from models import Occurrence, User, Vehicle, Attachment
-from exceptions import OccurrenceNotFoundError
+from models import Occurrence, User, Vehicle
 
 
-OccurrenceLoad: TypeAlias = Tuple[Occurrence, User, Vehicle]
+OccurrenceLoad: TypeAlias = Tuple[Occurrence, Vehicle]
 
 
 class OccurrenceAggregateRepositoryParams(Protocol):
-    occurrence_uuid: str
+    user: User
 
 
 class OccurrenceAggregateRepository(BaseRepository):
-    def aggregate(self, params: OccurrenceAggregateRepositoryParams) -> OccurrenceLoad:
-        result: Optional[Row[OccurrenceLoad]] = (
-            self.session.query(Occurrence, User, Vehicle)
+    def find_many(
+        self, params: OccurrenceAggregateRepositoryParams
+    ) -> Collection[OccurrenceLoad]:
+        return (
+            self.session.query(Occurrence, Vehicle)
             .join(User, Occurrence.id_usuario == User.id)
             .join(Vehicle, Occurrence.id_veiculo == Vehicle.id)
-            .filter(Occurrence.id_uuid == params.occurrence_uuid)
-            .first()
+            .filter(Occurrence.id_usuario == params.user.id)
+            .all()
         )
-
-        if not result:
-            raise OccurrenceNotFoundError()
-
-        return result.tuple()

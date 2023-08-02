@@ -11,6 +11,7 @@ from src.services.occurrence import (
     OccurrenceExclusionService,
     OccurrenceGettingService,
     OccurrenceListingService,
+    OccurrenceAggregationService
 )
 
 
@@ -34,7 +35,7 @@ class OccurrenceServiceCase(TestCase):
             }
         ]
 
-    def __test_creation(self) -> None:
+    def test_creation(self) -> None:
         occurrence_creation_service: IService[None] = OccurrenceCreationService(
             user_uuid=self.__occurrence_payload.user_uuid,
             vehicle_uuid=self.__occurrence_payload.vehicle_uuid,
@@ -47,7 +48,7 @@ class OccurrenceServiceCase(TestCase):
 
         occurrence_creation_service.execute()
 
-    def __test_exclusion(self) -> None:
+    def test_exclusion(self) -> None:
         occurrence_exclusion_service: IService[None] = OccurrenceExclusionService(
             self.__occurrence_payload.id_uuid
         )
@@ -81,3 +82,19 @@ class OccurrenceServiceCase(TestCase):
         pprint(f"===================> {occurrences_data}")
 
         self.assertTrue(occurrences_data)
+
+    def test_aggregate(self) -> None:
+        user_payload: Mock = Mock()
+
+        user_payload.id = 8
+
+        occurrences_aggregate_service: IService[Collection[Mapping[str, Any]]] = OccurrenceAggregationService(user_payload)
+
+        occurrences_data: Collection[Mapping[str, Any]] = occurrences_aggregate_service.execute()
+
+        pprint(f"===================> {occurrences_data}")
+
+        self.assertTrue(occurrences_data)
+
+
+

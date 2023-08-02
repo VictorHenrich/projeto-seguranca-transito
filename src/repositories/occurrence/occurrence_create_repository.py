@@ -17,7 +17,8 @@ class OccurrenceCreateRepositoryParams(Protocol):
     address_number: str
     lat: str
     lon: str
-    created: datetime = datetime.now()
+    obs: str
+    created: datetime
 
 
 class OccurrenceCreateRepository(BaseRepository):
@@ -36,6 +37,7 @@ class OccurrenceCreateRepository(BaseRepository):
         occurrence.longitude = params.lon
         occurrence.data_cadastro = params.created
         occurrence.status = OccurrenceStatus.PROGRESS.value
+        occurrence.obs = params.obs
 
         self.session.add(occurrence)
         self.session.flush()

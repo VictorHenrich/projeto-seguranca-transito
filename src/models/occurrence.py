@@ -30,3 +30,4 @@ class Occurrence(BaseModel):
     endereco_numero: Mapped[str] = mapped_column(String(10), nullable=False)
     latitude: Mapped[str] = mapped_column(String(300), nullable=False)
     longitude: Mapped[str] = mapped_column(String(300), nullable=False)
+    obs: Mapped[str] = mapped_column(Text, nullable=False)

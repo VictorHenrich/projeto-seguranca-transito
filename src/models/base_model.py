@@ -20,3 +20,6 @@ class BaseModel(database.Base):
     id_uuid: Mapped[str] = mapped_column(
         UUID(False), unique=True, nullable=False, default=lambda _: str(uuid4())
     )
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__name__} id={self.id} uuid='{self.id_uuid}'"

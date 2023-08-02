@@ -5,7 +5,6 @@ import logging
 
 from server.database import Databases
 from patterns.repository import (
-    IAggregateRepository,
     IUpdateRepository,
     IFindManyRepository,
 )

@@ -13,3 +13,4 @@ from .occurrence_listing_service import (
 from .occurrence_update_service import (
     OccurrenceUpdateService,
 )
+from .occurrence_aggregation_service import OccurrenceAggregationService
