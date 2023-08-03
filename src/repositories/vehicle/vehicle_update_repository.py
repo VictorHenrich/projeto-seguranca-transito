@@ -30,7 +30,7 @@ class VehicleUpdateRepository(BaseRepository):
 
         vehicle.placa = params.plate
         vehicle.renavam = params.renavam
-        vehicle.tipo_veiculo = params.vehicle_type
+        vehicle.tipo_veiculo = params.vehicle_type.value
         vehicle.marca = params.brand
         vehicle.modelo = params.model
         vehicle.cor = params.color

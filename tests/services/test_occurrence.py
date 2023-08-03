@@ -11,7 +11,7 @@ from src.services.occurrence import (
     OccurrenceExclusionService,
     OccurrenceGettingService,
     OccurrenceListingService,
-    OccurrenceAggregationService
+    OccurrenceAggregationService,
 )
 
 
@@ -88,13 +88,14 @@ class OccurrenceServiceCase(TestCase):
 
         user_payload.id = 8
 
-        occurrences_aggregate_service: IService[Collection[Mapping[str, Any]]] = OccurrenceAggregationService(user_payload)
+        occurrences_aggregate_service: IService[
+            Collection[Mapping[str, Any]]
+        ] = OccurrenceAggregationService(user_payload)
 
-        occurrences_data: Collection[Mapping[str, Any]] = occurrences_aggregate_service.execute()
+        occurrences_data: Collection[
+            Mapping[str, Any]
+        ] = occurrences_aggregate_service.execute()
 
         pprint(f"===================> {occurrences_data}")
 
         self.assertTrue(occurrences_data)
-
-
-

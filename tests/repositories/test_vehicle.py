@@ -24,6 +24,7 @@ from src.repositories.vehicle import (
     VehicleUpdateRepositoryParams,
     VehicleDeleteRepository,
     VehicleDeleteRepositoryParams,
+    VehicleTypes,
 )
 
 
@@ -42,19 +43,19 @@ class VehicleRepositoryCase(TestCase):
 
         self.__user_payload: Mock = Mock()
 
-        self.__user_payload.id = 1
+        self.__user_payload.id = 8
 
         self.__vehicle_payload.user = self.__user_payload
-        self.__vehicle_payload.plate = "111AA222CV333"
-        self.__vehicle_payload.renavam = "122BBNTR"
-        self.__vehicle_payload.vehicle_type = "CARRO"
-        self.__vehicle_payload.brand = "ALGUMA MARCA"
-        self.__vehicle_payload.model = "ALGUM MODELO"
-        self.__vehicle_payload.color = "ROSA"
-        self.__vehicle_payload.year = 2020
-        self.__vehicle_payload.chassi = ""
+        self.__vehicle_payload.plate = "22AABCDR"
+        self.__vehicle_payload.renavam = "22222211123123"
+        self.__vehicle_payload.vehicle_type = VehicleTypes.CAR
+        self.__vehicle_payload.brand = "MARCA PADRÃO"
+        self.__vehicle_payload.model = "MODELO PADRÃO"
+        self.__vehicle_payload.color = "VERMELHO"
+        self.__vehicle_payload.year = 2000
+        self.__vehicle_payload.chassi = "2222222222222222222"
         self.__vehicle_payload.have_safe = False
-        self.__vehicle_payload.vehicle_uuid = ""
+        self.__vehicle_payload.vehicle_uuid = "0395418d-b39e-4df9-9282-0d4c3cee7935"
 
     def test_create(self) -> None:
         with self.__database.create_session() as session:
@@ -63,6 +64,8 @@ class VehicleRepositoryCase(TestCase):
             ] = VehicleCreateRepository(session)
 
             vehicle_repository.create(self.__vehicle_payload)
+
+            session.commit()
 
             pprint("VEHICLE CREATED")
 
@@ -102,6 +105,8 @@ class VehicleRepositoryCase(TestCase):
 
             vehicle_repository.update(self.__vehicle_payload)
 
+            session.commit()
+
             pprint("VEHICLE UPDATED")
 
     def test_delete(self) -> None:
@@ -111,5 +116,7 @@ class VehicleRepositoryCase(TestCase):
             ] = VehicleDeleteRepository(session)
 
             vehicle_repository.delete(self.__vehicle_payload)
+
+            session.commit()
 
             pprint("VEHICLE DELETED")
