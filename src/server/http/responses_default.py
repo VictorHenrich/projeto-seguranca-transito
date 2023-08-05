@@ -37,7 +37,7 @@ class ResponseDefaultJSON(ABC, Response):
         }
 
         if data is not None:
-            response_data["data"] = data
+            response_data["result"] = data
 
         header_: Mapping[str, str] = {
             **ResponseDefaultJSON.__header_default,
