@@ -3,10 +3,10 @@ from dataclasses import dataclass
 from flask import Flask, request, Request
 from flask_socketio import SocketIO
 
-from .controller import HttpController
+from .controller import SocketController
 
 
-TypeSocketController: TypeAlias = Type[HttpController]
+TypeSocketController: TypeAlias = Type[SocketController]
 DecoratorAddController: TypeAlias = Callable[
     [TypeSocketController], TypeSocketController
 ]
@@ -32,7 +32,7 @@ class SocketServer(SocketIO):
 
     __global_request: Request = request
 
-    __controllers: List[HttpController] = []
+    __controllers: List[SocketController] = []
 
     @classmethod
     @property
@@ -49,7 +49,7 @@ class SocketServer(SocketIO):
         cls.__config = config
 
     @classmethod
-    def get_controller(cls, name: str) -> HttpController:
+    def get_controller(cls, name: str) -> SocketController:
         (controller,) = [
             controller
             for controller in cls.__controllers
@@ -70,7 +70,7 @@ class SocketServer(SocketIO):
     @classmethod
     def add_controller(cls, controller_name: str) -> DecoratorAddController:
         def wrapper(c: TypeSocketController) -> TypeSocketController:
-            controller: HttpController = c(controller_name)
+            controller: SocketController = c(controller_name)
 
             cls.__instance.on_namespace(controller)
 
