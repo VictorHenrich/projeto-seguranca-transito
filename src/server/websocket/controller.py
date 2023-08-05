@@ -16,7 +16,7 @@ class ConnectionController:
 T = TypeVar("T", bound=ConnectionController)
 
 
-class Controller(Namespace, ABC, Generic[T]):
+class SocketController(Namespace, ABC, Generic[T]):
     def __init__(self, name: str) -> None:
         self.__connections: List[T] = []
 

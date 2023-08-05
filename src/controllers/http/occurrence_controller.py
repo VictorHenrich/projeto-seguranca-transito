@@ -2,40 +2,39 @@ from typing import Mapping, Any, Optional, Collection, Literal
 from dataclasses import dataclass
 from uuid import UUID
 from datetime import datetime
-
 from flask import Response
 
 from server import HttpServer
 from patterns.service import IService
-from server.http import Controller, ResponseDefaultJSON, ResponseSuccess
+from server.http import HttpController, ResponseDefaultJSON, ResponseSuccess
+from models import User
+from utils import DateUtils
 from middlewares.http import (
     BodyRequestValidationMiddleware,
     BodyRequestValidationProps,
     UserAuthenticationMiddleware,
 )
-from models import User
 from services.occurrence import (
     OccurrenceCreationService,
     OccurrenceExclusionService,
     OccurrenceGettingService,
     OccurrenceAggregationService,
 )
-from utils import DateUtils
 
 
 @dataclass
 class OccurrenceCreatePayload:
-    veiculo_uuid: str
-    descricao: str
-    latitude: str
-    longitude: str
-    anexos: Collection[Mapping[Literal["conteudo", "tipo_conteudo"], Any]]
-    data_criacao: Optional[str] = None
+    vehicle_uuid: str
+    description: str
+    lat: str
+    lon: str
+    attachments: Collection[Mapping[Literal["content", "content_type"], Any]]
+    created: Optional[str] = None
 
 
 @dataclass
 class OccurrenceUpdateBodyRequest:
-    descricao: str
+    description: str
     obs: str
 
 
@@ -53,10 +52,10 @@ occurrence_create_props: BodyRequestValidationProps = BodyRequestValidationProps
 
 
 @HttpServer.add_controller(
-    "/ocorrencia/registro",
-    "/ocorrencia/registro/<uuid:occurrence_hash>",
+    "/user/occurrence/register",
+    "/user/occurrence/register/<uuid:occurrence_hash>",
 )
-class OccurrenceController(Controller):
+class OccurrenceRegisterController(HttpController):
     @user_auth_middleware.apply()
     @body_request_middleware.apply(occurrence_create_props)
     def post(
@@ -64,24 +63,24 @@ class OccurrenceController(Controller):
     ) -> ResponseDefaultJSON:
         try:
             created: datetime = DateUtils.parse_string_to_datetime(
-                body_request.data_criacao or ""
+                body_request.created or ""
             )
 
         except:
             created: datetime = datetime.utcnow()
 
         attachments: Collection[Mapping[Literal["content", "type"], Any]] = [
-            {"content": attachment["conteudo"], "type": attachment["tipo_conteudo"]}
-            for attachment in body_request.anexos
+            {"content": attachment["content"], "type": attachment["content_type"]}
+            for attachment in body_request.attachments
         ]
 
         occurrence_creation_service: IService[None] = OccurrenceCreationService(
             user_uuid=auth.id_uuid,
-            vehicle_uuid=body_request.veiculo_uuid,
+            vehicle_uuid=body_request.vehicle_uuid,
             attachments=attachments,
-            description=body_request.descricao,
-            lat=body_request.latitude,
-            lon=body_request.longitude,
+            description=body_request.description,
+            lat=body_request.lat,
+            lon=body_request.lon,
             created=created,
         )
 
@@ -100,8 +99,8 @@ class OccurrenceController(Controller):
         return ResponseSuccess()
 
 
-@HttpServer.add_controller("/ocorrencia/busca")
-class OccurrenceListController(Controller):
+@HttpServer.add_controller("/user/occurrence/query")
+class OccurrenceQueryManyController(HttpController):
     @user_auth_middleware.apply()
     def get(self, auth: User) -> Response:
         occurrence_listing_service: IService[
@@ -115,8 +114,8 @@ class OccurrenceListController(Controller):
         return ResponseSuccess(data=occurrences)
 
 
-@HttpServer.add_controller("/ocorrencia/busca/<uuid:occurrence_hash>")
-class OccurrenceGetController(Controller):
+@HttpServer.add_controller("/user/occurrence/query/<uuid:occurrence_hash>")
+class OccurrenceQueryOneController(HttpController):
     @user_auth_middleware.apply()
     def get(self, occurrence_hash: UUID, auth: User) -> Response:
         occurrence_listing_service: IService[

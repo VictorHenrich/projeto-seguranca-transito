@@ -6,7 +6,7 @@ from patterns.service import IService
 from exceptions import UserNotFoundError
 from services.user import UserAuthenticationService
 from server.http import (
-    Controller,
+    HttpController,
     ResponseDefaultJSON,
     ResponseSuccess,
     ResponseInauthorized,
@@ -16,7 +16,7 @@ from server.http import (
 @dataclass
 class AuthUserRequestBody:
     email: str
-    senha: str
+    password: str
 
 
 body_request_middleware: BodyRequestValidationMiddleware = (
@@ -28,14 +28,14 @@ body_request_props: BodyRequestValidationProps = BodyRequestValidationProps(
 
 
 @HttpServer.add_controller(
-    "/usuario/autenticacao",
+    "/user/authentication",
 )
-class UserAuthController(Controller):
+class UserAuthController(HttpController):
     @body_request_middleware.apply(body_request_props)
     def post(self, body_request: AuthUserRequestBody) -> ResponseDefaultJSON:
         try:
             service: IService[str] = UserAuthenticationService(
-                email=body_request.email, password=body_request.senha
+                email=body_request.email, password=body_request.password
             )
 
             token: str = service.execute()

@@ -9,7 +9,7 @@ Args: TypeAlias = Collection[Any]
 Kwargs: TypeAlias = Mapping[str, Any]
 
 
-class Controller(Resource, ABC):
+class HttpController(Resource, ABC):
     def get(self, *args: Args, **kwargs: Kwargs) -> Response:
         return ResponseNotFound()
 

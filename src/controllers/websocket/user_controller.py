@@ -1,5 +1,5 @@
 from server import SocketServer
-from server.websocket import Controller, ConnectionController
+from server.websocket import SocketController, ConnectionController
 from models import User
 from server.websocket import SocketMiddleware
 from middlewares.websocket import UserAuthenticationMiddleware
@@ -19,7 +19,7 @@ autentication_middleware: SocketMiddleware[None] = UserAuthenticationMiddleware(
 
 
 @SocketServer.add_controller("/usuario")
-class UserController(Controller[ConnectionUser]):
+class UserController(SocketController[ConnectionUser]):
     autentication_middleware.apply()
 
     def on_open(self, connection: ConnectionController, auth: User) -> ConnectionUser:

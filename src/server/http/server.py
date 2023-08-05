@@ -12,7 +12,7 @@ from flask_cors import CORS
 from flask_restful import Api
 from dataclasses import dataclass
 
-from .controller import Controller
+from .controller import HttpController
 
 
 Kwargs: TypeAlias = Mapping[str, Any]
@@ -65,8 +65,8 @@ class HttpServer:
     @classmethod
     def add_controller(
         cls, *urls: Collection[str], **kwargs: Kwargs
-    ) -> Callable[[Type[Controller]], Type[Controller]]:
-        def wrapper(c: Type[Controller]) -> Type[Controller]:
+    ) -> Callable[[Type[HttpController]], Type[HttpController]]:
+        def wrapper(c: Type[HttpController]) -> Type[HttpController]:
             cls.__api.add_resource(c, *urls, **kwargs)
 
             return c
