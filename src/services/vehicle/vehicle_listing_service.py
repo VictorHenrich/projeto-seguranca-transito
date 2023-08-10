@@ -30,14 +30,14 @@ class VehicleListingService:
     def __handle_vehicle(self, vehicle: Vehicle) -> Mapping[str, Any]:
         return {
             "uuid": vehicle.id_uuid,
-            "placa": vehicle.placa,
+            "plate": vehicle.placa,
             "renavam": vehicle.renavam,
-            "tipo_veiculo": vehicle.tipo_veiculo,
-            "cor": vehicle.cor,
-            "ano": vehicle.ano,
-            "marca": vehicle.marca,
-            "modelo": vehicle.modelo,
-            "possui_seguro": vehicle.possui_seguro,
+            "type": vehicle.tipo_veiculo,
+            "color": vehicle.cor,
+            "year": vehicle.ano,
+            "brand": vehicle.marca,
+            "model": vehicle.modelo,
+            "have_safe": vehicle.possui_seguro,
         }
 
     def execute(self) -> Collection[Mapping[str, Any]]:

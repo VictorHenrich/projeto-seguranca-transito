@@ -76,3 +76,7 @@ class HttpServer:
     @classmethod
     def set_config(cls, config: HttpServerConfig) -> None:
         cls.__config = config
+
+    @classmethod
+    def set_global_request(cls, global_request: Request) -> None:
+        cls.__global_request = global_request
