@@ -16,7 +16,7 @@ from repositories.user import UserFindRepository, UserFindRepositoryParams
 from repositories.vehicle import VehicleFindRepository, VehicleFindRepositoryParams
 from services.integrations import GeocodingService, GeocodingPayload
 from services.attachment import AttachmentCreationService
-from services.attachment.attachment_creation_service import LiteralKeyAttachment
+from services.attachment.attachment_creation import LiteralKeyAttachment
 from consumers.consumer_occurrences_integration import (
     EXCHANGE_OCCURRENCE_INTEGRATION_NAME,
     ROUTING_KEY_OCCURRENCE_INTEGRATION_NAME,

@@ -15,7 +15,7 @@ class UserAuthenticationProps:
     password: str
 
 
-class UserAuthenticationService:
+class AuthenticationService:
     def __init__(self, email: str, password: str) -> None:
         self.__props: UserAuthenticationProps = UserAuthenticationProps(email, password)
 

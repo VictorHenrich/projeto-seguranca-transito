@@ -1,9 +1,9 @@
-from typing import Protocol, Literal, Optional
+from typing import Protocol, Optional
 
 from patterns.repository import BaseRepository, IFindRepository
 from models import Vehicle, User
-from .vehicle_types import VehicleTypes
-from .vehicle_find_repository import VehicleFindRepository, VehicleFindRepositoryParams
+from utils.types import VehicleTypes
+from .vehicle_find import VehicleFindRepository, VehicleFindRepositoryParams
 
 
 class VehicleUpdateRepositoryParams(Protocol):

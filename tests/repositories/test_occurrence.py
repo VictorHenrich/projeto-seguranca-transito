@@ -4,9 +4,8 @@ from unittest.mock import Mock
 from pprint import pprint
 from datetime import datetime
 
-from src.server.database import Database
-from src.server.database.dialects import Postgres
-from src.models import Occurrence, User, Vehicle
+from .database import database
+from src.models import Occurrence, Vehicle
 from src.patterns.repository import (
     ICreateRepository,
     IFindRepository,
@@ -31,15 +30,6 @@ from src.repositories.occurrence import (
 
 class OccurrenceRepositoryCase(TestCase):
     def setUp(self) -> None:
-        self.__database: Database = (
-            Postgres()
-            .set_dbname("projeto_seguranca_transito")
-            .set_host("localhost")
-            .set_credentials("postgres", "1234")
-            .set_debug(True)
-            .build()
-        )
-
         self.__occurrence_payload: Mock = Mock()
 
         self.__user_payload: Mock = Mock()
@@ -65,7 +55,7 @@ class OccurrenceRepositoryCase(TestCase):
         self.__occurrence_payload.obs = "ISTO É APENAS UM TESTE"
 
     def test_create(self) -> None:
-        with self.__database.create_session() as session:
+        with database.create_session() as session:
             occurrence_repository: ICreateRepository[
                 OccurrenceCreateRepositoryParams, Occurrence
             ] = OccurrenceCreateRepository(session)
@@ -81,7 +71,7 @@ class OccurrenceRepositoryCase(TestCase):
             self.assertTrue(occurrence_created)
 
     def test_find(self) -> None:
-        with self.__database.create_session() as session:
+        with database.create_session() as session:
             occurrence_repository: IFindRepository[
                 OccurrenceFindRepositoryParams, Occurrence
             ] = OccurrenceFindRepository(session)
@@ -95,7 +85,7 @@ class OccurrenceRepositoryCase(TestCase):
             self.assertTrue(occurrence_finded)
 
     def test_find_many(self) -> None:
-        with self.__database.create_session() as session:
+        with database.create_session() as session:
             occurrence_repository: IFindManyRepository[
                 OccurrenceFindManyRepositoryParams, Occurrence
             ] = OccurrenceFindManyRepository(session)
@@ -109,7 +99,7 @@ class OccurrenceRepositoryCase(TestCase):
             self.assertTrue(occurrences)
 
     def test_aggregate(self) -> None:
-        with self.__database.create_session() as session:
+        with database.create_session() as session:
             occurrence_repository: IFindManyRepository[
                 OccurrenceAggregateRepositoryParams, Tuple[Occurrence, Vehicle]
             ] = OccurrenceAggregateRepository(session)
@@ -123,7 +113,7 @@ class OccurrenceRepositoryCase(TestCase):
             self.assertTrue(occurrence_aggregated)
 
     def test_update(self) -> None:
-        with self.__database.create_session() as session:
+        with database.create_session() as session:
             occurrence_repository: IUpdateRepository[
                 OccurrenceUpdateRepositoryParams, None
             ] = OccurrenceUpdateRepository(session)
@@ -133,7 +123,7 @@ class OccurrenceRepositoryCase(TestCase):
             pprint("OCCURRENCE UPDATED")
 
     def test_update_status(self) -> None:
-        with self.__database.create_session() as session:
+        with database.create_session() as session:
             occurrence_update_params: Mock = Mock()
 
             occurrence_update_params.occurrence = self.__occurrence_payload

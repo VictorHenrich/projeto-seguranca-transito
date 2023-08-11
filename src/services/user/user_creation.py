@@ -8,7 +8,7 @@ from models import User
 from patterns.repository import ICreateRepository
 from patterns.service import IService
 from repositories.user import UserCreateRepository, UserCreateRepositoryParams
-from repositories.vehicle import VehicleTypes
+from utils.types import VehicleTypes
 from services.vehicle import VehicleCreationService
 
 

@@ -1,3 +1,3 @@
-from .attachment_creation_service import AttachmentCreationService
-from .attachment_getting_service import AttachmentGettingService
-from .attachment_exclusion_service import AttachmentExclusionService
+from .attachment_creation import AttachmentCreationService
+from .attachment_getting import AttachmentGettingService
+from .attachment_exclusion import AttachmentExclusionService

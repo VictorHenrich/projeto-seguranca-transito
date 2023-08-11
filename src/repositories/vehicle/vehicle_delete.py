@@ -2,7 +2,7 @@ from typing import Protocol
 
 from patterns.repository import BaseRepository, IFindRepository
 from models import Vehicle, User
-from .vehicle_find_repository import VehicleFindRepository, VehicleFindRepositoryParams
+from .vehicle_find import VehicleFindRepository, VehicleFindRepositoryParams
 
 
 class VehicleDeleteRepositoryParams(Protocol):

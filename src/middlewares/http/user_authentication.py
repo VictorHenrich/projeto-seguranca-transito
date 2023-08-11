@@ -2,7 +2,7 @@ from server import HttpServer
 from server.http import HttpMiddleware, ResponseInauthorized
 from patterns.service import IService
 from models import User
-from services.user import VerifyUserAuthService
+from services.authentication import AuthVerificationService
 from exceptions import (
     AuthorizationNotFoundHeader,
     TokenTypeNotBearerError,
@@ -15,7 +15,7 @@ class UserAuthenticationMiddleware(HttpMiddleware[None]):
     def handle(self, props: None):
         token: str = HttpServer.global_request.headers.get("Authorization") or ""
 
-        verify_user_auth_service: IService[User] = VerifyUserAuthService(token)
+        verify_user_auth_service: IService[User] = AuthVerificationService(token)
 
         user: User = verify_user_auth_service.execute()
 

@@ -2,7 +2,7 @@ from typing import Protocol, Optional
 
 from patterns.repository import BaseRepository
 from models import Vehicle, User
-from .vehicle_types import VehicleTypes
+from utils.types import VehicleTypes
 
 
 class VehicleCreateRepositoryParams(Protocol):

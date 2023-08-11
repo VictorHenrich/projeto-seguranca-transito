@@ -1,18 +1,17 @@
-from .vehicle_create_repository import (
+from .vehicle_create import (
     VehicleCreateRepository,
     VehicleCreateRepositoryParams,
 )
-from .vehicle_delete_repository import (
+from .vehicle_delete import (
     VehicleDeleteRepository,
     VehicleDeleteRepositoryParams,
 )
-from .vehicle_find_many_repository import (
+from .vehicle_find_many import (
     VehicleFindManyRepository,
     VehicleFindManyRepositoryParams,
 )
-from .vehicle_find_repository import VehicleFindRepository, VehicleFindRepositoryParams
-from .vehicle_update_repository import (
+from .vehicle_find import VehicleFindRepository, VehicleFindRepositoryParams
+from .vehicle_update import (
     VehicleUpdateRepository,
     VehicleUpdateRepositoryParams,
 )
-from .vehicle_types import VehicleTypes

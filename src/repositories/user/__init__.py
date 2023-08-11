@@ -1,10 +1,10 @@
-from .user_create_repository import (
+from .user_create import (
     UserCreateRepository,
     UserCreateRepositoryParams,
 )
-from .user_find_and_update_repository import (
+from .user_find_and_update import (
     UserFindAndUpdateRepository,
     UserFindAndUpdateRepositoryParams,
 )
-from .user_find_repository import UserFindRepository, UserFindRepositoryParams
-from .user_auth_repository import UserAuthRepository, UserAuthRepositoryParams
+from .user_find import UserFindRepository, UserFindRepositoryParams
+from .user_auth import UserAuthRepository, UserAuthRepositoryParams

@@ -2,7 +2,7 @@ from typing import Protocol
 
 from patterns.repository import BaseRepository
 from models import Occurrence
-from .occurrence_status import OccurrenceStatus
+from utils.types import OccurrenceStatus
 
 
 class OccurrenceUpdateStatusRepositoryParams(Protocol):

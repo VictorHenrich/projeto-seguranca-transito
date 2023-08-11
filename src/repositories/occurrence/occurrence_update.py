@@ -2,7 +2,7 @@ from typing import Protocol
 
 from patterns.repository import BaseRepository, IFindRepository
 from models import Occurrence, Vehicle
-from .occurrence_find_repository import (
+from .occurrence_find import (
     OccurrenceFindRepository,
     OccurrenceFindRepositoryParams,
 )

@@ -5,7 +5,6 @@ from typing import (
     Type,
     Callable,
     TypeAlias,
-    Collection,
 )
 from flask import Flask, Request, request
 from flask_cors import CORS
@@ -64,7 +63,7 @@ class HttpServer:
 
     @classmethod
     def add_controller(
-        cls, *urls: Collection[str], **kwargs: Kwargs
+        cls, *urls: str, **kwargs: Any
     ) -> Callable[[Type[HttpController]], Type[HttpController]]:
         def wrapper(c: Type[HttpController]) -> Type[HttpController]:
             cls.__api.add_resource(c, *urls, **kwargs)

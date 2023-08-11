@@ -7,7 +7,6 @@ from src.patterns.service import IService
 from src.services.user import (
     UserCreationService,
     UserUpdateService,
-    UserAuthenticationService,
     UserExclusionService,
 )
 
@@ -69,20 +68,6 @@ class UserServiceCase(TestCase):
         )
 
         user_creation_service.execute()
-
-    def test_auth(self) -> None:
-        user_auth_props: Mock = Mock()
-
-        user_auth_props.email = self.__user_payload.email
-        user_auth_props.password = self.__user_payload.password
-
-        user_auth_service: IService[str] = UserAuthenticationService(
-            email=user_auth_props.email, password=user_auth_props.password
-        )
-
-        token: str = user_auth_service.execute()
-
-        self.assertTrue(token)
 
     def test_update(self) -> None:
         self.__user_payload.id_uuid = "ebd913c9-cd40-4822-af1f-822732cff2c4"

@@ -13,12 +13,12 @@ from repositories.occurrence import (
     OccurrenceAggregateRepositoryParams,
     OccurrenceUpdateStatusRepository,
     OccurrenceUpdateStatusRepositoryParams,
-    OccurrenceStatus,
 )
 from repositories.attachment import (
     AttachmentFindManyRepository,
     AttachmentFindManyRepositoryParams,
 )
+from utils.types import OccurrenceStatus
 from models import Occurrence, User, Vehicle, Attachment
 from patterns.service.iservice import IService
 from .occurrence_integration_creation import OccurrenceIntegrationCreationService

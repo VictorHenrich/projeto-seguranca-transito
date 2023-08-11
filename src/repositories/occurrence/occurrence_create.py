@@ -3,7 +3,7 @@ from datetime import datetime
 
 from models import User, Occurrence, Vehicle
 from patterns.repository import BaseRepository
-from .occurrence_status import OccurrenceStatus
+from utils.types import OccurrenceStatus
 
 
 class OccurrenceCreateRepositoryParams(Protocol):

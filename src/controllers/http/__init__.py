@@ -1,9 +1,9 @@
-from .occurrence_controller import (
+from .occurrence import (
     OccurrenceRegisterController,
     OccurrenceQueryManyController,
     OccurrenceQueryOneController,
 )
-from .user_controller import UserRegisterController, UserQueryController
-from .user_auth_controller import UserAuthController
-from .attachment_controller import AttachmentQueryController
-from .vehicle_controller import VehicleQueryController
+from .user import UserRegisterController, UserQueryController
+from .authentication import AuthenticationController, AuthenticationRefreshController
+from .attachment import AttachmentQueryController
+from .vehicle import VehicleQueryController

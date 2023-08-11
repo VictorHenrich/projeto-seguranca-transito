@@ -1,20 +1,20 @@
 from models import User
 from patterns.service import IService
-from .verify_user_auth_service import VerifyUserAuthService
-from .user_authentication_service import UserAuthenticationService
+from .auth_verification import AuthVerificationService
+from .authentication import AuthenticationService
 
 
-class RefreshUserAuthenticationService:
+class AuthRefreshService:
     def __init__(self, token: str) -> None:
         self.__token: str = token
 
     def __verify_token(self) -> User:
-        verify_user_auth_service: IService[User] = VerifyUserAuthService(self.__token)
+        verify_user_auth_service: IService[User] = AuthVerificationService(self.__token)
 
         return verify_user_auth_service.execute()
 
     def __authenticate_user(self, user: User) -> str:
-        user_authenticate_service: IService[str] = UserAuthenticationService(
+        user_authenticate_service: IService[str] = AuthenticationService(
             user.email, user.senha
         )
 

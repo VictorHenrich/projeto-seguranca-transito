@@ -3,7 +3,7 @@ from datetime import date
 
 from patterns.repository import IFindRepository, BaseRepository
 from models import User
-from .user_find_repository import UserFindRepository, UserFindRepositoryParams
+from .user_find import UserFindRepository, UserFindRepositoryParams
 from utils import CharUtils
 
 

@@ -3,8 +3,7 @@ from unittest import TestCase
 from unittest.mock import Mock
 from pprint import pprint
 
-from src.server.database import Database
-from src.server.database.dialects import Postgres
+from .database import database
 from src.models import Vehicle
 from src.patterns.repository import (
     ICreateRepository,
@@ -24,21 +23,12 @@ from src.repositories.vehicle import (
     VehicleUpdateRepositoryParams,
     VehicleDeleteRepository,
     VehicleDeleteRepositoryParams,
-    VehicleTypes,
 )
+from src.utils.types import VehicleTypes
 
 
 class VehicleRepositoryCase(TestCase):
     def setUp(self) -> None:
-        self.__database: Database = (
-            Postgres()
-            .set_dbname("projeto_seguranca_transito")
-            .set_host("localhost")
-            .set_credentials("postgres", "1234")
-            .set_debug(True)
-            .build()
-        )
-
         self.__vehicle_payload: Mock = Mock()
 
         self.__user_payload: Mock = Mock()

@@ -25,7 +25,7 @@ class FindUserProps:
     user_uuid: str
 
 
-class VerifyUserAuthService:
+class AuthVerificationService:
     def __init__(self, token: str) -> None:
         self.__props: VerifyUserAuthProps = VerifyUserAuthProps(token)
 

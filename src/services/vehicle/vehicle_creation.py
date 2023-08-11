@@ -6,10 +6,10 @@ from server import Databases
 from models import User
 from patterns.repository import ICreateRepository
 from repositories.vehicle import (
-    VehicleTypes,
     VehicleCreateRepository,
     VehicleCreateRepositoryParams,
 )
+from utils.types import VehicleTypes
 
 
 @dataclass
