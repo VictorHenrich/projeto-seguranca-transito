@@ -56,7 +56,7 @@ class AuthenticationController(HttpController):
 
 @HttpServer.add_controller("/user/authentication/refresh")
 class AuthenticationRefreshController(HttpController):
-    @body_request_middleware.apply(auth_body_request)
+    @body_request_middleware.apply(auth_refresh_body_request)
     def post(self, body_request: AuthRefreshBody) -> ResponseDefaultJSON:
         try:
             service: IService[str] = AuthRefreshService(body_request.token)
