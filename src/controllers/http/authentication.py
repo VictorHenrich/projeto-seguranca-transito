@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from server import HttpServer
 from middlewares.http import BodyRequestValidationMiddleware, BodyRequestValidationProps
 from patterns.service import IService
-from exceptions import UserNotFoundError
+from exceptions import UserNotFoundError, ExpiredTokenError
 from services.authentication import AuthenticationService, AuthRefreshService
 from server.http import (
     HttpController,
@@ -65,5 +65,5 @@ class AuthenticationRefreshController(HttpController):
 
             return ResponseSuccess(data=token)
 
-        except UserNotFoundError as error:
+        except ExpiredTokenError as error:
             return ResponseInauthorized(data=str(error))

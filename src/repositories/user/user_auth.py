@@ -17,7 +17,7 @@ class UserAuthRepository(BaseRepository):
         user: Optional[User] = (
             self.session.query(User)
             .filter(
-                func.upper(User.email) == params.email.upper(),
+                func.upper(User.email) == params.email.strip().upper(),
                 User.senha == params.password,
             )
             .first()
