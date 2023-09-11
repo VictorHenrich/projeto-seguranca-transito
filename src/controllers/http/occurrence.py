@@ -30,7 +30,7 @@ class OccurrenceCreatePayload:
     description: str
     location: Optional[Mapping[Literal["lat", "lon"], Union[str, float]]]
     address: Optional[Mapping[str, Any]]
-    attachments: Collection[Mapping[Literal["content", "content_type"], Any]]
+    attachments: Collection[Mapping[Literal["content", "type"], Any]]
     created: Optional[str] = None
 
 
@@ -72,9 +72,7 @@ class OccurrenceRegisterController(HttpController):
             created: datetime = datetime.utcnow()
 
         attachments: Collection[AttachmentPayload] = [
-            AttachmentPayload(
-                content=attachment["content"], type=attachment["content_type"]
-            )
+            AttachmentPayload(content=attachment["content"], type=attachment["type"])
             for attachment in body_request.attachments
         ]
 
@@ -82,7 +80,7 @@ class OccurrenceRegisterController(HttpController):
             address: Union[AddressPayload, LocationPayload] = AddressPayload(
                 zipcode=body_request.address["zipcode"],
                 state=body_request.address["state"],
-                city=body_request.address["coty"],
+                city=body_request.address["city"],
                 district=body_request.address["district"],
                 street=body_request.address["street"],
                 number=body_request.address["number"],
