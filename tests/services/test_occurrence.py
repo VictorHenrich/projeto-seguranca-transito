@@ -26,10 +26,10 @@ class OccurrenceServiceCase(TestCase):
         )
 
         self.__occurrence_payload.id_uuid = ""
-        self.__occurrence_payload.user_uuid = "ebd913c9-cd40-4822-af1f-822732cff2c4"
-        self.__occurrence_payload.vehicle_uuid = "4aff5eed-57a2-4c5f-bff6-2ee9c79b2ceb"
+        self.__occurrence_payload.user_uuid = "72b5a0ba-e454-4668-8965-f4901353c4e4"
+        self.__occurrence_payload.vehicle_uuid = "19a9fd5c-ec15-402d-978b-11a92b9c6f75"
         self.__occurrence_payload.description = "EU BATI MEU CARRO"
-        self.__occurrence_payload.address = LocationPayload(28.4400207, 28.4400207)
+        self.__occurrence_payload.address = LocationPayload(-28.4944057, -48.9936902)
         self.__occurrence_payload.created = datetime.now()
         self.__occurrence_payload.attachments = [attachment]
 

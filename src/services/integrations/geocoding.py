@@ -46,18 +46,26 @@ class GeocodingService:
                 )
 
             return response.json()
+        
+    def __handle_address_payload(self, address_payload: JsonType) -> AddressPayload:
+        address: JsonType = address_payload["address"]
+
+        return AddressPayload(
+            address.get("postcode", ""),
+            self.__handle_state(address.get("state", "")),
+            address.get("town", ""),
+            address.get("suburb", ""),
+            address.get("road", ""),
+        )
+        
+    async def __run(self) -> AddressPayload:
+        address_payload: JsonType = await self.__find_address()
+
+        logging.info(f"Dados da Geolocalização: {address_payload}")
+
+        return self.__handle_address_payload(address_payload)
 
     def execute(self) -> AddressPayload:
         event_loop: asyncio.AbstractEventLoop = asyncio.new_event_loop()
 
-        address_data: JsonType = event_loop.run_until_complete(self.__find_address())
-
-        logging.info(f"Dados da Geolocalização: {address_data}")
-
-        return AddressPayload(
-            address_data["address"].get("postcode", ""),
-            self.__handle_state(address_data["address"].get("state", "")),
-            address_data["address"].get("town", ""),
-            address_data["address"].get("suburb", ""),
-            address_data["address"].get("road", ""),
-        )
+        return event_loop.run_until_complete(self.__run())
