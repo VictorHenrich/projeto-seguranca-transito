@@ -46,7 +46,7 @@ class GeocodingService:
                 )
 
             return response.json()
-        
+
     def __handle_address_payload(self, address_payload: JsonType) -> AddressPayload:
         address: JsonType = address_payload["address"]
 
@@ -57,7 +57,7 @@ class GeocodingService:
             address.get("suburb", ""),
             address.get("road", ""),
         )
-        
+
     async def __run(self) -> AddressPayload:
         address_payload: JsonType = await self.__find_address()
 
