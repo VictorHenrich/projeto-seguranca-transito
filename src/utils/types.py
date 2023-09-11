@@ -3,7 +3,7 @@ from enum import Enum
 
 class VehicleTypes(Enum):
     CAR = "CARRO"
-    MOTOR = "MOTOR"
+    MOTOR = "MOTO"
 
 
 class OccurrenceStatus(Enum):

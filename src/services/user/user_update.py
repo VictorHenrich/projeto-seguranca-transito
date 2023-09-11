@@ -8,6 +8,7 @@ from repositories.user import (
     UserFindAndUpdateRepository,
     UserFindAndUpdateRepositoryParams,
 )
+from utils.entities import AddressPayload
 
 
 @dataclass
@@ -39,11 +40,7 @@ class UserUpdateService:
         document_rg: str,
         telephone: str,
         state_issuer: str,
-        address_state: str,
-        address_city: str,
-        address_district: str,
-        address_street: str,
-        address_number: str,
+        address: AddressPayload,
         birthday: date,
     ) -> None:
         self.__props: UserUpdateProps = UserUpdateProps(
@@ -55,11 +52,11 @@ class UserUpdateService:
             document_rg,
             telephone,
             state_issuer,
-            address_state,
-            address_city,
-            address_district,
-            address_street,
-            address_number,
+            address.state,
+            address.city,
+            address.district,
+            address.street,
+            address.number,
             birthday,
         )
 

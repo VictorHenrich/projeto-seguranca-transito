@@ -1,22 +1,24 @@
-from typing import Optional, Mapping, Any, Collection
+from decimal import Decimal
+from typing import Optional, Mapping, Any, Collection, Tuple, Union
 from dataclasses import dataclass
 from sqlalchemy.orm import Session
 from datetime import datetime
 import json
+import logging
 
 from server import Databases, AMQPServer
 from patterns.repository import ICreateRepository, IFindRepository
 from patterns.service import IService
 from models import User, Vehicle, Occurrence
+from utils.entities import AddressPayload, LocationPayload, AttachmentPayload
 from repositories.occurrence import (
     OccurrenceCreateRepository,
     OccurrenceCreateRepositoryParams,
 )
 from repositories.user import UserFindRepository, UserFindRepositoryParams
 from repositories.vehicle import VehicleFindRepository, VehicleFindRepositoryParams
-from services.integrations import GeocodingService, GeocodingPayload
+from services.integrations import GeocodingService
 from services.attachment import AttachmentCreationService
-from services.attachment.attachment_creation import LiteralKeyAttachment
 from consumers.consumer_occurrences_integration import (
     EXCHANGE_OCCURRENCE_INTEGRATION_NAME,
     ROUTING_KEY_OCCURRENCE_INTEGRATION_NAME,
@@ -35,6 +37,7 @@ class OccurrenceCreationProps:
     address_number: str
     lat: str
     lon: str
+    obs: str
     created: datetime
 
 
@@ -55,48 +58,72 @@ class OccurrenceCreationService:
         user_uuid: str,
         vehicle_uuid: str,
         description: str,
-        lat: str,
-        lon: str,
+        address: Union[AddressPayload, LocationPayload],
         created: datetime,
-        attachments: Collection[Mapping[LiteralKeyAttachment, Any]],
+        attachments: Collection[AttachmentPayload],
+        obs: str = "",
     ) -> None:
         self.__user_uuid: str = user_uuid
         self.__vehicle_uuid: str = vehicle_uuid
         self.__description: str = description
-        self.__lat: str = lat
-        self.__lon: str = lon
+        self.__address: Union[AddressPayload, LocationPayload] = address
         self.__created: datetime = created
-        self.__attachments: Collection[Mapping[LiteralKeyAttachment, Any]] = attachments
+        self.__attachments: Collection[AttachmentPayload] = attachments
+        self.__obs: str = obs
 
     def __find_user(self, session: Session) -> User:
         user_find_repository: IFindRepository[
             UserFindRepositoryParams, User
         ] = UserFindRepository(session)
 
-        return user_find_repository.find_one(UserFindProps(self.__user_uuid))
+        user: User = user_find_repository.find_one(UserFindProps(self.__user_uuid))
+
+        logging.info(f"Usuario localizado: {user}")
+
+        return user
 
     def __find_vehicle(self, session: Session, user: User) -> Vehicle:
         vehicle_find_repository: IFindRepository[
             VehicleFindRepositoryParams, Vehicle
         ] = VehicleFindRepository(session)
 
-        return vehicle_find_repository.find_one(
+        vehicle: Vehicle = vehicle_find_repository.find_one(
             VehicleFindProps(user, self.__vehicle_uuid)
         )
 
-    def __find_address(self) -> GeocodingPayload:
-        geolocation_service: IService[GeocodingPayload] = GeocodingService(
-            self.__lat, self.__lon
+        logging.info(f"veículo localizado: {vehicle}")
+
+        return vehicle
+
+    def __find_address(self) -> AddressPayload:
+        if isinstance(self.__address, AddressPayload):
+            return self.__address
+
+        geolocation_service: IService[AddressPayload] = GeocodingService(
+            self.__address.lat, self.__address.lon
         )
 
-        return geolocation_service.execute()
+        geolocation_payload: AddressPayload = geolocation_service.execute()
+
+        logging.info(f"Dados Endereço da Ocorrência: {geolocation_payload}")
+
+        return geolocation_payload
+
+    def __get_location(self) -> Tuple[Decimal, Decimal]:
+        if isinstance(self.__address, LocationPayload):
+            return Decimal(self.__address.lat), Decimal(self.__address.lon)
+
+        else:
+            return Decimal(0), Decimal(0)
 
     def __create_occurrence(
-        self, session: Session, user: User, vehicle: Vehicle, address: GeocodingPayload
+        self, session: Session, user: User, vehicle: Vehicle, address: AddressPayload
     ) -> Occurrence:
         occurrence_creation_repository: ICreateRepository[
             OccurrenceCreateRepositoryParams, Occurrence
         ] = OccurrenceCreateRepository(session)
+
+        lat, lon = self.__get_location()
 
         return occurrence_creation_repository.create(
             OccurrenceCreationProps(
@@ -108,8 +135,9 @@ class OccurrenceCreationService:
                 address.district,
                 address.street,
                 "0",
-                self.__lat,
-                self.__lon,
+                str(lat),
+                str(lon),
+                self.__obs,
                 self.__created,
             )
         )
@@ -129,7 +157,7 @@ class OccurrenceCreationService:
 
             vehicle: Vehicle = self.__find_vehicle(session, user)
 
-            address: GeocodingPayload = self.__find_address()
+            address: AddressPayload = self.__find_address()
 
             occurrence = self.__create_occurrence(session, user, vehicle, address)
 

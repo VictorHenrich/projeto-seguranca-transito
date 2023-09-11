@@ -2,7 +2,8 @@ from unittest import TestCase
 from unittest.mock import Mock
 
 from src.patterns.service import IService
-from src.services.integrations import GeocodingService, GeocodingPayload
+from src.services.integrations import GeocodingService
+from src.utils.entities import AddressPayload
 
 
 class GeocodingServiceCase(TestCase):
@@ -12,11 +13,11 @@ class GeocodingServiceCase(TestCase):
         geocoding_payload.lat = -28.4400207
         geocoding_payload.lon = -48.9545278
 
-        geocoding_service: IService[GeocodingPayload] = GeocodingService(
+        geocoding_service: IService[AddressPayload] = GeocodingService(
             geocoding_payload.lat, geocoding_payload.lon
         )
 
-        data: GeocodingPayload = geocoding_service.execute()
+        data: AddressPayload = geocoding_service.execute()
 
         print("=============> ", data)
 

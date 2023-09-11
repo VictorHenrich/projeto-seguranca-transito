@@ -1,4 +1,4 @@
-from typing import Mapping, Any, Optional, Collection, Literal
+from typing import Mapping, Any, Optional, Collection, Literal, Union
 from dataclasses import dataclass
 from uuid import UUID
 from datetime import datetime
@@ -8,7 +8,9 @@ from server import HttpServer
 from patterns.service import IService
 from server.http import HttpController, ResponseDefaultJSON, ResponseSuccess
 from models import User
+from src.server.http.responses_default import ResponseFailure
 from utils import DateUtils
+from utils.entities import LocationPayload, AddressPayload, AttachmentPayload
 from middlewares.http import (
     BodyRequestValidationMiddleware,
     BodyRequestValidationProps,
@@ -26,8 +28,8 @@ from services.occurrence import (
 class OccurrenceCreatePayload:
     vehicle_uuid: str
     description: str
-    lat: str
-    lon: str
+    location: Optional[Mapping[Literal["lat", "lon"], Union[str, float]]]
+    address: Optional[Mapping[str, Any]]
     attachments: Collection[Mapping[Literal["content", "content_type"], Any]]
     created: Optional[str] = None
 
@@ -69,18 +71,39 @@ class OccurrenceRegisterController(HttpController):
         except:
             created: datetime = datetime.utcnow()
 
-        attachments: Collection[Mapping[Literal["content", "type"], Any]] = [
-            {"content": attachment["content"], "type": attachment["content_type"]}
+        attachments: Collection[AttachmentPayload] = [
+            AttachmentPayload(
+                content=attachment["content"], type=attachment["content_type"]
+            )
             for attachment in body_request.attachments
         ]
+
+        if body_request.address:
+            address: Union[AddressPayload, LocationPayload] = AddressPayload(
+                zipcode=body_request.address["zipcode"],
+                state=body_request.address["state"],
+                city=body_request.address["coty"],
+                district=body_request.address["district"],
+                street=body_request.address["street"],
+                number=body_request.address["number"],
+            )
+
+        elif body_request.location:
+            address: Union[AddressPayload, LocationPayload] = LocationPayload(
+                body_request.location["lat"], body_request.location["lon"]
+            )
+
+        else:
+            return ResponseFailure(
+                data="Parametro de endereço não informado para o cadastro!"
+            )
 
         occurrence_creation_service: IService[None] = OccurrenceCreationService(
             user_uuid=auth.id_uuid,
             vehicle_uuid=body_request.vehicle_uuid,
             attachments=attachments,
             description=body_request.description,
-            lat=body_request.lat,
-            lon=body_request.lon,
+            address=address,
             created=created,
         )
 

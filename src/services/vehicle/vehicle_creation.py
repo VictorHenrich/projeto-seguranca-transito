@@ -1,4 +1,4 @@
-from typing import Optional, TypeAlias
+from typing import Optional
 from dataclasses import dataclass
 from sqlalchemy.orm import Session
 
@@ -9,11 +9,12 @@ from repositories.vehicle import (
     VehicleCreateRepository,
     VehicleCreateRepositoryParams,
 )
+from src.utils.entities import VehiclePayload
 from utils.types import VehicleTypes
 
 
 @dataclass
-class VehicleCreateProps:
+class VehicleCreateRepoProps:
     user: User
     plate: str
     renavam: str
@@ -30,28 +31,20 @@ class VehicleCreationService:
     def __init__(
         self,
         user: User,
-        plate: str,
-        renavam: str,
-        vehicle_type: TypeAlias,
-        brand: Optional[str] = None,
-        model: Optional[str] = None,
-        color: Optional[str] = None,
-        year: Optional[str] = None,
-        chassi: Optional[str] = None,
-        have_safe: bool = False,
+        vehicle_payload: VehiclePayload,
         session: Optional[Session] = None,
     ) -> None:
-        self.__props: VehicleCreateProps = VehicleCreateProps(
+        self.__props: VehicleCreateRepoProps = VehicleCreateRepoProps(
             user,
-            plate,
-            renavam,
-            vehicle_type,
-            brand,
-            model,
-            color,
-            year,
-            chassi,
-            have_safe,
+            vehicle_payload.plate,
+            vehicle_payload.renavam,
+            vehicle_payload.vehicle_type,
+            vehicle_payload.brand,
+            vehicle_payload.model,
+            vehicle_payload.color,
+            vehicle_payload.year,
+            vehicle_payload.chassi,
+            vehicle_payload.have_safe,
         )
 
         self.__session: Optional[Session] = session

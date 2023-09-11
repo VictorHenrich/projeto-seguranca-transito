@@ -1,4 +1,4 @@
-from typing import Optional, Collection, Mapping, Any, Literal, TypeAlias
+from typing import Optional, Collection
 from dataclasses import dataclass
 from pathlib import Path
 from uuid import uuid4
@@ -13,9 +13,7 @@ from repositories.attachment import (
     AttachmentCreateRepositoryParams,
 )
 from models import Occurrence, Attachment
-
-
-LiteralKeyAttachment: TypeAlias = Literal["content", "type"]
+from utils.entities import AttachmentPayload
 
 
 @dataclass
@@ -25,19 +23,13 @@ class AttachmentCreateProps:
     url: Optional[str]
 
 
-@dataclass
-class AttachmentPayload:
-    content: str
-    type: str
-
-
 class AttachmentCreationService:
     __INTERNAL_PATH: Path = Path.cwd() / "Objects" / "Occurrences"
 
     def __init__(
         self,
         occurrence: Occurrence,
-        *attachments: Mapping[LiteralKeyAttachment, Any],
+        *attachments: AttachmentPayload,
         url: Optional[str] = None,
         session: Optional[Session] = None,
     ) -> None:
@@ -47,13 +39,10 @@ class AttachmentCreationService:
 
         self.__url: Optional[str] = url
 
-        self.__attachments: Collection[AttachmentPayload] = [
-            AttachmentPayload(attachment["content"], attachment["type"])
-            for attachment in attachments
-        ]
+        self.__attachments: Collection[AttachmentPayload] = attachments
 
     def __attach_file(self, attachment_payload: AttachmentPayload) -> str:
-        extension: str = mimetypes.guess_extension(
+        extension: Optional[str] = mimetypes.guess_extension(
             attachment_payload.type
         ) or mimetypes.guess_extension("application/octet-stream")
 
@@ -64,7 +53,7 @@ class AttachmentCreationService:
             AttachmentCreationService.__INTERNAL_PATH / f"{uuid4()}{extension}"
         )
 
-        filecontent: bytes = b64decode(attachment_payload.content)
+        filecontent: bytes = b64decode(f"{attachment_payload.content}")
 
         with open(filename, "wb") as file:
             file.write(filecontent)
@@ -79,7 +68,7 @@ class AttachmentCreationService:
         )
 
         attachment_create_repo: ICreateRepository[
-            AttachmentCreateRepositoryParams, None
+            AttachmentCreateRepositoryParams, Attachment
         ] = AttachmentCreateRepository(session)
 
         return attachment_create_repo.create(attachment_create_props)

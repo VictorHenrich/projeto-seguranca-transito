@@ -22,6 +22,8 @@ from services.user import (
 )
 from server.http.responses_default import ResponseFailure
 from utils import DateUtils
+from utils.entities import AddressPayload, VehiclePayload
+from utils.types import VehicleTypes
 
 
 @dataclass
@@ -39,6 +41,7 @@ class UserCreateBody:
     address_district: str
     address_street: str
     address_number: str
+    address_zipcode: str
     vehicles: Collection[Mapping[str, Any]]
 
 
@@ -57,6 +60,7 @@ class UserUpdateBody:
     address_district: str
     address_street: str
     address_number: str
+    address_zipcode: str
 
 
 body_request_middleware: BodyRequestValidationMiddleware = (
@@ -78,22 +82,35 @@ class UserRegisterController(HttpController):
             return ResponseFailure(data="Data passada é inválida!")
 
         try:
-            vehicles: Collection[Mapping[str, Any]] = [
-                {
-                    "plate": v["plate"],
-                    "renavam": v["renavam"],
-                    "vehicle_type": v["vehicle_type"],
-                    "model": v.get("model"),
-                    "color": v.get("color"),
-                    "year": v.get("year"),
-                    "brand": v.get("brand"),
-                    "have_safe": v.get("have_safe"),
-                }
+            vehicles: Collection[VehiclePayload] = [
+                VehiclePayload(
+                    plate=v["plate"],
+                    renavam=v["renavam"],
+                    vehicle_type=VehicleTypes(v["vehicle_type"]),
+                    brand=v.get("brand"),
+                    chassi=v.get("chassi"),
+                    color=v.get("color"),
+                    model=v.get("model"),
+                    have_safe=v.get("have_safe", False),
+                    year=v.get("year"),
+                )
                 for v in body_request.vehicles
             ]
 
         except KeyError:
             return ResponseFailure(data="Lista de veículos passados é inválido!")
+
+        except ValueError:
+            return ResponseFailure(data="Tipo de veículo passado na lista é inválido!")
+
+        address: AddressPayload = AddressPayload(
+            zipcode=body_request.address_zipcode,
+            state=body_request.address_state,
+            city=body_request.address_city,
+            district=body_request.address_district,
+            street=body_request.address_street,
+            number=body_request.address_number,
+        )
 
         service: IService[User] = UserCreationService(
             name=body_request.name,
@@ -104,11 +121,7 @@ class UserRegisterController(HttpController):
             state_issuer=body_request.issuer_state,
             telephone=body_request.telephone,
             birthday=birthday,
-            address_state=body_request.address_state,
-            address_city=body_request.address_city,
-            address_district=body_request.address_district,
-            address_street=body_request.address_street,
-            address_number=body_request.address_number,
+            address=address,
             vehicles=vehicles,
         )
 
@@ -127,6 +140,15 @@ class UserRegisterController(HttpController):
         except:
             return ResponseFailure(data="Data passada é inválida!")
 
+        address: AddressPayload = AddressPayload(
+            zipcode=body_request.address_zipcode,
+            state=body_request.address_state,
+            city=body_request.address_city,
+            district=body_request.address_district,
+            street=body_request.address_street,
+            number=body_request.address_number,
+        )
+
         service: IService[None] = UserUpdateService(
             name=body_request.name,
             email=body_request.email,
@@ -136,11 +158,7 @@ class UserRegisterController(HttpController):
             state_issuer=body_request.issuer_state,
             telephone=body_request.telephone,
             birthday=birthday,
-            address_state=body_request.address_state,
-            address_city=body_request.address_city,
-            address_district=body_request.address_district,
-            address_street=body_request.address_street,
-            address_number=body_request.address_number,
+            address=address,
             user_uuid=auth.id_uuid,
         )
 
