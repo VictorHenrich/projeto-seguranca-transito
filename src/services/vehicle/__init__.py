@@ -1,2 +1,3 @@
 from .vehicle_creation import VehicleCreationService
 from .vehicle_listing import VehicleListingService
+from .vehicle_update import VehicleUpdateService

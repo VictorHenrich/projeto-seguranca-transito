@@ -6,9 +6,13 @@ from flask import Response
 
 from server import HttpServer
 from patterns.service import IService
-from server.http import HttpController, ResponseDefaultJSON, ResponseSuccess
+from server.http import (
+    HttpController,
+    ResponseDefaultJSON,
+    ResponseSuccess,
+    ResponseFailure,
+)
 from models import User
-from src.server.http.responses_default import ResponseFailure
 from utils import DateUtils
 from utils.entities import LocationPayload, AddressPayload, AttachmentPayload
 from middlewares.http import (

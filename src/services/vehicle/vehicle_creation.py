@@ -9,7 +9,7 @@ from repositories.vehicle import (
     VehicleCreateRepository,
     VehicleCreateRepositoryParams,
 )
-from src.utils.entities import VehiclePayload
+from utils.entities import VehiclePayload
 from utils.types import VehicleTypes
 
 
