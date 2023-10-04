@@ -19,7 +19,7 @@ class VehicleCreateRepositoryParams(Protocol):
 
 
 class VehicleCreateRepository(BaseRepository):
-    def create(self, params: VehicleCreateRepositoryParams) -> None:
+    def create(self, params: VehicleCreateRepositoryParams) -> Vehicle:
         vehicle: Vehicle = Vehicle()
 
         vehicle.id_usuario = params.user.id
@@ -34,3 +34,6 @@ class VehicleCreateRepository(BaseRepository):
         vehicle.possui_seguro = params.have_safe
 
         self.session.add(vehicle)
+        self.session.flush()
+
+        return vehicle

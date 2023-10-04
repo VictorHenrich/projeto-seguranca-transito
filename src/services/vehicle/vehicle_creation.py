@@ -1,9 +1,9 @@
-from typing import Optional
+from typing import Optional, Mapping, Any
 from dataclasses import dataclass
 from sqlalchemy.orm import Session
 
 from server import Databases
-from models import User
+from models import User, Vehicle
 from patterns.repository import ICreateRepository
 from repositories.vehicle import (
     VehicleCreateRepository,
@@ -49,19 +49,36 @@ class VehicleCreationService:
 
         self.__session: Optional[Session] = session
 
-    def __create_vehicle(self, session: Session) -> None:
+    def __create_vehicle(self, session: Session) -> Mapping[str, Any]:
         vehicle_create_repository: ICreateRepository[
-            VehicleCreateRepositoryParams, None
+            VehicleCreateRepositoryParams, Vehicle
         ] = VehicleCreateRepository(session)
 
-        vehicle_create_repository.create(self.__props)
+        vehicle: Vehicle = vehicle_create_repository.create(self.__props)
 
-    def execute(self) -> None:
+        return self.__handle_vehicle(vehicle)
+
+    def __handle_vehicle(self, vehicle: Vehicle) -> Mapping[str, Any]:
+        return {
+            "uuid": vehicle.id_uuid,
+            "plate": vehicle.placa,
+            "renavam": vehicle.renavam,
+            "vehicle_type": vehicle.tipo_veiculo,
+            "chassi": vehicle.chassi,
+            "brand": vehicle.marca,
+            "model": vehicle.modelo,
+            "year": vehicle.ano,
+            "have_safe": vehicle.possui_seguro,
+        }
+
+    def execute(self) -> Mapping[str, Any]:
         if self.__session:
-            self.__create_vehicle(self.__session)
+            return self.__create_vehicle(self.__session)
 
         else:
             with Databases.create_session() as session:
-                self.__create_vehicle(session)
+                vehicle: Mapping[str, Any] = self.__create_vehicle(session)
 
                 session.commit()
+
+                return vehicle

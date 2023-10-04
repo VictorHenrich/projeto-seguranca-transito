@@ -21,7 +21,7 @@ class VehicleUpdateRepositoryParams(Protocol):
 
 
 class VehicleUpdateRepository(BaseRepository):
-    def update(self, params: VehicleUpdateRepositoryParams) -> None:
+    def update(self, params: VehicleUpdateRepositoryParams) -> Vehicle:
         vehicle_find_service: IFindRepository[
             VehicleFindRepositoryParams, Vehicle
         ] = VehicleFindRepository(self.session)
@@ -39,3 +39,6 @@ class VehicleUpdateRepository(BaseRepository):
         vehicle.possui_seguro = params.have_safe
 
         self.session.add(vehicle)
+        self.session.flush()
+
+        return vehicle

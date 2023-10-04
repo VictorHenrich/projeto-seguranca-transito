@@ -1,8 +1,8 @@
-from typing import Optional
+from typing import Optional, Mapping, Any
 from dataclasses import dataclass
 
 from server.database import Databases
-from models import User
+from models import User, Vehicle
 from repositories.vehicle import VehicleUpdateRepository, VehicleUpdateRepositoryParams
 from patterns.repository import IUpdateRepository
 from utils.entities import VehiclePayload
@@ -42,10 +42,30 @@ class VehicleUpdateService:
             vehicle_payload.have_safe,
         )
 
-    def execute(self) -> None:
+    def __handle_vehicle(self, vehicle: Vehicle) -> Mapping[str, Any]:
+        return {
+            "uuid": vehicle.id_uuid,
+            "plate": vehicle.placa,
+            "renavam": vehicle.renavam,
+            "vehicle_type": vehicle.tipo_veiculo,
+            "chassi": vehicle.chassi,
+            "brand": vehicle.marca,
+            "model": vehicle.modelo,
+            "year": vehicle.ano,
+            "have_safe": vehicle.possui_seguro,
+        }
+
+    def __update(self) -> Mapping[str, Any]:
         with Databases.create_session() as session:
             vehicle_update_repo: IUpdateRepository[
-                VehicleUpdateRepositoryParams, None
+                VehicleUpdateRepositoryParams, Vehicle
             ] = VehicleUpdateRepository(session)
 
-            vehicle_update_repo.update(self.__vehicle_props)
+            vehicle: Vehicle = vehicle_update_repo.update(self.__vehicle_props)
+
+            session.commit()
+
+            return self.__handle_vehicle(vehicle)
+
+    def execute(self) -> Mapping[str, Any]:
+        return self.__update()

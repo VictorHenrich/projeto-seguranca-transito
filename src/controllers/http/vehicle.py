@@ -14,6 +14,7 @@ from services.vehicle import (
     VehicleListingService,
     VehicleUpdateService,
     VehicleCreationService,
+    VehicleExclusionService,
 )
 from utils.entities import VehiclePayload
 
@@ -50,7 +51,7 @@ class VehicleRegisterController(HttpController):
         BodyRequestValidationProps(VehiclePayload)
     )
     def post(self, auth: User, body_request: VehiclePayload) -> Response:
-        vehicle_creation_service: IService[None] = VehicleCreationService(
+        vehicle_creation_service: IService[Mapping[str, Any]] = VehicleCreationService(
             auth, body_request
         )
 
@@ -65,10 +66,20 @@ class VehicleRegisterController(HttpController):
     def put(
         self, auth: User, body_request: VehiclePayload, vehicle_hash: UUID
     ) -> Response:
-        vehicle_update_service: IService[None] = VehicleUpdateService(
+        vehicle_update_service: IService[Mapping[str, Any]] = VehicleUpdateService(
             str(vehicle_hash), auth, body_request
         )
 
         vehicle_update_service.execute()
+
+        return ResponseSuccess()
+
+    @user_auth_middleware.apply()
+    def delete(self, auth: User, vehicle_hash: UUID) -> Response:
+        vehicle_exclusion_service: IService[None] = VehicleExclusionService(
+            str(vehicle_hash), auth
+        )
+
+        vehicle_exclusion_service.execute()
 
         return ResponseSuccess()
