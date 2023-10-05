@@ -1,5 +1,5 @@
 from decimal import Decimal
-from typing import Optional, Mapping, Any, Collection, Tuple, Union
+from typing import Optional, Collection, Tuple, Union
 from dataclasses import dataclass
 from sqlalchemy.orm import Session
 from datetime import datetime
@@ -23,6 +23,7 @@ from consumers.consumer_occurrences_integration import (
     EXCHANGE_OCCURRENCE_INTEGRATION_NAME,
     ROUTING_KEY_OCCURRENCE_INTEGRATION_NAME,
 )
+from utils.types import DictType
 
 
 @dataclass
@@ -168,7 +169,7 @@ class OccurrenceCreationService:
             if not occurrence:
                 raise Exception("Falha ao cadastrar ocorrência!")
 
-            consumer_payload: Mapping[str, Any] = {
+            consumer_payload: DictType = {
                 "user_uuid": user.id_uuid,
                 "vehicle_uuid": vehicle.id_uuid,
                 "occurrence_uuid": occurrence.id_uuid,

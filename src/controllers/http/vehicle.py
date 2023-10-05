@@ -1,6 +1,7 @@
-from typing import Collection, Mapping, Any, TypeAlias
+from typing import Collection, Mapping, Any, TypeAlias, Optional
 from uuid import UUID
 from flask import Response
+from dataclasses import dataclass
 
 from server.http import HttpServer, HttpController, ResponseSuccess
 from middlewares.http import (
@@ -17,9 +18,10 @@ from services.vehicle import (
     VehicleExclusionService,
 )
 from utils.entities import VehiclePayload
+from utils.types import VehicleTypes, DictType
 
 
-DictCollectionType: TypeAlias = Collection[Mapping[str, Any]]
+DictCollectionType: TypeAlias = Collection[DictType]
 
 
 user_auth_middleware: UserAuthenticationMiddleware = UserAuthenticationMiddleware()
@@ -27,6 +29,19 @@ user_auth_middleware: UserAuthenticationMiddleware = UserAuthenticationMiddlewar
 body_request_validation_middleware: BodyRequestValidationMiddleware = (
     BodyRequestValidationMiddleware()
 )
+
+
+@dataclass
+class VehicleBody:
+    plate: str
+    renavam: str
+    vehicle_type: str
+    brand: Optional[str] = None
+    model: Optional[str] = None
+    color: Optional[str] = None
+    year: Optional[int] = None
+    chassi: Optional[str] = None
+    have_safe: bool = False
 
 
 @HttpServer.add_controller("/user/vehicle/query")
@@ -47,12 +62,22 @@ class VehicleQueryController(HttpController):
 )
 class VehicleRegisterController(HttpController):
     @user_auth_middleware.apply()
-    @body_request_validation_middleware.apply(
-        BodyRequestValidationProps(VehiclePayload)
-    )
-    def post(self, auth: User, body_request: VehiclePayload) -> Response:
-        vehicle_creation_service: IService[Mapping[str, Any]] = VehicleCreationService(
-            auth, body_request
+    @body_request_validation_middleware.apply(BodyRequestValidationProps(VehicleBody))
+    def post(self, auth: User, body_request: VehicleBody) -> Response:
+        vehicle_payload: VehiclePayload = VehiclePayload(
+            body_request.plate,
+            body_request.renavam,
+            VehicleTypes(body_request.vehicle_type),
+            body_request.brand,
+            body_request.model,
+            body_request.color,
+            body_request.year,
+            body_request.chassi,
+            body_request.have_safe,
+        )
+
+        vehicle_creation_service: IService[DictType] = VehicleCreationService(
+            auth, vehicle_payload
         )
 
         vehicle_creation_service.execute()
@@ -60,14 +85,24 @@ class VehicleRegisterController(HttpController):
         return ResponseSuccess()
 
     @user_auth_middleware.apply()
-    @body_request_validation_middleware.apply(
-        BodyRequestValidationProps(VehiclePayload)
-    )
+    @body_request_validation_middleware.apply(BodyRequestValidationProps(VehicleBody))
     def put(
-        self, auth: User, body_request: VehiclePayload, vehicle_hash: UUID
+        self, auth: User, body_request: VehicleBody, vehicle_hash: UUID
     ) -> Response:
-        vehicle_update_service: IService[Mapping[str, Any]] = VehicleUpdateService(
-            str(vehicle_hash), auth, body_request
+        vehicle_payload: VehiclePayload = VehiclePayload(
+            body_request.plate,
+            body_request.renavam,
+            VehicleTypes(body_request.vehicle_type),
+            body_request.brand,
+            body_request.model,
+            body_request.color,
+            body_request.year,
+            body_request.chassi,
+            body_request.have_safe,
+        )
+
+        vehicle_update_service: IService[DictType] = VehicleUpdateService(
+            str(vehicle_hash), auth, vehicle_payload
         )
 
         vehicle_update_service.execute()

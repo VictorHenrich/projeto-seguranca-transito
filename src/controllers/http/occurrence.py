@@ -26,6 +26,7 @@ from services.occurrence import (
     OccurrenceGettingService,
     OccurrenceAggregationService,
 )
+from utils.types import DictType
 
 
 @dataclass
@@ -33,7 +34,7 @@ class OccurrenceCreatePayload:
     vehicle_uuid: str
     description: str
     location: Optional[Mapping[Literal["lat", "lon"], Union[str, float]]]
-    address: Optional[Mapping[str, Any]]
+    address: Optional[DictType]
     attachments: Collection[Mapping[Literal["content", "type"], Any]]
     created: Optional[str] = None
 
@@ -129,12 +130,10 @@ class OccurrenceQueryManyController(HttpController):
     @user_auth_middleware.apply()
     def get(self, auth: User) -> Response:
         occurrence_listing_service: IService[
-            Collection[Mapping[str, Any]]
+            Collection[DictType]
         ] = OccurrenceAggregationService(auth)
 
-        occurrences: Collection[
-            Mapping[str, Any]
-        ] = occurrence_listing_service.execute()
+        occurrences: Collection[DictType] = occurrence_listing_service.execute()
 
         return ResponseSuccess(data=occurrences)
 
@@ -143,10 +142,10 @@ class OccurrenceQueryManyController(HttpController):
 class OccurrenceQueryOneController(HttpController):
     @user_auth_middleware.apply()
     def get(self, occurrence_hash: UUID, auth: User) -> Response:
-        occurrence_listing_service: IService[
-            Mapping[str, Any]
-        ] = OccurrenceGettingService(str(occurrence_hash))
+        occurrence_listing_service: IService[DictType] = OccurrenceGettingService(
+            str(occurrence_hash)
+        )
 
-        occurrence: Mapping[str, Any] = occurrence_listing_service.execute()
+        occurrence: DictType = occurrence_listing_service.execute()
 
         return ResponseSuccess(data=occurrence)

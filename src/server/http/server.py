@@ -1,10 +1,8 @@
 from typing import (
     Any,
-    Mapping,
     Union,
     Type,
     Callable,
-    TypeAlias,
 )
 from flask import Flask, Request, request
 from flask_cors import CORS
@@ -12,9 +10,6 @@ from flask_restful import Api
 from dataclasses import dataclass
 
 from .controller import HttpController
-
-
-Kwargs: TypeAlias = Mapping[str, Any]
 
 
 @dataclass

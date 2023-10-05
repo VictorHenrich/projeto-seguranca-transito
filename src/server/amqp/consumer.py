@@ -7,7 +7,7 @@ import logging
 
 from .abstract_amqp import AbstractAMQP
 from exceptions import ConnectionAMQPNotDefined
-
+from utils.types import DictType
 
 ConnectionParamsOptional: TypeAlias = Optional[ConnectionParameters]
 
@@ -19,14 +19,14 @@ class AMQPConsumer(AbstractAMQP, ABC):
         connection: ConnectionParamsOptional,
         queue_name: str,
         ack: bool,
-        arguments: Optional[Mapping[str, Any]],
+        arguments: Optional[DictType],
     ) -> None:
         super().__init__(connection)
 
         self.__name: str = consumer_name
         self.__queue_name: str = queue_name
         self.__ack: bool = ack
-        self.__arguments: Optional[Mapping[str, Any]] = arguments
+        self.__arguments: Optional[DictType] = arguments
 
     @property
     def name(self) -> str:
@@ -62,7 +62,7 @@ class AMQPConsumer(AbstractAMQP, ABC):
         properties: BasicProperties,
         body: bytes,
     ) -> None:
-        options: Mapping[str, Any] = {
+        options: DictType = {
             "channel": ch,
             "method": method,
             "properties": properties,

@@ -1,10 +1,8 @@
 from dotenv import dotenv_values, get_key
 from pathlib import Path
-from typing import Mapping, Optional, Union, Any
+from typing import Mapping, Optional, Union, Any, TypeAlias
 
-
-EnvPathParameter = Optional[Union[str, Path]]
-EnvOptions = Mapping[str, Any]
+EnvPathParameter: TypeAlias = Optional[Union[str, Path]]
 
 
 class FileEnvNotFoundError(FileNotFoundError):
@@ -25,16 +23,14 @@ class EnvUtils:
         return Path(path_)
 
     @classmethod
-    def get_values(
-        cls, path: EnvPathParameter = None, **options: EnvOptions
-    ) -> Mapping:
+    def get_values(cls, path: EnvPathParameter = None, **options: Any) -> Mapping:
         path_: Path = cls.__handle_path(path)
 
         return dotenv_values(path_, **options)
 
     @classmethod
     def get_value(
-        cls, key: str, path: EnvPathParameter = None, **options: EnvOptions
+        cls, key: str, path: EnvPathParameter = None, **options: Any
     ) -> Optional[str]:
         path_: Path = cls.__handle_path(path)
 

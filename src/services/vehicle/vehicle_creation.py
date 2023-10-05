@@ -1,4 +1,4 @@
-from typing import Optional, Mapping, Any
+from typing import Optional
 from dataclasses import dataclass
 from sqlalchemy.orm import Session
 
@@ -10,7 +10,7 @@ from repositories.vehicle import (
     VehicleCreateRepositoryParams,
 )
 from utils.entities import VehiclePayload
-from utils.types import VehicleTypes
+from utils.types import VehicleTypes, DictType
 
 
 @dataclass
@@ -49,7 +49,7 @@ class VehicleCreationService:
 
         self.__session: Optional[Session] = session
 
-    def __create_vehicle(self, session: Session) -> Mapping[str, Any]:
+    def __create_vehicle(self, session: Session) -> DictType:
         vehicle_create_repository: ICreateRepository[
             VehicleCreateRepositoryParams, Vehicle
         ] = VehicleCreateRepository(session)
@@ -58,7 +58,7 @@ class VehicleCreationService:
 
         return self.__handle_vehicle(vehicle)
 
-    def __handle_vehicle(self, vehicle: Vehicle) -> Mapping[str, Any]:
+    def __handle_vehicle(self, vehicle: Vehicle) -> DictType:
         return {
             "uuid": vehicle.id_uuid,
             "plate": vehicle.placa,
@@ -71,13 +71,13 @@ class VehicleCreationService:
             "have_safe": vehicle.possui_seguro,
         }
 
-    def execute(self) -> Mapping[str, Any]:
+    def execute(self) -> DictType:
         if self.__session:
             return self.__create_vehicle(self.__session)
 
         else:
             with Databases.create_session() as session:
-                vehicle: Mapping[str, Any] = self.__create_vehicle(session)
+                vehicle: DictType = self.__create_vehicle(session)
 
                 session.commit()
 

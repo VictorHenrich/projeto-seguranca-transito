@@ -1,4 +1,4 @@
-from typing import Callable, Any, Mapping, TypeAlias, Optional
+from typing import Callable, Mapping, TypeAlias, Optional
 from pika import ConnectionParameters
 import logging
 
@@ -7,18 +7,17 @@ from .websocket import SocketServer, SocketServerConfig
 from .database import Databases, DatabaseBuilder
 from .cli import CLI
 from .amqp import AMQPServer, ConnectionBuilder
+from utils.types import DictType
 
 
 Target: TypeAlias = Callable[[None], None]
-ParamDict: TypeAlias = Mapping[str, Any]
-
 
 logging.basicConfig(level=logging.INFO)
 
 
 class AppFactory:
     @classmethod
-    def __create_amqp(cls, data: Optional[ParamDict]) -> None:
+    def __create_amqp(cls, data: Optional[DictType]) -> None:
         if data:
             amqp_connection: ConnectionParameters = (
                 ConnectionBuilder()
@@ -31,7 +30,7 @@ class AppFactory:
             AMQPServer.set_default_connection(amqp_connection)
 
     @classmethod
-    def __create_http(cls, data: Optional[ParamDict]) -> None:
+    def __create_http(cls, data: Optional[DictType]) -> None:
         if data:
             http_config: HttpServerConfig = HttpServerConfig(
                 data["host"], data["port"], data["secret_key"], data["debug"]
@@ -40,7 +39,7 @@ class AppFactory:
             HttpServer.set_config(http_config)
 
     @classmethod
-    def __create_databases(cls, data: Optional[Mapping[str, ParamDict]]) -> None:
+    def __create_databases(cls, data: Optional[Mapping[str, DictType]]) -> None:
         if data:
             for base_name, base_props in data.items():
                 Databases.append_databases(
@@ -57,7 +56,7 @@ class AppFactory:
                 )
 
     @classmethod
-    def __create_websocket(cls, data: Optional[ParamDict]) -> None:
+    def __create_websocket(cls, data: Optional[DictType]) -> None:
         if data:
             socket_config: SocketServerConfig = SocketServerConfig(
                 data["host"], data["port"], data["secret_key"], data["debug"]
@@ -66,7 +65,7 @@ class AppFactory:
             SocketServer.set_config(socket_config)
 
     @classmethod
-    def __create_cli(cls, data: Optional[ParamDict]) -> None:
+    def __create_cli(cls, data: Optional[DictType]) -> None:
         if data:
             CLI.set_config(
                 data["name"], data["description"], data["version"], *data["managers"]
@@ -75,11 +74,11 @@ class AppFactory:
     @classmethod
     def init_server(
         cls,
-        http: Optional[ParamDict] = None,
-        databases: Optional[ParamDict] = None,
-        websocket: Optional[ParamDict] = None,
-        cli: Optional[ParamDict] = None,
-        amqp: Optional[ParamDict] = None,
+        http: Optional[DictType] = None,
+        databases: Optional[DictType] = None,
+        websocket: Optional[DictType] = None,
+        cli: Optional[DictType] = None,
+        amqp: Optional[DictType] = None,
     ) -> None:
         cls.__create_http(http)
         cls.__create_databases(databases)

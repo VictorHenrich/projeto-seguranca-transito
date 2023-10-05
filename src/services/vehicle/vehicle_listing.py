@@ -1,4 +1,4 @@
-from typing import Collection, Mapping, Any
+from typing import Collection
 from dataclasses import dataclass
 from sqlalchemy.orm import Session
 
@@ -9,6 +9,7 @@ from repositories.vehicle import (
     VehicleFindManyRepository,
     VehicleFindManyRepositoryParams,
 )
+from utils.types import DictType
 
 
 @dataclass
@@ -27,7 +28,7 @@ class VehicleListingService:
 
         return vehicle_find_many_repo.find_many(self.__props)
 
-    def __handle_vehicle(self, vehicle: Vehicle) -> Mapping[str, Any]:
+    def __handle_vehicle(self, vehicle: Vehicle) -> DictType:
         return {
             "uuid": vehicle.id_uuid,
             "plate": vehicle.placa,
@@ -40,7 +41,7 @@ class VehicleListingService:
             "have_safe": vehicle.possui_seguro,
         }
 
-    def execute(self) -> Collection[Mapping[str, Any]]:
+    def execute(self) -> Collection[DictType]:
         with Databases.create_session() as session:
             vehicles: Collection[Vehicle] = self.__find_vehicles(session)
 

@@ -1,8 +1,7 @@
 from jwt import PyJWT
-from typing import Collection, TypeAlias, Any, Mapping, Type, Optional
+from typing import Collection, Any, Type, Optional
 
-
-DictMapping: TypeAlias = Mapping[str, Any]
+from utils.types import DictType
 
 
 class JWTUtils:
@@ -12,9 +11,7 @@ class JWTUtils:
     def decode(
         cls, token: str, key: str, class_: Optional[Type[Any]] = None, **options: Any
     ) -> Any:
-        payload: DictMapping = PyJWT().decode(
-            token, key, list(cls.algorithm), **options
-        )
+        payload: DictType = PyJWT().decode(token, key, list(cls.algorithm), **options)
 
         if class_:
             return class_(**payload)
@@ -23,5 +20,5 @@ class JWTUtils:
             return payload
 
     @classmethod
-    def encode(cls, payload: DictMapping, key: str, **options: Any) -> str:
-        return PyJWT().encode(payload, key, list(cls.algorithm)[0], **options)
+    def encode(cls, payload: DictType, key: str, **options: Any) -> str:
+        return PyJWT().encode(dict(payload), key, list(cls.algorithm)[0], **options)

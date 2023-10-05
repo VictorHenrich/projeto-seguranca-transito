@@ -24,3 +24,4 @@ class User(BaseModel):
     endereco_numero: Mapped[str] = mapped_column(
         String(30), nullable=False, default="0"
     )
+    endereco_cep: Mapped[str] = mapped_column(String(30), nullable=False)

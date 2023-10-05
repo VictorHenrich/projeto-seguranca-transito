@@ -1,11 +1,11 @@
-from typing import Mapping, Optional, Any, Callable, TypeAlias, List
+from typing import Optional, Callable, TypeAlias, List
 from threading import Thread
 from pika import ConnectionParameters
 
 from .consumer import AMQPConsumer
 from .publisher import AMQPPublisher
 from exceptions import ConnectionAMQPNotDefined
-
+from utils.types import DictType
 
 TypeAMQPConsumer: TypeAlias = type[AMQPConsumer]
 ReturnDecoratorAddConsumer: TypeAlias = Callable[[TypeAMQPConsumer], TypeAMQPConsumer]
@@ -29,7 +29,7 @@ class AMQPServer:
         body: bytes,
         connection: Optional[ConnectionParameters] = None,
         routing_key: str = "",
-        properties: Mapping[str, Any] = {"delivery_mode": 2},
+        properties: DictType = {"delivery_mode": 2},
     ) -> None:
         connection_: Optional[ConnectionParameters] = (
             connection or cls.__default_connection
@@ -56,7 +56,7 @@ class AMQPServer:
         queue_name: str,
         ack: bool = True,
         connection: ConnectionParametersOptional = None,
-        arguments: Optional[Mapping[str, Any]] = None,
+        arguments: Optional[DictType] = None,
     ) -> ReturnDecoratorAddConsumer:
         def decorator(c: TypeAMQPConsumer) -> TypeAMQPConsumer:
             connection_: Optional[ConnectionParameters] = (

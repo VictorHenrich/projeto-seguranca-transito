@@ -23,7 +23,7 @@ from services.user import (
 from server.http.responses_default import ResponseFailure
 from utils import DateUtils
 from utils.entities import AddressPayload, VehiclePayload
-from utils.types import VehicleTypes
+from utils.types import VehicleTypes, DictType
 
 
 @dataclass
@@ -42,14 +42,13 @@ class UserCreateBody:
     address_street: str
     address_number: str
     address_zipcode: str
-    vehicles: Collection[Mapping[str, Any]]
+    vehicles: Collection[DictType]
 
 
 @dataclass
 class UserUpdateBody:
     name: str
     email: str
-    password: str
     document_cpf: str
     document_rg: str
     issuer_state: str
@@ -152,7 +151,6 @@ class UserRegisterController(HttpController):
         service: IService[None] = UserUpdateService(
             name=body_request.name,
             email=body_request.email,
-            password=body_request.password,
             document=body_request.document_cpf,
             document_rg=body_request.document_rg,
             state_issuer=body_request.issuer_state,
@@ -179,7 +177,7 @@ class UserRegisterController(HttpController):
 class UserQueryController(HttpController):
     @user_auth_middleware.apply()
     def get(self, auth: User) -> ResponseDefaultJSON:
-        response: Mapping[str, Any] = {
+        response: DictType = {
             "uuid": auth.id_uuid,
             "name": auth.nome,
             "email": auth.email,
@@ -191,7 +189,9 @@ class UserQueryController(HttpController):
             "address_district": auth.endereco_bairro,
             "address_street": auth.endereco_logradouro,
             "address_number": auth.endereco_numero,
+            "address_zipcode": auth.endereco_cep,
             "birthday": auth.data_nascimento,
+            "telephone": auth.telefone,
         }
 
         return ResponseSuccess(data=response)

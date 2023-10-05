@@ -1,12 +1,11 @@
-from typing import Union, Mapping, Any, TypeAlias
+from typing import Union
 from decimal import Decimal
 from httpx import AsyncClient, Response
 from utils.entities import AddressPayload
 import asyncio
 import logging
 
-
-JsonType: TypeAlias = Mapping[str, Any]
+from utils.types import DictType
 
 
 class GeocodingService:
@@ -29,7 +28,7 @@ class GeocodingService:
 
             return ""
 
-    async def __find_address(self) -> JsonType:
+    async def __find_address(self) -> DictType:
         async with AsyncClient() as client:
             response: Response = await client.get(
                 GeocodingService.__url,
@@ -47,8 +46,8 @@ class GeocodingService:
 
             return response.json()
 
-    def __handle_address_payload(self, address_payload: JsonType) -> AddressPayload:
-        address: JsonType = address_payload["address"]
+    def __handle_address_payload(self, address_payload: DictType) -> AddressPayload:
+        address: DictType = address_payload["address"]
 
         return AddressPayload(
             address.get("postcode", ""),
@@ -59,7 +58,7 @@ class GeocodingService:
         )
 
     async def __run(self) -> AddressPayload:
-        address_payload: JsonType = await self.__find_address()
+        address_payload: DictType = await self.__find_address()
 
         logging.info(f"Dados da Geolocalização: {address_payload}")
 

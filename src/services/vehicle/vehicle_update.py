@@ -6,7 +6,7 @@ from models import User, Vehicle
 from repositories.vehicle import VehicleUpdateRepository, VehicleUpdateRepositoryParams
 from patterns.repository import IUpdateRepository
 from utils.entities import VehiclePayload
-from utils.types import VehicleTypes
+from utils.types import VehicleTypes, DictType
 
 
 @dataclass
@@ -42,7 +42,7 @@ class VehicleUpdateService:
             vehicle_payload.have_safe,
         )
 
-    def __handle_vehicle(self, vehicle: Vehicle) -> Mapping[str, Any]:
+    def __handle_vehicle(self, vehicle: Vehicle) -> DictType:
         return {
             "uuid": vehicle.id_uuid,
             "plate": vehicle.placa,
@@ -55,7 +55,7 @@ class VehicleUpdateService:
             "have_safe": vehicle.possui_seguro,
         }
 
-    def __update(self) -> Mapping[str, Any]:
+    def __update(self) -> DictType:
         with Databases.create_session() as session:
             vehicle_update_repo: IUpdateRepository[
                 VehicleUpdateRepositoryParams, Vehicle
@@ -67,5 +67,5 @@ class VehicleUpdateService:
 
             return self.__handle_vehicle(vehicle)
 
-    def execute(self) -> Mapping[str, Any]:
+    def execute(self) -> DictType:
         return self.__update()

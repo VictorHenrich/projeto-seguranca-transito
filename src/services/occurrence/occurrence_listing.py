@@ -8,6 +8,7 @@ from repositories.occurrence import (
     OccurrenceFindManyRepository,
     OccurrenceFindManyRepositoryParams,
 )
+from utils.types import DictType
 
 
 @dataclass
@@ -19,7 +20,7 @@ class OccurrenceListingService:
     def __init__(self, user: User) -> None:
         self.__props: OccurrenceFindManyProps = OccurrenceFindManyProps(user)
 
-    def execute(self) -> Collection[Mapping[str, Any]]:
+    def execute(self) -> Collection[DictType]:
         with Databases.create_session() as session:
             listing_repository: IFindManyRepository[
                 OccurrenceFindManyRepositoryParams, Occurrence

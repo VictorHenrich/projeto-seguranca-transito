@@ -1,4 +1,8 @@
+from typing import TypeAlias, Mapping, Any
 from enum import Enum
+
+
+DictType: TypeAlias = Mapping[str, Any]
 
 
 class VehicleTypes(Enum):

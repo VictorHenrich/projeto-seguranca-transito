@@ -16,7 +16,6 @@ class UserUpdateProps:
     user_uuid: str
     name: str
     email: str
-    password: str
     document: str
     document_rg: str
     telephone: str
@@ -26,6 +25,7 @@ class UserUpdateProps:
     address_district: str
     address_street: str
     address_number: str
+    address_zipcode: str
     birthday: date
 
 
@@ -35,7 +35,6 @@ class UserUpdateService:
         user_uuid: str,
         name: str,
         email: str,
-        password: str,
         document: str,
         document_rg: str,
         telephone: str,
@@ -47,7 +46,6 @@ class UserUpdateService:
             user_uuid,
             name,
             email,
-            password,
             document,
             document_rg,
             telephone,
@@ -57,6 +55,7 @@ class UserUpdateService:
             address.district,
             address.street,
             address.number,
+            address.zipcode,
             birthday,
         )
 

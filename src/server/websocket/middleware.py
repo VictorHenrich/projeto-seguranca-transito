@@ -1,6 +1,5 @@
 from typing import (
     Any,
-    Mapping,
     Optional,
     Callable,
     TypeAlias,
@@ -10,12 +9,12 @@ from typing import (
 )
 from abc import ABC, abstractmethod
 
-from exceptions import MiddlewareErrorValue
+from utils.types import DictType
 
 
 T = TypeVar("T")
 
-HandlerReturn: TypeAlias = Optional[Mapping[str, Any]]
+HandlerReturn: TypeAlias = Optional[DictType]
 Method: TypeAlias = Callable[[Any], Any]
 Decorator: TypeAlias = Callable[[Method], Method]
 

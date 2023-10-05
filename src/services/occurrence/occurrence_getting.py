@@ -1,4 +1,3 @@
-from typing import Mapping, Any
 from dataclasses import dataclass
 
 from server import Databases
@@ -8,6 +7,7 @@ from repositories.occurrence import (
     OccurrenceFindRepository,
     OccurrenceFindRepositoryParams,
 )
+from utils.types import DictType
 
 
 @dataclass
@@ -19,7 +19,7 @@ class OccurrenceGettingService:
     def __init__(self, occurrence_uuid: str) -> None:
         self.__props: OccurrenceFindProps = OccurrenceFindProps(occurrence_uuid)
 
-    def execute(self) -> Mapping[str, Any]:
+    def execute(self) -> DictType:
         with Databases.create_session() as session:
             getting_repository: IFindRepository[
                 OccurrenceFindRepositoryParams, Occurrence

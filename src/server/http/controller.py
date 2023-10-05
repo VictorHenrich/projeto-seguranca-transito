@@ -1,26 +1,22 @@
 from abc import ABC
-from typing import TypeAlias, Collection, Mapping, Any
+from typing import Any
 from flask_restful import Resource
 from flask import Response
 from .responses_default import ResponseNotFound
 
 
-Args: TypeAlias = Collection[Any]
-Kwargs: TypeAlias = Mapping[str, Any]
-
-
 class HttpController(Resource, ABC):
-    def get(self, *args: Args, **kwargs: Kwargs) -> Response:
+    def get(self, *args: Any, **kwargs: Any) -> Response:
         return ResponseNotFound()
 
-    def post(self, *args: Args, **kwargs: Kwargs) -> Response:
+    def post(self, *args: Any, **kwargs: Any) -> Response:
         return ResponseNotFound()
 
-    def delete(self, *args: Args, **kwargs: Kwargs) -> Response:
+    def delete(self, *args: Any, **kwargs: Any) -> Response:
         return ResponseNotFound()
 
-    def patch(self, *args: Args, **kwargs: Kwargs) -> Response:
+    def patch(self, *args: Any, **kwargs: Any) -> Response:
         return ResponseNotFound()
 
-    def put(self, *args: Args, **kwargs: Kwargs) -> Response:
+    def put(self, *args: Any, **kwargs: Any) -> Response:
         return ResponseNotFound()

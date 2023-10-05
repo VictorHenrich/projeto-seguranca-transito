@@ -3,11 +3,10 @@ from dataclasses import dataclass
 
 from server import HttpServer
 from server.http import HttpMiddleware, ResponseDefaultJSON, ResponseFailure
-
+from utils.types import DictType
 
 T = TypeVar("T")
 
-JsonData: TypeAlias = Mapping[str, Any]
 ParamsData: TypeAlias = Mapping[str, T]
 
 
@@ -18,7 +17,7 @@ class BodyRequestValidationProps:
 
 class BodyRequestValidationMiddleware(HttpMiddleware[BodyRequestValidationProps]):
     def handle(self, props: BodyRequestValidationProps) -> ParamsData:
-        dados_json: JsonData = HttpServer.global_request.get_json()
+        dados_json: DictType = HttpServer.global_request.get_json()
 
         dados_corpo: Any = props.cls(**dados_json)
 

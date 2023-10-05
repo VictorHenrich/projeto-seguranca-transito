@@ -10,6 +10,7 @@ from patterns.service import IService
 from repositories.user import UserCreateRepository, UserCreateRepositoryParams
 from services.vehicle import VehicleCreationService
 from utils.entities import AddressPayload, VehiclePayload
+from utils.types import DictType
 
 
 @dataclass
@@ -26,6 +27,7 @@ class UserCreateRepoProps:
     address_district: str
     address_street: str
     address_number: str
+    address_zipcode: str
     birthday: date
 
 
@@ -57,6 +59,7 @@ class UserCreationService:
             address_district=address.district,
             address_street=address.street,
             address_number=address.number,
+            address_zipcode=address.zipcode,
         )
 
         self.__vehicle_create_props: Collection[VehiclePayload] = vehicles
@@ -70,7 +73,7 @@ class UserCreationService:
 
     def __create_vehicles(self, session: Session, user: User) -> None:
         for vehicle in self.__vehicle_create_props:
-            vehicle_creation_service: IService[None] = VehicleCreationService(
+            vehicle_creation_service: IService[DictType] = VehicleCreationService(
                 user=user,
                 vehicle_payload=vehicle,
                 session=session,

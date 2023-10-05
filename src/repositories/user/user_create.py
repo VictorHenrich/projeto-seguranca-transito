@@ -19,6 +19,7 @@ class UserCreateRepositoryParams(Protocol):
     address_district: str
     address_street: str
     address_number: str
+    address_zipcode: str
     birthday: date
 
 
@@ -39,6 +40,7 @@ class UserCreateRepository(BaseRepository):
         user.endereco_bairro = params.address_district.upper()
         user.endereco_logradouro = params.address_street.upper()
         user.endereco_numero = CharUtils.keep_only_number(params.address_number)
+        user.endereco_cep = CharUtils.keep_only_number(params.address_zipcode)
 
         self.session.add(user)
         self.session.flush()

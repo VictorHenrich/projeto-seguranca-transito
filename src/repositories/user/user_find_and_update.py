@@ -11,7 +11,6 @@ class UserFindAndUpdateRepositoryParams(Protocol):
     user_uuid: str
     name: str
     email: str
-    password: str
     document: str
     document_rg: str
     telephone: str
@@ -21,6 +20,7 @@ class UserFindAndUpdateRepositoryParams(Protocol):
     address_district: str
     address_street: str
     address_number: str
+    address_zipcode: str
     birthday: date
 
 
@@ -37,7 +37,6 @@ class UserFindAndUpdateRepository(BaseRepository):
         user.data_nascimento = params.birthday
         user.email = params.email.upper()
         user.nome = params.name.upper()
-        user.senha = params.password
         user.telefone = CharUtils.keep_only_number(params.telephone)
         user.estado_emissor = params.state_issuer.upper()
         user.endereco_uf = params.address_state.upper()
@@ -45,6 +44,7 @@ class UserFindAndUpdateRepository(BaseRepository):
         user.endereco_bairro = params.address_district.upper()
         user.endereco_logradouro = params.address_street.upper()
         user.endereco_numero = CharUtils.keep_only_number(params.address_number)
+        user.endereco_cep = CharUtils.keep_only_number(params.address_zipcode)
 
         self.session.add(user)
 

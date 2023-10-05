@@ -1,13 +1,13 @@
-from typing import Any, Mapping, Optional, Callable, TypeAlias, TypeVar, Generic
+from typing import Any, Optional, Callable, TypeAlias, TypeVar, Generic
 from abc import ABC, abstractmethod
 from flask import Response
 
-from exceptions import MiddlewareErrorValue
+from utils.types import DictType
 
 T = TypeVar("T")
 E = TypeVar("E", bound=Exception, contravariant=True)
 
-HandlerReturn: TypeAlias = Optional[Mapping[str, Any]]
+HandlerReturn: TypeAlias = Optional[DictType]
 Target: TypeAlias = Callable[[Any], Response]
 Wrapper: TypeAlias = Callable[[Any], Response]
 Decorator: TypeAlias = Callable[[Any], Wrapper]

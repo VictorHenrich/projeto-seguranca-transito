@@ -1,4 +1,4 @@
-from typing import Mapping, Any, Collection, Tuple, TypeAlias
+from typing import Collection, Tuple, TypeAlias
 from dataclasses import dataclass
 from sqlalchemy.orm import Session
 
@@ -9,7 +9,7 @@ from repositories.occurrence import (
     OccurrenceAggregateRepository,
     OccurrenceAggregateRepositoryParams,
 )
-
+from utils.types import DictType
 
 OccurrenceAggregateItemType: TypeAlias = Tuple[Occurrence, Vehicle]
 
@@ -27,7 +27,7 @@ class OccurrenceAggregationService:
 
     def __handle_occurrence_data(
         self, occurrence_data: OccurrenceAggregateItemType
-    ) -> Mapping[str, Any]:
+    ) -> DictType:
         occurrence, vehicle = occurrence_data
 
         return {
@@ -58,7 +58,7 @@ class OccurrenceAggregationService:
             },
         }
 
-    def __find_occurrences(self, session: Session) -> Collection[Mapping[str, Any]]:
+    def __find_occurrences(self, session: Session) -> Collection[DictType]:
         occurrence_aggregate_repo: IFindManyRepository[
             OccurrenceAggregateRepositoryParams, OccurrenceAggregateItemType
         ] = OccurrenceAggregateRepository(session)
@@ -72,6 +72,6 @@ class OccurrenceAggregationService:
             for occurrence_data in occurrences
         ]
 
-    def execute(self) -> Collection[Mapping[str, Any]]:
+    def execute(self) -> Collection[DictType]:
         with Databases.create_session() as session:
             return self.__find_occurrences(session)

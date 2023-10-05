@@ -1,4 +1,4 @@
-from typing import Any, Mapping
+from typing import Any
 from pika import ConnectionParameters
 from pika.adapters.blocking_connection import BlockingChannel
 import json
@@ -9,6 +9,7 @@ from server import AMQPServer
 from server.amqp import AMQPConsumer
 from services.integrations import OccurrenceIntegrationProcessService
 from patterns.service import IService
+from utils.types import DictType
 
 
 QUEUE_OCCURRENCE_INTEGRATION_NAME: str = "queue_occurrences_integration"
@@ -26,7 +27,7 @@ class ConsumerOccurrencesIntegration(AMQPConsumer):
         connection: ConnectionParameters,
         queue_name: str,
         ack: bool,
-        arguments: Mapping[str, Any] | None,
+        arguments: DictType | None,
     ) -> None:
         super().__init__(consumer_name, connection, queue_name, ack, arguments)
 
@@ -46,7 +47,7 @@ class ConsumerOccurrencesIntegration(AMQPConsumer):
         )
 
     def on_message_queue(self, body: bytes, **kwargs: Any) -> None:
-        data: Mapping[str, Any] = json.loads(body)
+        data: DictType = json.loads(body)
 
         logging.info(f"Payload do consumer occurrences_integration: \n{data}")
 

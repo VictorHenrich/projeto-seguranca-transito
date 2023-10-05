@@ -1,9 +1,6 @@
-from typing import Protocol, Generic, TypeVar, TypeAlias, Tuple, Mapping, Any
-
+from typing import Protocol, Generic, TypeVar
 
 T = TypeVar("T", contravariant=True)
-Args: TypeAlias = Tuple[Any, ...]
-Kwargs: TypeAlias = Mapping[str, Any]
 
 
 class ICommand(Protocol, Generic[T]):

@@ -1,9 +1,9 @@
-from typing import Union, Mapping, Any
 from pika import ConnectionParameters, BasicProperties
 from pika.adapters.blocking_connection import BlockingChannel
 import logging
 
 from .abstract_amqp import AbstractAMQP
+from utils.types import DictType
 
 
 class AMQPPublisher(AbstractAMQP):
@@ -14,7 +14,7 @@ class AMQPPublisher(AbstractAMQP):
         exchange: str,
         body: bytes,
         routing_key: str,
-        properties: Mapping[str, Any],
+        properties: DictType,
     ) -> None:
         super().__init__(connection)
 

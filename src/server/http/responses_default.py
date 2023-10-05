@@ -1,4 +1,4 @@
-from typing import Any, Mapping, Optional, Union, TypeAlias, IO, Collection
+from typing import Any, Mapping, Optional, Union, TypeAlias, IO, Iterable
 from flask import Response
 from abc import ABC
 import json
@@ -7,9 +7,11 @@ from io import IOBase
 import mimetypes
 from pathlib import Path
 
+from utils.types import DictType
 
-FileContent: TypeAlias = Union[str, bytes, IO]
-FileCollection: TypeAlias = Collection[Union[str, bytes]]
+
+FileContent: TypeAlias = Union[str, bytes, IO[Any]]
+FileCollection: TypeAlias = Union[Iterable[bytes], Iterable[str]]
 FileName: TypeAlias = Union[str, Path]
 
 
@@ -31,7 +33,7 @@ class ResponseDefaultJSON(ABC, Response):
         data: Optional[Any],
         header: Optional[Mapping[str, str]] = None,
     ) -> None:
-        response_data: Mapping[str, Any] = {
+        response_data: DictType = {
             "status": status_code,
             "message": message,
         }
@@ -127,7 +129,7 @@ class ResponseIO(Response):
         else:
             raise Exception("Tipo de conteúdo do arquivo é inválido para a resposta!")
 
-    def __handle_io(self, file_content: IO) -> FileCollection:
+    def __handle_io(self, file_content: IOBase) -> FileCollection:
         if not file_content.readable():
             raise Exception("Conteudo de arquivo IO não é do tipo Readable!")
 
@@ -136,8 +138,12 @@ class ResponseIO(Response):
         return file_content.readlines()
 
     def __get_file_type(self, filename: FileName) -> str:
+        type_default: str = "application/octet-stream"
+
         try:
-            return mimetypes.guess_type(filename)[0]
+            type: Optional[str] = mimetypes.guess_type(filename)[0]
+
+            return type_default if not type else type
 
         except IndexError:
-            return "application/octet-stream"
+            return type_default
