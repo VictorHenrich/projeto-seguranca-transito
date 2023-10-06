@@ -17,15 +17,13 @@ class UserAuthRepository(BaseRepository):
     def auth(self, params: UserAuthRepositoryParams) -> User:
         user: Optional[User] = (
             self.session.query(User)
-            .filter(
-                func.upper(User.email) == params.email.strip().upper()
-            )
+            .filter(func.upper(User.email) == params.email.strip().upper())
             .first()
         )
 
         if not user:
             raise UserNotFoundError()
-        
+
         if not BCryptUtils.compare_hash(params.password, user.senha):
             raise InvalidUserPasswordError(user.id_uuid)
 

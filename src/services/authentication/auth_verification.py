@@ -9,15 +9,9 @@ from patterns.repository import IFindRepository
 from models import User
 from repositories.user import UserFindRepository, UserFindRepositoryParams
 from exceptions import (
-    AuthorizationNotFoundHeader,
     TokenTypeNotBearerError,
     ExpiredTokenError,
 )
-
-
-@dataclass
-class VerifyUserAuthProps:
-    token: str
 
 
 @dataclass
@@ -27,16 +21,13 @@ class FindUserProps:
 
 class AuthVerificationService:
     def __init__(self, token: str) -> None:
-        self.__props: VerifyUserAuthProps = VerifyUserAuthProps(token)
+        self.__token: str = token
 
     def execute(self) -> User:
-        if not self.__props.token:
-            raise AuthorizationNotFoundHeader()
-
-        if "Bearer" not in self.__props.token:
+        if not self.__token or "Bearer" not in self.__token:
             raise TokenTypeNotBearerError()
 
-        token = self.__props.token.replace("Bearer ", "")
+        token = self.__token.replace("Bearer ", "")
 
         payload: PayloadUserJWT = JWTUtils.decode(
             token, HttpServer.config.secret_key, class_=PayloadUserJWT

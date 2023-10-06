@@ -1,4 +1,4 @@
-from sqlalchemy import String, Date, DateTime
+from sqlalchemy import String, Date, DateTime, Text
 from sqlalchemy.orm import mapped_column, Mapped
 from datetime import date, datetime
 
@@ -10,7 +10,7 @@ class User(BaseModel):
 
     nome: Mapped[str] = mapped_column(String(150), nullable=False)
     email: Mapped[str] = mapped_column(String(250), nullable=False, unique=True)
-    senha: Mapped[str] = mapped_column(String(50), nullable=False)
+    senha: Mapped[str] = mapped_column(Text, nullable=False)
     cpf: Mapped[str] = mapped_column(String(20), nullable=False, unique=True)
     rg: Mapped[str] = mapped_column(String(20), nullable=False, unique=True)
     telefone: Mapped[str] = mapped_column(String(20), nullable=False)

@@ -14,9 +14,7 @@ class AuthRefreshService:
         return verify_user_auth_service.execute()
 
     def __authenticate_user(self, user: User) -> str:
-        user_authenticate_service: IService[str] = AuthenticationService(
-            user.email, user.senha
-        )
+        user_authenticate_service: IService[str] = AuthenticationService(user=user)
 
         return user_authenticate_service.execute()
 

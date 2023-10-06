@@ -11,12 +11,7 @@ from server.http import (
     ResponseSuccess,
     ResponseInauthorized,
 )
-
-
-@dataclass
-class AuthBody:
-    email: str
-    password: str
+from utils.entities import UserAuthPayload
 
 
 @dataclass
@@ -28,7 +23,9 @@ body_request_middleware: BodyRequestValidationMiddleware = (
     BodyRequestValidationMiddleware()
 )
 
-auth_body_request: BodyRequestValidationProps = BodyRequestValidationProps(AuthBody)
+auth_body_request: BodyRequestValidationProps = BodyRequestValidationProps(
+    UserAuthPayload
+)
 
 auth_refresh_body_request: BodyRequestValidationProps = BodyRequestValidationProps(
     AuthRefreshBody
@@ -40,11 +37,9 @@ auth_refresh_body_request: BodyRequestValidationProps = BodyRequestValidationPro
 )
 class AuthenticationController(HttpController):
     @body_request_middleware.apply(auth_body_request)
-    def post(self, body_request: AuthBody) -> ResponseDefaultJSON:
+    def post(self, body_request: UserAuthPayload) -> ResponseDefaultJSON:
         try:
-            service: IService[str] = AuthenticationService(
-                email=body_request.email, password=body_request.password
-            )
+            service: IService[str] = AuthenticationService(credentials=body_request)
 
             token: str = service.execute()
 

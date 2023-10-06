@@ -1,38 +1,53 @@
+from typing import Optional
 from datetime import datetime, timedelta
-from dataclasses import dataclass
 
 from server import Databases, HttpServer
 from patterns.repository import IAuthRepository
 from repositories.user import UserAuthRepository, UserAuthRepositoryParams
 from utils import JWTUtils, ConstantsUtils
-from utils.entities import PayloadUserJWT
+from utils.entities import PayloadUserJWT, UserAuthPayload
 from models import User
 
 
-@dataclass
-class UserAuthenticationProps:
-    email: str
-    password: str
-
-
 class AuthenticationService:
-    def __init__(self, email: str, password: str) -> None:
-        self.__props: UserAuthenticationProps = UserAuthenticationProps(email, password)
+    def __init__(
+        self, credentials: Optional[UserAuthPayload] = None, user: Optional[User] = None
+    ) -> None:
+        self.__credentials: Optional[UserAuthPayload] = credentials
+        self.__user: Optional[User] = user
 
-    def execute(self) -> str:
+    def __find_user(self) -> User:
+        if not self.__credentials:
+            raise Exception(
+                "Nenhuma credencial foi definida para executar a ação de busca!"
+            )
+
         with Databases.create_session() as session:
             repository: IAuthRepository[
                 UserAuthRepositoryParams, User
             ] = UserAuthRepository(session)
 
-            user: User = repository.auth(self.__props)
+            return repository.auth(self.__credentials)
 
-            max_time: float = ConstantsUtils.Authentication.max_minute_authenticated
+    def __get_user(self) -> User:
+        if self.__credentials:
+            return self.__find_user()
 
-            expired: float = (datetime.now() + timedelta(minutes=max_time)).timestamp()
+        elif self.__user:
+            return self.__user
 
-            payload: PayloadUserJWT = PayloadUserJWT(user.id_uuid, expired)
+        else:
+            raise Exception("Nenhum tipo de busca foi definido!")
 
-            token: str = JWTUtils.encode(payload.__dict__, HttpServer.config.secret_key)
+    def execute(self) -> str:
+        user: User = self.__get_user()
 
-            return f"Bearer {token}"
+        max_time: float = ConstantsUtils.Authentication.max_minute_authenticated
+
+        expired: float = (datetime.now() + timedelta(minutes=max_time)).timestamp()
+
+        payload: PayloadUserJWT = PayloadUserJWT(user.id_uuid, expired)
+
+        token: str = JWTUtils.encode(payload.__dict__, HttpServer.config.secret_key)
+
+        return f"Bearer {token}"

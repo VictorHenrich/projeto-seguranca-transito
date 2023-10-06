@@ -14,16 +14,16 @@ from src.services.authentication import (
 
 class AuthenticationServiceCase(TestCase):
     def setUp(self) -> None:
-        self.__user: Mock = Mock()
+        self.__credentials: Mock = Mock()
 
-        self.__user.email = "victorhenrich993@gmail.com"
-        self.__user.password = "1234"
+        self.__credentials.email = "victorhenrich993@gmail.com"
+        self.__credentials.password = "1234"
 
         self.__user_auth: str = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3V1aWQiOiJmM2UxODRkYS04ZDYxLTQzMGItYjAyNS0xMmE4MzA4NGFjY2IiLCJleHBpcmVkIjoxNjkxNzg1MzU1LjIwOTg2Nn0.37Jz1o05xvgbs92wvgE4LMtPCklKTAsV9QVXnXQw914"
 
     def test_authentication(self) -> None:
         auth_service: IService[str] = AuthenticationService(
-            self.__user.email, self.__user.password
+            credentials=self.__credentials
         )
 
         token: str = auth_service.execute()
