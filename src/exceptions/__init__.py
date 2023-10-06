@@ -7,3 +7,4 @@ from .database_notfound import DatabaseNotFoundError
 from .connection_amqp_not_defined import ConnectionAMQPNotDefined
 from .middleware_error_value import MiddlewareErrorValue
 from .attachment_not_found import AttachmentNotFoundError
+from .invalid_user_password import InvalidUserPasswordError

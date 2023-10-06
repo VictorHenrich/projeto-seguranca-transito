@@ -3,7 +3,7 @@ from datetime import date
 
 from patterns.repository import BaseRepository
 from models import User
-from utils import CharUtils
+from utils import CharUtils, BCryptUtils
 
 
 class UserCreateRepositoryParams(Protocol):
@@ -32,7 +32,7 @@ class UserCreateRepository(BaseRepository):
         user.data_nascimento = params.birthday
         user.email = params.email.upper()
         user.nome = params.name.upper()
-        user.senha = params.password
+        user.senha = BCryptUtils.generate_hash(params.password)
         user.telefone = CharUtils.keep_only_number(params.telephone)
         user.estado_emissor = params.state_issuer.upper()
         user.endereco_uf = params.address_state.upper()
