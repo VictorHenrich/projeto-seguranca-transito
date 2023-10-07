@@ -33,7 +33,7 @@ class VehicleListingService:
             "uuid": vehicle.id_uuid,
             "plate": vehicle.placa,
             "renavam": vehicle.renavam,
-            "type": vehicle.tipo_veiculo,
+            "vehicle_type": vehicle.tipo_veiculo,
             "color": vehicle.cor,
             "year": vehicle.ano,
             "brand": vehicle.marca,
