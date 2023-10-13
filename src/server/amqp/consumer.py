@@ -33,9 +33,7 @@ class AMQPConsumer(AbstractAMQP, ABC):
         return self.__name
 
     def start(self) -> None:
-        connection: ConnectionParamsOptional = self.__connection
-
-        if not connection:
+        if not self.connection:
             raise ConnectionAMQPNotDefined()
 
         self.on_start()
@@ -50,7 +48,7 @@ class AMQPConsumer(AbstractAMQP, ABC):
         )
 
         logging.info(
-            f"Consumer {self.__name} running in {connection.host}:{connection.port}"
+            f"Consumer {self.__name} running in {self.connection.host}:{self.connection.port}"
         )
 
         channel.start_consuming()
