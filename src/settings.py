@@ -41,10 +41,9 @@ WEBSOCKET = {
 }
 
 
-# AMQP = {
-#     "host": env_value["AMQP_HOST"],
-#     "port": env_value["AMQP_PORT"],
-#     "username": env_value["AMQP_USERNAME"],
-#     "password": env_value["AMQP_PASSWORD"],
-# }
-AMQP = None
+AMQP = {
+    "host": env_value["AMQP_HOST"],
+    "port": env_value["AMQP_PORT"],
+    "username": env_value["AMQP_USERNAME"],
+    "password": env_value["AMQP_PASSWORD"],
+}
