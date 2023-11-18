@@ -1,10 +1,10 @@
-from typing import Protocol, Tuple, TypeAlias, Collection
+from typing import Protocol, Tuple, TypeAlias, Collection, Sequence
 
 from patterns.repository import BaseRepository
 from models import Occurrence, User, Vehicle
 
 
-OccurrenceLoad: TypeAlias = Tuple[Occurrence, Vehicle]
+OccurrenceLoad: TypeAlias = Sequence[Tuple[Occurrence, Vehicle]]
 
 
 class OccurrenceAggregateRepositoryParams(Protocol):

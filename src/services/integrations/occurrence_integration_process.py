@@ -1,4 +1,4 @@
-from typing import Tuple, TypeAlias, Collection
+from typing import Tuple, TypeAlias, Collection, Sequence
 from dataclasses import dataclass
 from sqlalchemy.orm import Session
 import logging
@@ -57,15 +57,15 @@ class OccurrenceIntegrationProcessService:
         return attach_find_many_repo.find_many(AttachmentFindProps(occurrence))
 
     def __aggregate_occurrence(self, session: Session) -> OccurrenceLoad:
-        occurrence_load_repository: IAggregateRepository[
-            OccurrenceAggregateRepositoryParams, OccurrenceLoad
+        occurrence_load_repository: IFindManyRepository[
+            OccurrenceAggregateRepositoryParams, Sequence[OccurrenceLoad]
         ] = OccurrenceAggregateRepository(session)
 
         occurrence_aggregate_props: OccurrenceAggregateProps = OccurrenceAggregateProps(
             self.__occurrence_uuid
         )
 
-        return occurrence_load_repository.aggregate(occurrence_aggregate_props)
+        return occurrence_load_repository.find_many(occurrence_aggregate_props)
 
     def __update_occurrence_status(
         self, session: Session, occurrence: Occurrence, status: OccurrenceStatus
