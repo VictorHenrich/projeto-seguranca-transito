@@ -25,3 +25,7 @@ from .occurrence_aggregate import (
     OccurrenceAggregateRepository,
     OccurrenceAggregateRepositoryParams,
 )
+from .occurrence_search import (
+    OccurrenceSearchRepository,
+    OccurrenceSearchRepositoryParams
+)

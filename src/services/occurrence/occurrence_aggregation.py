@@ -6,8 +6,8 @@ from server.database import Databases
 from models import User, Occurrence, Vehicle
 from patterns.repository import IFindManyRepository
 from repositories.occurrence import (
-    OccurrenceAggregateRepository,
-    OccurrenceAggregateRepositoryParams,
+    OccurrenceSearchRepository,
+    OccurrenceSearchRepositoryParams,
 )
 from utils.types import DictType
 
@@ -60,8 +60,8 @@ class OccurrenceAggregationService:
 
     def __find_occurrences(self, session: Session) -> Collection[DictType]:
         occurrence_aggregate_repo: IFindManyRepository[
-            OccurrenceAggregateRepositoryParams, OccurrenceAggregateItemType
-        ] = OccurrenceAggregateRepository(session)
+            OccurrenceSearchRepositoryParams, OccurrenceAggregateItemType
+        ] = OccurrenceSearchRepository(session)
 
         occurrences: Collection[
             OccurrenceAggregateItemType
