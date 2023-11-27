@@ -1,4 +1,4 @@
-/bin/bash init_app.sh
+source init_app.sh
 
 echo "...Executando Serviço de Migracao do Banco de Dados..."
 
