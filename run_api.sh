@@ -1,23 +1,5 @@
-if [ ! -d "venv-app" ]; then
-    echo "...Criando pasta venv-app..."
+/bin/bash init_app.sh
 
-    python3 -m venv venv-app
-
-    echo "...Pasta venv-app foi criada com sucesso..."
-
-    source venv-app/bin/activate
-
-    echo "...Instalando bibliotecas..."
-
-    pip install -r requirements.txt
-
-    echo "...Bibliotecas instaladas com sucesso..."
-
-else
-    echo "...Acessando pasta venv-app..."
-
-    source venv-app/bin/activate
-
-fi
+echo "...Executando Serviço da API..."
 
 python3 src/main.py api -r
