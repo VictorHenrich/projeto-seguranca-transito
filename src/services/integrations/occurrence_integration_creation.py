@@ -94,7 +94,7 @@ class OccurrenceIntegrationCreationService:
 
         await page.locator("#bairro").select_option(label=district)
 
-        await page.locator("#tipoLogradouro").select_option("309: 232")
+        await page.locator("#tipoLogradouro").select_option(label="RODOVIA")
 
         await page.locator("#logradouro").fill(street)
 
@@ -164,7 +164,7 @@ class OccurrenceIntegrationCreationService:
 
         await page.locator("#bairro").select_option(label=district)
 
-        await page.locator("#tipoLogradouro").select_option("309: 232")
+        await page.locator("#tipoLogradouro").select_option(label="RODOVIA")
 
         await page.locator("#logradouro").fill(street)
 
