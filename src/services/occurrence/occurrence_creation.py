@@ -36,6 +36,7 @@ class OccurrenceCreationProps:
     address_district: str
     address_street: str
     address_number: str
+    address_zipcode: str
     lat: str
     lon: str
     obs: str
@@ -136,6 +137,7 @@ class OccurrenceCreationService:
                 address.district,
                 address.street,
                 "0",
+                address.zipcode,
                 str(lat),
                 str(lon),
                 self.__obs,

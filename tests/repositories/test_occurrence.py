@@ -48,6 +48,7 @@ class OccurrenceRepositoryCase(TestCase):
         self.__occurrence_payload.address_district = "BAIRRO TAL"
         self.__occurrence_payload.address_street = "RUAL TAL"
         self.__occurrence_payload.address_number = "S/N"
+        self.__occurrence_payload.address_zipcode = "S/N"
         self.__occurrence_payload.lat = "1.00000"
         self.__occurrence_payload.lon = "2.00000"
         self.__occurrence_payload.created = datetime.now()

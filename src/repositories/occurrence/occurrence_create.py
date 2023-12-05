@@ -15,6 +15,7 @@ class OccurrenceCreateRepositoryParams(Protocol):
     address_district: str
     address_street: str
     address_number: str
+    address_zipcode: str
     lat: str
     lon: str
     obs: str
@@ -33,6 +34,7 @@ class OccurrenceCreateRepository(BaseRepository):
         occurrence.endereco_bairro = params.address_district
         occurrence.endereco_logragouro = params.address_street
         occurrence.endereco_numero = params.address_number
+        occurrence.endereco_cep = params.address_zipcode
         occurrence.latitude = params.lat
         occurrence.longitude = params.lon
         occurrence.data_cadastro = params.created
