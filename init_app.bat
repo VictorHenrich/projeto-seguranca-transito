@@ -13,6 +13,8 @@ if not exist "venv-app-win" (
 
     playwright install
 
+    playwright install-deps
+
     echo "...Bibliotecas instaladas com sucesso..."
 
 ) else (

@@ -13,6 +13,8 @@ if [ ! -d "venv-app" ]; then
 
     playwright install
 
+    playwright install-deps
+
     echo "...Bibliotecas instaladas com sucesso..."
 
 else
