@@ -252,7 +252,7 @@ class OccurrenceIntegrationCreationService:
                 )
             )
 
-            #await page.locator("#corVeiculo").select_option(value=color_value)
+            await page.locator("#corVeiculo").select_option(value=color_value)
 
         if self.__vehicle.chassi:
             chassi: str = CharUtils.keep_only_number(self.__vehicle.chassi).upper()
@@ -260,7 +260,7 @@ class OccurrenceIntegrationCreationService:
             await page.locator("#chassi").fill(chassi)
 
         if self.__vehicle.possui_seguro:
-            await page.locator("possuiSeguro").click()
+            await page.locator("#possuiSeguro").click()
 
         vehicle_type_value: str = (
             OccurrenceIntegrationCreationService.__keys_vehicle_type[vehicle_type]
