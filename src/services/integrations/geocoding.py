@@ -49,12 +49,22 @@ class GeocodingService:
     def __handle_address_payload(self, address_payload: DictType) -> AddressPayload:
         address: DictType = address_payload["address"]
 
+        zipcode: str = address.get("postcode", "")
+
+        state: str = self.__handle_state(address.get("state", ""))
+
+        city: str = address.get("city", address.get("town", ""))
+
+        district: str = address.get("suburb", "")
+
+        number: str = address.get("road", "0")
+
         return AddressPayload(
-            address.get("postcode", ""),
-            self.__handle_state(address.get("state", "")),
-            address.get("town", ""),
-            address.get("suburb", ""),
-            address.get("road", ""),
+            zipcode,
+            state,
+            city,
+            district,
+            number,
         )
 
     async def __run(self) -> AddressPayload:
