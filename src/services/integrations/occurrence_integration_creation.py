@@ -277,10 +277,12 @@ class OccurrenceIntegrationCreationService:
         await page.locator("#botaoProximaEtapa").click()
 
     async def __add_acident(self, page: Page) -> None:
+        description: str = self.__occurrence.descricao or "Após um acidente, consegui documentar as seguintes evidências."
+
         message_body: str = (
-            f"Fato ocorrido: {self.__occurrence.descricao}\n\n"
-            + f"Foram evidenciados as seguintes evidencias: \n"
-            "\n".join(
+            f"Fato ocorrido: {description}\n\n"
+            + f"Evidências capturadas: \n"
+            "\n\n".join(
                 [
                     f"http://localhost:5000/ocorrencia/anexos/{attachment.id_uuid}"
                     for attachment in self.__attachments
