@@ -11,6 +11,8 @@ if not exist "venv-app-win" (
 
     pip install -r requirements.txt
 
+    playwright install
+
     echo "...Bibliotecas instaladas com sucesso..."
 
 ) else (

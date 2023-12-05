@@ -11,6 +11,8 @@ if [ ! -d "venv-app" ]; then
 
     pip install -r requirements.txt
 
+    playwright install
+
     echo "...Bibliotecas instaladas com sucesso..."
 
 else
