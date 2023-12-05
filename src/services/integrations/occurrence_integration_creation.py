@@ -66,17 +66,11 @@ class OccurrenceIntegrationCreationService:
         await page.locator("#botaoProximaEtapa").click()
 
     async def __add_address_data(self, page: Page) -> None:
-        city: str = CharUtils.replace_characters_especial(
-            self.__occurrence.endereco_cidade
-        ).upper()
+        city: str = self.__occurrence.endereco_cidade.upper()
 
-        district: str = CharUtils.replace_characters_especial(
-            self.__occurrence.endereco_bairro
-        ).upper()
+        district: str = self.__occurrence.endereco_bairro.upper()
 
-        street: str = CharUtils.replace_characters_especial(
-            self.__occurrence.endereco_logragouro
-        ).upper()
+        street: str = self.__occurrence.endereco_logragouro.upper()
 
         zipcode: str = self.__occurrence.endereco_uf.upper()
 
@@ -142,17 +136,11 @@ class OccurrenceIntegrationCreationService:
         await page.locator("#botaoAvancarEnvolvido").click()
 
     async def __add_part_address(self, page: Page) -> None:
-        city: str = CharUtils.replace_characters_especial(
-            self.__user.endereco_cidade
-        ).upper()
+        city: str = self.__user.endereco_cidade.upper()
 
-        district: str = CharUtils.replace_characters_especial(
-            self.__user.endereco_bairro
-        ).upper()
+        district: str = self.__user.endereco_bairro.upper()
 
-        street: str = CharUtils.replace_characters_especial(
-            self.__user.endereco_logradouro
-        ).upper()
+        street: str = self.__user.endereco_bairro.upper()
 
         house_number: str = CharUtils.keep_only_number(self.__user.endereco_numero)
 
