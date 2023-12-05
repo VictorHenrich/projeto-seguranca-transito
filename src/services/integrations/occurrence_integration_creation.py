@@ -10,24 +10,6 @@ from models import User, Occurrence, Vehicle, Attachment
 class OccurrenceIntegrationCreationService:
     __url: str = "https://delegaciavirtual.sc.gov.br/nova-ocorrencia"
 
-    __keys_vehicle_type = {"carro": "6", "moto": "4"}
-
-    __keys_vehicle_color = {
-        "amarelo": "1",
-        "azul": "2",
-        "bege": "3",
-        "branco": "4",
-        "cinza": "5",
-        "dourado": "6",
-        "laranja": "8",
-        "marrom": "9",
-        "prata": "10",
-        "preto": "11",
-        "rosa": "12",
-        "roxa": "13",
-        "outra": "32767",
-    }
-
     def __init__(
         self,
         occurrence: Occurrence,
@@ -201,9 +183,7 @@ class OccurrenceIntegrationCreationService:
         await page.locator("#botaoSalvarTelefone").click()
 
     async def __add_car(self, page: Page) -> None:
-        vehicle_type: str = CharUtils.replace_characters_especial(
-            self.__vehicle.tipo_veiculo
-        ).lower()
+        vehicle_type: str = self.__vehicle.tipo_veiculo.upper()
 
         plate: str = self.__vehicle.placa.upper()
 
@@ -239,15 +219,9 @@ class OccurrenceIntegrationCreationService:
             await page.locator("#anoModelo").fill(year)
 
         if self.__vehicle.cor:
-            color: str = CharUtils.replace_characters_especial(
-                self.__vehicle.cor
-            ).upper()
+            color: str = self.__vehicle.cor
 
-            color_value: str = (
-                OccurrenceIntegrationCreationService.__keys_vehicle_color[color]
-            )
-
-            await page.locator("#anoModelo").fill(color_value)
+            await page.locator("#anoModelo").fill(color)
 
         if self.__vehicle.chassi:
             chassi: str = CharUtils.keep_only_number(self.__vehicle.chassi).upper()
@@ -257,12 +231,8 @@ class OccurrenceIntegrationCreationService:
         if self.__vehicle.possui_seguro:
             await page.locator("possuiSeguro").click()
 
-        vehicle_type_value: str = (
-            OccurrenceIntegrationCreationService.__keys_vehicle_type[vehicle_type]
-        )
-
         await page.locator("#detalhamentoObjeto").select_option(
-            value=vehicle_type_value
+            label=vehicle_type
         )
 
         await page.locator("#envolvido").select_option(value="1")
@@ -273,8 +243,7 @@ class OccurrenceIntegrationCreationService:
 
     async def __add_acident(self, page: Page) -> None:
         message_body: str = (
-            f"Fato ocorrido: {self.__occurrence.descricao}\n\n"
-            + f"Foram evidenciados as seguintes evidencias: \n"
+            f"Evidencias: \n" +
             "\n".join(
                 [
                     f"http://localhost:5000/ocorrencia/anexos/{attachment.id_uuid}"
