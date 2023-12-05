@@ -4,11 +4,7 @@ from sqlalchemy.orm import Session
 import logging
 
 from server.database import Databases
-from patterns.repository import (
-    IUpdateRepository,
-    IFindManyRepository,
-    IFindRepository
-)
+from patterns.repository import IUpdateRepository, IFindManyRepository, IFindRepository
 from repositories.occurrence import (
     OccurrenceAggregateRepository,
     OccurrenceAggregateRepositoryParams,

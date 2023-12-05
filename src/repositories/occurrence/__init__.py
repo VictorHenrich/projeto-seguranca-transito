@@ -27,5 +27,5 @@ from .occurrence_aggregate import (
 )
 from .occurrence_search import (
     OccurrenceSearchRepository,
-    OccurrenceSearchRepositoryParams
+    OccurrenceSearchRepositoryParams,
 )
